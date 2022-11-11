@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.derivation.tree;
+package de.dhbw.karlsruhe.derivation.tree.models;
 
 public class NodeData {
 

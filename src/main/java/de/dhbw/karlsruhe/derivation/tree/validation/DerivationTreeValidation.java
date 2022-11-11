@@ -1,8 +1,8 @@
 package de.dhbw.karlsruhe.derivation.tree.validation;
 
-import de.dhbw.karlsruhe.derivation.tree.ElementClassification;
-import de.dhbw.karlsruhe.derivation.tree.GrammarRule;
-import de.dhbw.karlsruhe.derivation.tree.NodeData;
+import de.dhbw.karlsruhe.derivation.tree.models.ElementClassification;
+import de.dhbw.karlsruhe.derivation.tree.models.GrammarRule;
+import de.dhbw.karlsruhe.derivation.tree.models.NodeData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
