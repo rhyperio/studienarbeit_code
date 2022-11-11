@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.derivation.tree.models;
+package de.dhbw.karlsruhe.models;
 
 public enum ElementClassification {
 

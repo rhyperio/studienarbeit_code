@@ -1,14 +1,14 @@
 package de.dhbw.karlsruhe.derivation.tree.models;
 
-public class NodeData {
+import de.dhbw.karlsruhe.models.ElementClassification;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DerivationTree {
 
   private String content;
   private ElementClassification classification;
-
-  public NodeData(String content, ElementClassification classification) {
-    this.content = content;
-    this.classification = classification;
-  }
+  private List<DerivationTree> children = new ArrayList<>();
 
   public String getContent() {
     return content;
@@ -18,4 +18,7 @@ public class NodeData {
     return classification;
   }
 
+  public List<DerivationTree> getChildren() {
+    return children;
+  }
 }

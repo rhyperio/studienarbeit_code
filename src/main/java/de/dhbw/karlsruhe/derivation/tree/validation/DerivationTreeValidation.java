@@ -1,9 +1,8 @@
 package de.dhbw.karlsruhe.derivation.tree.validation;
 
-import de.dhbw.karlsruhe.derivation.tree.models.ElementClassification;
-import de.dhbw.karlsruhe.derivation.tree.models.GrammarRule;
-import de.dhbw.karlsruhe.derivation.tree.models.NodeData;
-import java.util.ArrayList;
+import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
+import de.dhbw.karlsruhe.models.ElementClassification;
+import de.dhbw.karlsruhe.models.GrammarRule;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,18 +15,18 @@ public class DerivationTreeValidation {
     this.collectGrammarRules = collectGrammarRules;
   }
 
-  public boolean checkTree(Node<NodeData> root) {
+  public boolean checkTree(DerivationTree root) {
     grammarRules = collectGrammarRules.getGrammarRules();
     return checkDerivationTreeForCorrectSubstitutions(root);
   }
 
-  private boolean checkDerivationTreeForCorrectSubstitutions(Node<NodeData> element) {
+  private boolean checkDerivationTreeForCorrectSubstitutions(DerivationTree element) {
 
     if (isNotTerminal(element)) {
       AtomicBoolean leftSideExists = new AtomicBoolean(false);
 
       grammarRules.forEach(grammarRule -> {
-        if (grammarRule.getLeftSide().equals(element.getData().getContent())) {
+        if (grammarRule.getLeftSide().equals(element.getContent())) {
           leftSideExists.set(true);
         }
       });
@@ -35,10 +34,10 @@ public class DerivationTreeValidation {
       StringBuilder rightGrammarSide = new StringBuilder();
       if (leftSideExists.get()) {
         element.getChildren().forEach(childElement -> {
-          rightGrammarSide.append(childElement.getData().getContent());
+          rightGrammarSide.append(childElement.getContent());
         });
       }
-      if (isRuleInGrammar(element.getData().getContent(), rightGrammarSide.toString())) {
+      if (isRuleInGrammar(element.getContent(), rightGrammarSide.toString())) {
         AtomicBoolean correctDerivation = new AtomicBoolean(false);
         element.getChildren().forEach(child -> {
           correctDerivation.set(checkDerivationTreeForCorrectSubstitutions(child));
@@ -51,12 +50,12 @@ public class DerivationTreeValidation {
     return true;
   }
 
-  private boolean isTerminal(Node<NodeData> element) {
-    return element.getData().getClassification() == ElementClassification.TERMINAL;
+  private boolean isTerminal(DerivationTree element) {
+    return element.getClassification() == ElementClassification.TERMINAL;
   }
 
-  private boolean isNotTerminal(Node<NodeData> element) {
-    return element.getData().getClassification() == ElementClassification.NON_TERMINAL;
+  private boolean isNotTerminal(DerivationTree element) {
+    return element.getClassification() == ElementClassification.NON_TERMINAL;
   }
 
   private boolean isRuleInGrammar(String leftGrammarSide, String rightGrammarSide) {
