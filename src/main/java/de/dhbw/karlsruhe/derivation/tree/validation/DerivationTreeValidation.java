@@ -9,9 +9,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DerivationTreeValidation {
 
-  private List<GrammarRule> grammarRules = new ArrayList<>();
+  private List<GrammarRule> grammarRules;
+  private final CollectGrammarRules collectGrammarRules;
+
+  public DerivationTreeValidation(CollectGrammarRules collectGrammarRules) {
+    this.collectGrammarRules = collectGrammarRules;
+  }
 
   public boolean checkTree(Node<NodeData> root) {
+    grammarRules = collectGrammarRules.getGrammarRules();
     return checkDerivationTreeForCorrectSubstitutions(root);
   }
 
