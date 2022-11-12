@@ -5,16 +5,32 @@
     {
       "content": "(",
       "classification": "TERMINAL"
-    }, {
+    },
+    {
       "content": "S",
       "classification": "NON_TERMINAL",
-      "child": [
+      "children": [
         {
-          "content": "epsilon",
+          "content": "(",
+          "classification": "TERMINAL"
+        },
+        {
+          "content": "S",
+          "classification": "NON_TERMINAL",
+          "children": [
+            {
+              "content": "epsilon",
+              "classification": "TERMINAL"
+            }
+          ]
+        },
+        {
+          "content": ")",
           "classification": "TERMINAL"
         }
       ]
-    }, {
+    },
+    {
       "content": ")",
       "classification": "TERMINAL"
     }

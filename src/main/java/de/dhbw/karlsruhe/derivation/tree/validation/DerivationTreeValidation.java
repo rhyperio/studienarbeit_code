@@ -3,13 +3,15 @@ package de.dhbw.karlsruhe.derivation.tree.validation;
 import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
 import de.dhbw.karlsruhe.models.ElementClassification;
 import de.dhbw.karlsruhe.models.GrammarRule;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DerivationTreeValidation {
 
-  private List<GrammarRule> grammarRules;
   private final CollectGrammarRules collectGrammarRules;
+  private List<GrammarRule> grammarRules;
+  private List<Boolean> correctDerivations = new ArrayList<>();
 
   public DerivationTreeValidation(CollectGrammarRules collectGrammarRules) {
     this.collectGrammarRules = collectGrammarRules;
@@ -17,7 +19,8 @@ public class DerivationTreeValidation {
 
   public boolean checkTree(DerivationTree root) {
     grammarRules = collectGrammarRules.getGrammarRules();
-    return checkDerivationTreeForCorrectSubstitutions(root);
+    checkDerivationTreeForCorrectSubstitutions(root);
+    return !correctDerivations.contains(false);
   }
 
   private boolean checkDerivationTreeForCorrectSubstitutions(DerivationTree element) {
@@ -42,11 +45,14 @@ public class DerivationTreeValidation {
         element.getChildren().forEach(child -> {
           correctDerivation.set(checkDerivationTreeForCorrectSubstitutions(child));
         });
+        correctDerivations.add(correctDerivation.get());
         return correctDerivation.get();
       } else {
+        correctDerivations.add(false);
         return false;
       }
     }
+    correctDerivations.add(true);
     return true;
   }
 
