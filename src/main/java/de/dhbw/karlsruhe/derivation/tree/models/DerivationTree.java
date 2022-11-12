@@ -6,9 +6,9 @@ import java.util.List;
 
 public class DerivationTree {
 
+  private final List<DerivationTree> children = new ArrayList<>();
   private String content;
   private ElementClassification classification;
-  private List<DerivationTree> children = new ArrayList<>();
 
   public String getContent() {
     return content;

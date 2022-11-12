@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DerivationTreeValidation {
 
   private final CollectGrammarRules collectGrammarRules;
+  private final List<Boolean> correctDerivations = new ArrayList<>();
   private List<GrammarRule> grammarRules;
-  private List<Boolean> correctDerivations = new ArrayList<>();
 
   public DerivationTreeValidation(CollectGrammarRules collectGrammarRules) {
     this.collectGrammarRules = collectGrammarRules;
