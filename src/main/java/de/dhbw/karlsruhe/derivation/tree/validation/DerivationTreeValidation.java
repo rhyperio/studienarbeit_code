@@ -9,18 +9,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DerivationTreeValidation {
 
-  private final CollectGrammarRules collectGrammarRules;
+  private final GrammarService grammarService;
   private final List<Boolean> correctDerivations = new ArrayList<>();
   private List<GrammarRule> grammarRules;
 
-  public DerivationTreeValidation(CollectGrammarRules collectGrammarRules) {
-    this.collectGrammarRules = collectGrammarRules;
+  public DerivationTreeValidation(String grammarAsJson) {
+    this.grammarService = new GrammarService(grammarAsJson);
   }
 
   public boolean checkTree(DerivationTree root) {
-    grammarRules = collectGrammarRules.getGrammarRules();
-    checkDerivationTreeForCorrectSubstitutions(root);
-    return !correctDerivations.contains(false);
+    if (isStartSymbol(root)) {
+      grammarRules = grammarService.getGrammarRules();
+      checkDerivationTreeForCorrectSubstitutions(root);
+      return !correctDerivations.contains(false);
+    } else {
+      return false;
+    }
+  }
+
+  private boolean isStartSymbol(DerivationTree root) {
+    return root.getContent().equals(grammarService.getStartSymbol());
   }
 
   private boolean checkDerivationTreeForCorrectSubstitutions(DerivationTree element) {

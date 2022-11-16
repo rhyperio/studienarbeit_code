@@ -1,6 +1,5 @@
 package de.dhbw.karlsruhe;
 
-import de.dhbw.karlsruhe.derivation.tree.validation.CollectGrammarRules;
 import de.dhbw.karlsruhe.derivation.tree.validation.DerivationTreeValidation;
 import de.dhbw.karlsruhe.derivation.tree.validation.SetupValidationTree;
 import de.dhbw.karlsruhe.util.Resource;
@@ -22,10 +21,9 @@ public class App {
     }
 
     if (!grammarAsJson.isBlank() && !treeAsJson.isBlank()) {
-      CollectGrammarRules collectGrammarRules = new CollectGrammarRules(grammarAsJson);
       SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
       DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
-          collectGrammarRules);
+          grammarAsJson);
       System.out.println(derivationTreeValidation.checkTree(setupValidationTree.root()));
     } else {
       System.out.println("Json could not be read.");

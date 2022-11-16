@@ -6,20 +6,24 @@ import de.dhbw.karlsruhe.models.GrammarRule;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectGrammarRules {
+public class GrammarService {
 
-  private final String json;
+  private final Grammar grammar;
 
-  public CollectGrammarRules(String json) {
-    this.json = json;
+  public GrammarService(String json) {
+    grammar = formatGrammar(json);
+
   }
 
   public List<GrammarRule> getGrammarRules() {
-    Grammar grammar = formatGrammar();
     return createGrammarRules(grammar);
   }
 
-  private Grammar formatGrammar() {
+  public String getStartSymbol() {
+    return grammar.getStartSymbol();
+  }
+
+  private Grammar formatGrammar(String json) {
     Gson gson = new Gson();
     return gson.fromJson(json, Grammar.class);
   }

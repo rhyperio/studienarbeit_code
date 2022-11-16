@@ -3,7 +3,6 @@ package de.dhbw.karlsruhe.derivation.tree;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.dhbw.karlsruhe.derivation.tree.validation.CollectGrammarRules;
 import de.dhbw.karlsruhe.derivation.tree.validation.DerivationTreeValidation;
 import de.dhbw.karlsruhe.derivation.tree.validation.SetupValidationTree;
 import java.io.File;
@@ -24,10 +23,9 @@ public class DerivationTreeValidationTest {
             "\\Z")
         .next();
 
-    CollectGrammarRules collectGrammarRules = new CollectGrammarRules(grammarAsJson);
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
-        collectGrammarRules);
+        grammarAsJson);
 
     assertTrue(derivationTreeValidation.checkTree(setupValidationTree.root()));
   }
@@ -43,10 +41,9 @@ public class DerivationTreeValidationTest {
             "\\Z")
         .next();
 
-    CollectGrammarRules collectGrammarRules = new CollectGrammarRules(grammarAsJson);
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
-        collectGrammarRules);
+        grammarAsJson);
 
     assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
   }
@@ -62,10 +59,9 @@ public class DerivationTreeValidationTest {
             "\\Z")
         .next();
 
-    CollectGrammarRules collectGrammarRules = new CollectGrammarRules(grammarAsJson);
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
-        collectGrammarRules);
+        grammarAsJson);
 
     assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
   }
