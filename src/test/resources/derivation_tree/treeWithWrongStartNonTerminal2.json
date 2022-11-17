@@ -1,0 +1,52 @@
+{
+  "content": "NNZ",
+  "classification": "NON_TERMINAL",
+  "children": [
+    {
+      "content": "NNZ",
+      "classification": "NON_TERMINAL",
+      "children": [
+        {
+          "content": "3",
+          "classification": "TERMINAL"
+        }
+      ]
+    },
+    {
+      "content": "ZAHL",
+      "classification": "NON_TERMINAL",
+      "children": [
+        {
+          "content": "ZAHL",
+          "classification": "NON_TERMINAL",
+          "children": [
+            {
+              "content": "epsilon",
+              "classification": "TERMINAL"
+            }
+          ]
+        },
+        {
+          "content": "ZIFFER",
+          "classification": "NON_TERMINAL",
+          "children": [
+            {
+              "content": "0",
+              "classification": "TERMINAL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "GZ",
+      "classification": "NON_TERMINAL",
+      "children": [
+        {
+          "content": "2",
+          "classification": "TERMINAL"
+        }
+      ]
+    }
+  ]
+}
