@@ -18,14 +18,28 @@ public class DerivationTreeValidation {
     this.grammarService = new GrammarService(grammarAsJson);
   }
 
-  public boolean checkTree(DerivationTree root) {
+  public boolean checkTree(DerivationTree root, String word) {
     if (isStartSymbol(root)) {
       grammarRules = grammarService.getGrammarRules();
       checkDerivationTreeForCorrectSubstitutions(root);
-      return !correctDerivations.contains(false);
+      return !correctDerivations.contains(false) && derivedCorrectWord(root, word);
     } else {
       return false;
     }
+  }
+
+  private boolean derivedCorrectWord(DerivationTree root, String word) {
+    StringBuilder derivedWord = new StringBuilder();
+
+    root.getLeafNodes().forEach(leaf -> {
+      derivedWord.append(leaf.getContent());
+    });
+
+    return removeEpsilons(derivedWord.toString()).equals(word) && !word.isBlank();
+  }
+
+  private String removeEpsilons(String word) {
+    return word.replace("epsilon", "");
   }
 
   private boolean isStartSymbol(DerivationTree root) {

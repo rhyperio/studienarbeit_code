@@ -25,7 +25,7 @@ public class App {
       SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
       DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
           grammarAsJson);
-      System.out.println(derivationTreeValidation.checkTree(setupValidationTree.root()));
+      System.out.println(derivationTreeValidation.checkTree(setupValidationTree.root(), ""));
     } else {
       System.out.println("Json could not be read.");
     }

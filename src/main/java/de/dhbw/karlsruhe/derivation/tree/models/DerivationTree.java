@@ -21,4 +21,17 @@ public class DerivationTree {
   public List<DerivationTree> getChildren() {
     return children;
   }
+
+  public List<DerivationTree> getLeafNodes() {
+    List<DerivationTree> leafNodes = new ArrayList<>();
+
+    if (children.isEmpty()) {
+      leafNodes.add(this);
+    } else {
+      for (DerivationTree child : children) {
+        leafNodes.addAll(child.getLeafNodes());
+      }
+    }
+    return leafNodes;
+  }
 }

@@ -22,7 +22,7 @@ public class DerivationTreeValidationTest {
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertTrue(derivationTreeValidation.checkTree(setupValidationTree.root()));
+    assertTrue(derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"));
   }
 
   @Test
@@ -35,7 +35,7 @@ public class DerivationTreeValidationTest {
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -48,7 +48,7 @@ public class DerivationTreeValidationTest {
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -61,7 +61,7 @@ public class DerivationTreeValidationTest {
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -74,7 +74,7 @@ public class DerivationTreeValidationTest {
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -87,7 +87,46 @@ public class DerivationTreeValidationTest {
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+  }
+
+  @Test
+  public void isWrongWordInDerivationTree() throws FileNotFoundException {
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/grammarCorrect1.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/tree1.json");
+    SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
+    DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
+        grammarAsJson);
+
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), "((])"));
+  }
+
+  @Test
+  public void isCorrectNumberWordInDerivationTree() throws FileNotFoundException {
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/grammarCorrect2.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/tree2.json");
+    SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
+    DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
+        grammarAsJson);
+
+    assertTrue(derivationTreeValidation.checkTree(setupValidationTree.root(), "302"));
+  }
+
+  @Test
+  public void isWrongNumberWordInDerivationTree() throws FileNotFoundException {
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/grammarCorrect2.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/tree2.json");
+    SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
+    DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
+        grammarAsJson);
+
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), "145"));
   }
 
   private String getGrammarAsJson(String path) throws FileNotFoundException {
