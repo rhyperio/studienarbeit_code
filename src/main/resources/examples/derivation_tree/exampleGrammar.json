@@ -8,7 +8,7 @@
     "S"
   ],
   "productions": [
-    "S->epsilon|(S)|SS"
+    "S->epsilon|( S )|S S"
   ],
   "startSymbol": "S"
 }

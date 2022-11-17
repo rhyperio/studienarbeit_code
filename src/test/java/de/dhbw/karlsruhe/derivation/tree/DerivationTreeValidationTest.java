@@ -15,9 +15,9 @@ public class DerivationTreeValidationTest {
   @Test
   public void checkCorrectValidationTreeTest() throws FileNotFoundException {
     String grammarAsJson = getGrammarAsJson(
-        "src/test/resources/derivation_tree/exampleGrammarCorrect.json");
+        "src/test/resources/derivation_tree/grammarCorrect1.json");
     String treeAsJson = getTreeAsJson(
-        "src/test/resources/derivation_tree/exampleDerivationTreeCorrect.json");
+        "src/test/resources/derivation_tree/tree1.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
@@ -28,9 +28,9 @@ public class DerivationTreeValidationTest {
   @Test
   public void checkWrongValidationTreeTest() throws FileNotFoundException {
     String grammarAsJson = getGrammarAsJson(
-        "src/test/resources/derivation_tree/exampleGrammarCorrect.json");
+        "src/test/resources/derivation_tree/grammarCorrect1.json");
     String treeAsJson = getTreeAsJson(
-        "src/test/resources/derivation_tree/exampleDerivationTreeWrong.json");
+        "src/test/resources/derivation_tree/treeWithWrongTerminal1.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
@@ -41,9 +41,48 @@ public class DerivationTreeValidationTest {
   @Test
   public void checkWrongGrammarTest() throws FileNotFoundException {
     String grammarAsJson = getGrammarAsJson(
-        "src/test/resources/derivation_tree/exampleGrammarWrong.json");
+        "src/test/resources/derivation_tree/grammarWithWrongTerminalInProduction1.json");
     String treeAsJson = getTreeAsJson(
-        "src/test/resources/derivation_tree/exampleDerivationTreeCorrect.json");
+        "src/test/resources/derivation_tree/tree1.json");
+    SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
+    DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
+        grammarAsJson);
+
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+  }
+
+  @Test
+  public void checkWrongStartTerminalInTree() throws FileNotFoundException {
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/grammarCorrect2.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/treeWithWrongStartNonTerminal2.json");
+    SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
+    DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
+        grammarAsJson);
+
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+  }
+
+  @Test
+  public void checkTerminalAsStartSymbolInTree() throws FileNotFoundException {
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/grammarCorrect2.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/treeWithTerminalAsStartSymbol2.json");
+    SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
+    DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
+        grammarAsJson);
+
+    assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+  }
+
+  @Test
+  public void checkTreeWithProductionFromTerminalToNonTerminal() throws FileNotFoundException {
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/grammarCorrect3.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/treeWithTerminalToNonTerminal3.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);

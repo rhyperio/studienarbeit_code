@@ -46,7 +46,7 @@ public class DerivationTreeValidation {
       StringBuilder rightGrammarSide = new StringBuilder();
       if (leftSideExists.get()) {
         element.getChildren().forEach(childElement -> {
-          rightGrammarSide.append(childElement.getContent());
+          rightGrammarSide.append(childElement.getContent()).append(" ");
         });
       }
       if (isRuleInGrammar(element.getContent(), rightGrammarSide.toString())) {
@@ -61,7 +61,7 @@ public class DerivationTreeValidation {
         return false;
       }
     }
-    correctDerivations.add(true);
+    correctDerivations.add(element.getChildren().isEmpty());
     return true;
   }
 
@@ -77,8 +77,8 @@ public class DerivationTreeValidation {
     AtomicBoolean correctGrammarRule = new AtomicBoolean(false);
 
     grammarRules.forEach(grammarRule -> {
-      if (grammarRule.leftSide().equals(leftGrammarSide) && grammarRule.rightSide()
-          .equals(rightGrammarSide)) {
+      if (grammarRule.leftSide().equals(leftGrammarSide.trim()) && grammarRule.rightSide()
+          .equals(rightGrammarSide.trim())) {
         correctGrammarRule.set(true);
       }
     });
