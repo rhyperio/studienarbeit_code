@@ -6,7 +6,6 @@ import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.services.GrammarService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DerivationTreeValidation {
 
@@ -47,36 +46,45 @@ public class DerivationTreeValidation {
   }
 
   private boolean checkDerivationTreeForCorrectSubstitutions(DerivationTree element) {
-
     if (isNotTerminal(element)) {
-      AtomicBoolean leftSideExists = new AtomicBoolean(false);
+      String rightGrammarSide =
+          leftSideExists(element.getContent()) ? buildChildConcatination(element.getChildren())
+              : "";
 
-      grammarRules.forEach(grammarRule -> {
-        if (grammarRule.leftSide().equals(element.getContent())) {
-          leftSideExists.set(true);
+      if (isRuleInGrammar(element.getContent(), rightGrammarSide)) {
+        boolean correctDerivation = false;
+        for (DerivationTree child : element.getChildren()) {
+          correctDerivation = checkDerivationTreeForCorrectSubstitutions(child);
         }
-      });
-
-      StringBuilder rightGrammarSide = new StringBuilder();
-      if (leftSideExists.get()) {
-        element.getChildren().forEach(childElement -> {
-          rightGrammarSide.append(childElement.getContent()).append(" ");
-        });
-      }
-      if (isRuleInGrammar(element.getContent(), rightGrammarSide.toString())) {
-        AtomicBoolean correctDerivation = new AtomicBoolean(false);
-        element.getChildren().forEach(child -> {
-          correctDerivation.set(checkDerivationTreeForCorrectSubstitutions(child));
-        });
-        correctDerivations.add(correctDerivation.get());
-        return correctDerivation.get();
+        correctDerivations.add(correctDerivation);
+        return correctDerivation;
       } else {
         correctDerivations.add(false);
         return false;
       }
     }
-    correctDerivations.add(element.getChildren().isEmpty());
-    return true;
+    boolean correctEnd = isTerminal(element) && element.getChildren().isEmpty();
+    correctDerivations.add(correctEnd);
+    return correctEnd;
+  }
+
+  private boolean leftSideExists(String content) {
+    boolean leftSideExists = false;
+    for (GrammarRule grammarRule : grammarRules) {
+      if (grammarRule.leftSide().equals(content)) {
+        leftSideExists = true;
+        break;
+      }
+    }
+    return leftSideExists;
+  }
+
+  private String buildChildConcatination(List<DerivationTree> children) {
+    StringBuilder rightSide = new StringBuilder();
+    for (DerivationTree child : children) {
+      rightSide.append(child.getContent()).append(" ");
+    }
+    return rightSide.toString().trim();
   }
 
   private boolean isTerminal(DerivationTree element) {
@@ -88,16 +96,15 @@ public class DerivationTreeValidation {
   }
 
   private boolean isRuleInGrammar(String leftGrammarSide, String rightGrammarSide) {
-    AtomicBoolean correctGrammarRule = new AtomicBoolean(false);
+    boolean correctGrammarRule = false;
 
-    grammarRules.forEach(grammarRule -> {
-      if (grammarRule.leftSide().equals(leftGrammarSide.trim()) && grammarRule.rightSide()
-          .equals(rightGrammarSide.trim())) {
-        correctGrammarRule.set(true);
+    for (GrammarRule grammarRule : grammarRules) {
+      if (grammarRule.leftSide().equals(leftGrammarSide) && grammarRule.rightSide()
+          .equals(rightGrammarSide)) {
+        correctGrammarRule = true;
+        break;
       }
-    });
-
-    return correctGrammarRule.get();
+    }
+    return correctGrammarRule;
   }
-
 }
