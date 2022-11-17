@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.derivation.tree.validation;
+package de.dhbw.karlsruhe.service;
 
 import com.google.gson.Gson;
 import de.dhbw.karlsruhe.models.Grammar;
