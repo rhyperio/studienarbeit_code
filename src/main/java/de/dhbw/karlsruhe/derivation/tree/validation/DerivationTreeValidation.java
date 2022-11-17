@@ -3,7 +3,7 @@ package de.dhbw.karlsruhe.derivation.tree.validation;
 import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
 import de.dhbw.karlsruhe.models.ElementClassification;
 import de.dhbw.karlsruhe.models.GrammarRule;
-import de.dhbw.karlsruhe.service.GrammarService;
+import de.dhbw.karlsruhe.services.GrammarService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;

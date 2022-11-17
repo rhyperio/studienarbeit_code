@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.service;
+package de.dhbw.karlsruhe.services;
 
 import com.google.gson.Gson;
 import de.dhbw.karlsruhe.models.Grammar;
