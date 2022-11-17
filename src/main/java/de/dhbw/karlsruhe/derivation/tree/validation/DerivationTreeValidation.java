@@ -38,7 +38,7 @@ public class DerivationTreeValidation {
       AtomicBoolean leftSideExists = new AtomicBoolean(false);
 
       grammarRules.forEach(grammarRule -> {
-        if (grammarRule.getLeftSide().equals(element.getContent())) {
+        if (grammarRule.leftSide().equals(element.getContent())) {
           leftSideExists.set(true);
         }
       });
@@ -77,7 +77,7 @@ public class DerivationTreeValidation {
     AtomicBoolean correctGrammarRule = new AtomicBoolean(false);
 
     grammarRules.forEach(grammarRule -> {
-      if (grammarRule.getLeftSide().equals(leftGrammarSide) && grammarRule.getRightSide()
+      if (grammarRule.leftSide().equals(leftGrammarSide) && grammarRule.rightSide()
           .equals(rightGrammarSide)) {
         correctGrammarRule.set(true);
       }

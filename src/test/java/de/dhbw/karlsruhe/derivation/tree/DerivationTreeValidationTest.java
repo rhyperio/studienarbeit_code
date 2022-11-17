@@ -14,15 +14,10 @@ public class DerivationTreeValidationTest {
 
   @Test
   public void checkCorrectValidationTreeTest() throws FileNotFoundException {
-    String grammarAsJson = new Scanner(
-        new File("src/test/resources/test_examples/exampleGrammarCorrect.json")).useDelimiter("\\Z")
-        .next();
-    String treeAsJson = new Scanner(
-        new File(
-            "src/test/resources/test_examples/exampleDerivationTreeCorrect.json")).useDelimiter(
-            "\\Z")
-        .next();
-
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/exampleGrammarCorrect.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/exampleDerivationTreeCorrect.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
@@ -32,15 +27,10 @@ public class DerivationTreeValidationTest {
 
   @Test
   public void checkWrongValidationTreeTest() throws FileNotFoundException {
-    String grammarAsJson = new Scanner(
-        new File("src/test/resources/test_examples/exampleGrammarCorrect.json")).useDelimiter("\\Z")
-        .next();
-    String treeAsJson = new Scanner(
-        new File(
-            "src/test/resources/test_examples/exampleDerivationTreeWrong.json")).useDelimiter(
-            "\\Z")
-        .next();
-
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/exampleGrammarCorrect.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/exampleDerivationTreeWrong.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
@@ -50,20 +40,23 @@ public class DerivationTreeValidationTest {
 
   @Test
   public void checkWrongGrammarTest() throws FileNotFoundException {
-    String grammarAsJson = new Scanner(
-        new File("src/test/resources/test_examples/exampleGrammarWrong.json")).useDelimiter("\\Z")
-        .next();
-    String treeAsJson = new Scanner(
-        new File(
-            "src/test/resources/test_examples/exampleDerivationTreeCorrect.json")).useDelimiter(
-            "\\Z")
-        .next();
-
+    String grammarAsJson = getGrammarAsJson(
+        "src/test/resources/derivation_tree/exampleGrammarWrong.json");
+    String treeAsJson = getTreeAsJson(
+        "src/test/resources/derivation_tree/exampleDerivationTreeCorrect.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
     assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root()));
+  }
+
+  private String getGrammarAsJson(String path) throws FileNotFoundException {
+    return new Scanner(new File(path)).useDelimiter("\\Z").next();
+  }
+
+  private String getTreeAsJson(String path) throws FileNotFoundException {
+    return new Scanner(new File(path)).useDelimiter("\\Z").next();
   }
 
 }

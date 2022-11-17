@@ -14,8 +14,9 @@ public class App {
     String treeAsJson = "";
 
     try {
-      grammarAsJson = resource.getResourceAsString("test_examples/exampleGrammar.json");
-      treeAsJson = resource.getResourceAsString("test_examples/exampleDerivationTree.json");
+      grammarAsJson = resource.getResourceAsString("examples/derivation_tree/exampleGrammar.json");
+      treeAsJson = resource.getResourceAsString(
+          "examples/derivation_tree/exampleDerivationTree.json");
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
