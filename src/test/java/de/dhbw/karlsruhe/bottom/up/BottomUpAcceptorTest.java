@@ -4,6 +4,7 @@ import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.validation.BottomUpAcceptorValidation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
@@ -16,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  class BottomUpAcceptorTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"(())", "()()", "()(())"})
-     void checkCorrectBottomUpAcceptorTest(String word) throws FileNotFoundException {
+    @ValueSource(strings = {"(())", "()()", "()(())", " "})
+     void checkCorrectBottomUpAcceptorValidationTest(String word) throws FileNotFoundException {
         String grammarAsJson = getGrammarAsJson(
                 "src/test/resources/derivation_tree/grammarCorrect1.json");
 
@@ -27,15 +28,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
     }
 
 
-    @Test
-     void checkWrongBottomUpAcceptorTest() throws FileNotFoundException {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"((", "))"})
+     void checkWrongBottomUpAcceptorValidationTest(String word) throws FileNotFoundException {
         String grammarAsJson = getGrammarAsJson(
                 "src/test/resources/derivation_tree/grammarCorrect1.json");
 
         BottomUpAcceptor bUAcceptor = new BottomUpAcceptor();
         BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
 
-        assertFalse(bUAcceptorValidation.checkAcceptor(bUAcceptor, null));
+        assertFalse(bUAcceptorValidation.checkAcceptor(bUAcceptor, word));
     }
 
 
