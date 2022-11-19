@@ -40,6 +40,16 @@ public class BottomUpStep {
         this.remainingWord = remainingWord;
     }
 
+    @Override
+    public String toString() {
+        return "BottomUpStep{" +
+                "stack='" + stack + '\'' +
+                ", state=" + state +
+                ", remainingWord='" + remainingWord + '\'' +
+                ", production=" + production +
+                '}';
+    }
+
     public GrammarRule getProduction() {
         return production;
     }

@@ -17,4 +17,15 @@ public class BottomUpAcceptor {
         BottomUpStep step = new BottomUpStep(stack, state, remainingWord, production);
         steps.add(step);
     }
+
+    @Override
+    public String toString() {
+        return "BottomUpAcceptor{" +
+                "steps=" + steps +
+                '}';
+    }
+
+    public List<BottomUpStep> getSteps() {
+        return steps;
+    }
 }
