@@ -17,7 +17,7 @@ public class BottomUpAcceptorValidation {
     }
 
     public boolean checkAcceptor(BottomUpAcceptor bUAcceptor, String word) {
-        if (word == null)
+        if (word == null || bUAcceptor == null)
             return false;
         if (!validateSteps(bUAcceptor,word))
             return false;
