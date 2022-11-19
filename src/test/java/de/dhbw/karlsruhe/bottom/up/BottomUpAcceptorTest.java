@@ -1,0 +1,45 @@
+package de.dhbw.karlsruhe.bottom.up;
+
+import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
+import de.dhbw.karlsruhe.bottom.up.validation.BottomUpAcceptorValidation;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class BottomUpAcceptorTest {
+
+    @Test
+    public void checkCorrectBottomUpAcceptorTest() throws FileNotFoundException {
+        String grammarAsJson = getGrammarAsJson(
+                "src/test/resources/derivation_tree/grammarCorrect1.json");
+
+        BottomUpAcceptor bUAcceptor = new BottomUpAcceptor();
+        BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+        String word = "(())";
+        assertTrue(bUAcceptorValidation.checkAcceptor(bUAcceptor, word));
+    }
+
+
+    @Test
+    public void checkWrongBottomUpAcceptorTest() throws FileNotFoundException {
+        String grammarAsJson = getGrammarAsJson(
+                "src/test/resources/derivation_tree/grammarCorrect1.json");
+
+        BottomUpAcceptor bUAcceptor = new BottomUpAcceptor();
+        BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+
+        assertFalse(bUAcceptorValidation.checkAcceptor(bUAcceptor, null));
+    }
+
+
+    private String getGrammarAsJson(String path) throws FileNotFoundException {
+    return new Scanner(new File(path)).useDelimiter("\\Z").next();
+  }
+
+}
+
