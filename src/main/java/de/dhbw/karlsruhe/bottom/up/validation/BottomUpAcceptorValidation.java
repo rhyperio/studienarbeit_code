@@ -32,9 +32,9 @@ public class BottomUpAcceptorValidation {
         boolean correctStep = true;
         for (int i = 1; i< steps.size()-1 ; i++ ) {
             if (correctStep)
-             correctStep = validateStep(steps.get(i), word);
+             correctStep = validateStep(steps.get(i), steps.get(i-1));
         }
-        if (!validateLastStep(steps.get(steps.size()-1), word))
+        if (!validateLastStep(steps.get(steps.size()-1)))
             return false;
 
         return correctStep;
@@ -53,11 +53,43 @@ public class BottomUpAcceptorValidation {
         return true;
     }
 
-    private boolean validateStep(BottomUpStep step, String word) {
+    private boolean validateStep(BottomUpStep step, BottomUpStep priorStep) {
+        if (step.getState() != BottomUpState.z)
+            return false;
+
+        if (step.getProduction() != null){
+            // Reduktionsschritt
+            if (!validateReductionStep(step, priorStep))
+                return false;
+        }
+
+        if (!ValidateReadingStep(step, priorStep)) {
+            // LeseSchritt
+            return false;
+        }
+
         return true;
     }
 
-    private boolean validateLastStep(BottomUpStep step, String word) {
+    private boolean validateReductionStep(BottomUpStep step, BottomUpStep priorStep) {
+        boolean rightSideValidation = false;
+        String stepProductionRightSideWithoutSpaces = step.getProduction().rightSide().replaceAll("\\s+","");
+
+        if (step.getProduction().rightSide().equals("epsilon")){
+            rightSideValidation = priorStep.getStack().equals(step.getStack().substring(0,step.getStack().length()-1));
+        } else {
+            rightSideValidation = stepProductionRightSideWithoutSpaces.equals(priorStep.getStack().substring(priorStep.getStack().
+                    length()-stepProductionRightSideWithoutSpaces.length()));
+        }
+        return step.getProduction().leftSide().equals(step.getStack().substring(step.getStack().length()-1))
+                && rightSideValidation;
+    }
+
+    private boolean ValidateReadingStep(BottomUpStep step, BottomUpStep priorStep) {
+        return true;
+    }
+
+    private boolean validateLastStep(BottomUpStep step) {
         if (step.getState() != BottomUpState.zf)
             return false;
         if (!Objects.equals(step.getStack(), "*" + grammerService.getStartSymbol()))

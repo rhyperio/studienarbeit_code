@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         Gson gson = new Gson();
 
         try (Reader reader = new FileReader(
-                "D:\\Uni\\Studienarbeit\\studienarbeit_code\\src\\test\\resources\\bottom_up\\bUAcceptorCorrect1.json")) {
+                "src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
             BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
             BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
             String word = "(())";
