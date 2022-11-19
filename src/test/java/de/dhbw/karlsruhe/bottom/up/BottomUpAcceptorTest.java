@@ -2,7 +2,7 @@ package de.dhbw.karlsruhe.bottom.up;
 
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.validation.BottomUpAcceptorValidation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,10 +11,10 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BottomUpAcceptorTest {
+ class BottomUpAcceptorTest {
 
     @Test
-    public void checkCorrectBottomUpAcceptorTest() throws FileNotFoundException {
+     void checkCorrectBottomUpAcceptorTest() throws FileNotFoundException {
         String grammarAsJson = getGrammarAsJson(
                 "src/test/resources/derivation_tree/grammarCorrect1.json");
 
@@ -26,7 +26,7 @@ public class BottomUpAcceptorTest {
 
 
     @Test
-    public void checkWrongBottomUpAcceptorTest() throws FileNotFoundException {
+     void checkWrongBottomUpAcceptorTest() throws FileNotFoundException {
         String grammarAsJson = getGrammarAsJson(
                 "src/test/resources/derivation_tree/grammarCorrect1.json");
 

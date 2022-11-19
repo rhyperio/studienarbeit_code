@@ -147,12 +147,6 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
-      <scope>test</scope>
-      <version>4.13.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <version>5.9.0</version>
