@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class BottomUpAcceptorValidation {
 
-    private GrammarService grammerService;
+    private final GrammarService grammerService;
 
     public BottomUpAcceptorValidation(String grammarAsJson) {
         this.grammerService = new GrammarService(grammarAsJson);
@@ -58,21 +58,16 @@ public class BottomUpAcceptorValidation {
             return false;
 
         if (step.getProduction() != null){
-            // Reduktionsschritt
             if (!validateReductionStep(step, priorStep))
                 return false;
-        }
-
-        if (!ValidateReadingStep(step, priorStep)) {
-            // LeseSchritt
+        }else if (!validateReadingStep(step, priorStep)) {
             return false;
         }
-
         return true;
     }
 
     private boolean validateReductionStep(BottomUpStep step, BottomUpStep priorStep) {
-        boolean rightSideValidation = false;
+        boolean rightSideValidation;
         String stepProductionRightSideWithoutSpaces = step.getProduction().rightSide().replaceAll("\\s+","");
 
         if (step.getProduction().rightSide().equals("epsilon")){
@@ -85,7 +80,14 @@ public class BottomUpAcceptorValidation {
                 && rightSideValidation;
     }
 
-    private boolean ValidateReadingStep(BottomUpStep step, BottomUpStep priorStep) {
+    private boolean validateReadingStep(BottomUpStep step, BottomUpStep priorStep) {
+        if (step.getProduction() != null)
+            return false;
+        if (step.getState() != BottomUpState.z)
+            return false;
+        if (!step.getStack().substring(step.getStack().length()-1).equals
+                (priorStep.getRemainingWord().substring(0,1)))
+            return false;
         return true;
     }
 
