@@ -5,6 +5,7 @@ import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpState;
 import de.dhbw.karlsruhe.derivation.tree.validation.DerivationTreeValidation;
 import de.dhbw.karlsruhe.derivation.tree.validation.SetupValidationTree;
+import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.util.Resource;
 
 
@@ -35,8 +36,8 @@ public class App {
       System.out.println("Json could not be read.");
     }
 
-    /*
-    Test for BUAcceptor Creation
+
+    // Test for BUAcceptor Creation
 
     GrammarRule gREpsilon = new GrammarRule("S", "epsilon");
     GrammarRule gRBrackets = new GrammarRule("S", "( S )");
@@ -56,8 +57,6 @@ public class App {
     Gson gson = new Gson();
     String bUAcceptorJson = gson.toJson(buAcceptor);
     System.out.printf(bUAcceptorJson);
-     */
-
 
   }
 
