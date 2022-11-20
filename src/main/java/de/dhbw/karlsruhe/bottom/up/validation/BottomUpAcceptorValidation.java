@@ -56,7 +56,6 @@ public class BottomUpAcceptorValidation {
     private boolean validateStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getState() != BottomUpState.z)
             return false;
-
         if (step.getProduction() != null){
             if (!validateReductionStep(step, priorStep))
                 return false;
@@ -85,7 +84,6 @@ public class BottomUpAcceptorValidation {
             return false;
         if (step.getState() != BottomUpState.z)
             return false;
-
         if (!step.getRemainingWord().equals(priorStep.getRemainingWord().substring(1)) ||
                 !step.getStack().substring(step.getStack().length()-1).equals
                 (priorStep.getRemainingWord().substring(0,1)) )
