@@ -20,24 +20,12 @@ public class BottomUpStep {
         return stack;
     }
 
-    public void setStack(String stack) {
-        this.stack = stack;
-    }
-
     public BottomUpState getState() {
         return state;
     }
 
-    public void setState(BottomUpState state) {
-        this.state = state;
-    }
-
     public String getRemainingWord() {
         return remainingWord;
-    }
-
-    public void setRemainingWord(String remainingWord) {
-        this.remainingWord = remainingWord;
     }
 
     @Override
@@ -54,7 +42,4 @@ public class BottomUpStep {
         return production;
     }
 
-    public void setProduction(GrammarRule production) {
-        this.production = production;
-    }
 }

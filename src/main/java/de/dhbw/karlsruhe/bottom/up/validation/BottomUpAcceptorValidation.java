@@ -10,10 +10,10 @@ import java.util.Objects;
 
 public class BottomUpAcceptorValidation {
 
-    private final GrammarService grammerService;
+    private final GrammarService grammarService;
 
     public BottomUpAcceptorValidation(String grammarAsJson) {
-        this.grammerService = new GrammarService(grammarAsJson);
+        this.grammarService = new GrammarService(grammarAsJson);
     }
 
     public boolean checkAcceptor(BottomUpAcceptor bUAcceptor, String word) {
@@ -94,7 +94,7 @@ public class BottomUpAcceptorValidation {
     private boolean validateLastStep(BottomUpStep step) {
         if (step.getState() != BottomUpState.zf)
             return false;
-        if (!Objects.equals(step.getStack(), "*" + grammerService.getStartSymbol()))
+        if (!Objects.equals(step.getStack(), "*" + grammarService.getStartSymbol()))
             return false;
         if (!Objects.equals(step.getRemainingWord(), ""))
             return false;

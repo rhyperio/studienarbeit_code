@@ -56,7 +56,7 @@ public class App {
 
     Gson gson = new Gson();
     String bUAcceptorJson = gson.toJson(buAcceptor);
-    System.out.printf(bUAcceptorJson);
+    System.out.print(bUAcceptorJson);
 
   }
 
