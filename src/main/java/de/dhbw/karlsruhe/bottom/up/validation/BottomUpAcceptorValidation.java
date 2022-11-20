@@ -85,8 +85,10 @@ public class BottomUpAcceptorValidation {
             return false;
         if (step.getState() != BottomUpState.z)
             return false;
-        if (!step.getStack().substring(step.getStack().length()-1).equals
-                (priorStep.getRemainingWord().substring(0,1)))
+
+        if (!step.getRemainingWord().equals(priorStep.getRemainingWord().substring(1)) ||
+                !step.getStack().substring(step.getStack().length()-1).equals
+                (priorStep.getRemainingWord().substring(0,1)) )
             return false;
         return true;
     }
