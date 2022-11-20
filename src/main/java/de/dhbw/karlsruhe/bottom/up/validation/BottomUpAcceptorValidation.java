@@ -34,7 +34,7 @@ public class BottomUpAcceptorValidation {
             if (correctStep)
              correctStep = validateStep(steps.get(i), steps.get(i-1));
         }
-        if (!validateLastStep(steps.get(steps.size()-1)))
+        if (!validateLastStep(steps.get(steps.size()-1), steps.get(steps.size()-2)))
             return false;
 
         return correctStep;
@@ -91,10 +91,14 @@ public class BottomUpAcceptorValidation {
         return true;
     }
 
-    private boolean validateLastStep(BottomUpStep step) {
+    private boolean validateLastStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getState() != BottomUpState.zf)
             return false;
         if (!Objects.equals(step.getStack(), "*" + grammarService.getStartSymbol()))
+            return false;
+        if (!step.getStack().equals(priorStep.getStack()) ||
+                    ! priorStep.getState().equals(BottomUpState.z) ||
+                    ! Objects.equals(priorStep.getRemainingWord(), ""))
             return false;
         if (!Objects.equals(step.getRemainingWord(), ""))
             return false;

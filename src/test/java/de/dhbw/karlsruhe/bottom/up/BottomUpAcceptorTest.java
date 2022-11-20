@@ -66,7 +66,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
              "src/test/resources/bottom_up/bUAcceptorWrongProduction2.json",
              "src/test/resources/bottom_up/bUAcceptorWrongMissingProduction3.json",
              "src/test/resources/bottom_up/bUAcceptorWrongMissingReading1.json",
-             "src/test/resources/bottom_up/bUAcceptorWrongReading2.json"
+             "src/test/resources/bottom_up/bUAcceptorWrongReading2.json",
+             "src/test/resources/bottom_up/bUAcceptorWrongMissingPriorToLastStep.json"
             })
      void checkWrongBottomUpAcceptorValidationTest(String buAcceptorPath) throws FileNotFoundException {
          String grammarAsJson = getGrammarAsJson(
