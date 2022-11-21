@@ -88,8 +88,11 @@ public class BottomUpAcceptorValidation {
                 !step.getStack().substring(step.getStack().length()-1).equals
                 (priorStep.getRemainingWord().substring(0,1)) )
             return false;
+        if (!isStepStackEqualPriorStackPlusOneCharacter(step, priorStep))
+            return false;
         return true;
     }
+
 
     private boolean validateLastStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getState() != BottomUpState.zf)
@@ -105,6 +108,10 @@ public class BottomUpAcceptorValidation {
         if (step.getProduction() != null)
             return false;
         return true;
+    }
+
+    private boolean isStepStackEqualPriorStackPlusOneCharacter(BottomUpStep step, BottomUpStep priorStep) {
+        return step.getStack().substring(0, step.getStack().length()-1).equals(priorStep.getStack());
     }
 
 }
