@@ -25,7 +25,7 @@ public class GrammarService {
     return grammar.getStartSymbol();
   }
 
-  public boolean checkWordOnlyContainsGrammarTerminals(String word){
+  public boolean checkStringOnlyContainsGrammarTerminals(String word){
     Stream<String> wordSplit = Arrays.stream(word.split("(?!^)"));
     String[] terminals = this.getSortedGrammarTerminals();
     for (String terminal: terminals) {

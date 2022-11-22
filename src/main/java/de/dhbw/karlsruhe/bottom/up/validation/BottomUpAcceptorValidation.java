@@ -20,7 +20,7 @@ public class BottomUpAcceptorValidation {
         if (word == null || bUAcceptor == null)
             return false;
 
-        if (!this.grammarService.checkWordOnlyContainsGrammarTerminals(word))
+        if (!this.grammarService.checkStringOnlyContainsGrammarTerminals(word))
             return false;
 
         return isBottomUpAcceptorValid(bUAcceptor, word);
@@ -68,17 +68,25 @@ public class BottomUpAcceptorValidation {
         if (!this.grammarService.getGrammarRules().contains(step.getProduction()))
             return false;
 
+        return isLeftSideOfProductionExecuted(step)
+                && isRightSideOfProductionExecuted(step, priorStep);
+    }
+
+    private boolean isLeftSideOfProductionExecuted(BottomUpStep step) {
+        return step.getProduction().leftSide().equals(step.getStack().substring(step.getStack().length()-1));
+    }
+
+    private boolean isRightSideOfProductionExecuted(BottomUpStep step, BottomUpStep priorStep) {
         boolean rightSideValidation;
         String stepProductionRightSideWithoutSpaces = step.getProduction().rightSide().replaceAll("\\s+","");
 
         if (step.getProduction().rightSide().equals("epsilon")){
-            rightSideValidation = priorStep.getStack().equals(step.getStack().substring(0,step.getStack().length()-1));
+            rightSideValidation = priorStep.getStack().equals(step.getStack().substring(0, step.getStack().length()-1));
         } else {
             rightSideValidation = stepProductionRightSideWithoutSpaces.equals(priorStep.getStack().substring(priorStep.
                     getStack().length()-stepProductionRightSideWithoutSpaces.length()));
         }
-        return step.getProduction().leftSide().equals(step.getStack().substring(step.getStack().length()-1))
-                && rightSideValidation;
+        return rightSideValidation;
     }
 
     private boolean isValidReadingStep(BottomUpStep step, BottomUpStep priorStep) {
