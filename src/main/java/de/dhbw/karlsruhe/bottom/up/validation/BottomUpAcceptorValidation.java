@@ -19,12 +19,14 @@ public class BottomUpAcceptorValidation {
     public boolean checkAcceptor(BottomUpAcceptor bUAcceptor, String word) {
         if (word == null || bUAcceptor == null)
             return false;
-        if (!validateSteps(bUAcceptor,word))
+
+        if (!this.grammarService.checkWordOnlyContainsGrammarTerminals(word))
             return false;
-        return true;
+
+        return isBottomUpAcceptorValid(bUAcceptor, word);
     }
 
-    private boolean validateSteps(BottomUpAcceptor bUAcceptor, String word) {
+    private boolean isBottomUpAcceptorValid(BottomUpAcceptor bUAcceptor, String word) {
         List<BottomUpStep> steps = bUAcceptor.getSteps();
         if (!isValidFirstStep(steps.get(0),word))
             return false;
@@ -57,15 +59,15 @@ public class BottomUpAcceptorValidation {
         if (step.getState() != BottomUpState.z)
             return false;
         if (step.getProduction() != null){
-            if (!isValidReductionStep(step, priorStep))
-                return false;
-        }else if (!isValidReadingStep(step, priorStep)) {
-            return false;
-        }
-        return true;
+            return isValidReductionStep(step, priorStep);
+        } else
+            return isValidReadingStep(step, priorStep);
     }
 
     private boolean isValidReductionStep(BottomUpStep step, BottomUpStep priorStep) {
+        if (!this.grammarService.getGrammarRules().contains(step.getProduction()))
+            return false;
+
         boolean rightSideValidation;
         String stepProductionRightSideWithoutSpaces = step.getProduction().rightSide().replaceAll("\\s+","");
 
@@ -84,7 +86,7 @@ public class BottomUpAcceptorValidation {
             return false;
         if (step.getState() != BottomUpState.z)
             return false;
-        if (!step.getRemainingWord().equals(priorStep.getRemainingWord().substring(1)) ||
+        if (!isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(step, priorStep) ||
                 !isStepStackLastCharacterEqualPriorStepFirstRemainingWordCharacter(step, priorStep))
             return false;
         if (!isStepStackEqualPriorStackPlusOneCharacter(step, priorStep))
@@ -107,6 +109,10 @@ public class BottomUpAcceptorValidation {
         if (step.getProduction() != null)
             return false;
         return true;
+    }
+
+    private boolean isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(BottomUpStep step, BottomUpStep priorStep) {
+        return step.getRemainingWord().equals(priorStep.getRemainingWord().substring(1));
     }
 
     private boolean isStepStackLastCharacterEqualPriorStepFirstRemainingWordCharacter(BottomUpStep step, BottomUpStep priorStep) {

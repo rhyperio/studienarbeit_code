@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarRule;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class GrammarService {
 
@@ -21,6 +23,21 @@ public class GrammarService {
 
   public String getStartSymbol() {
     return grammar.getStartSymbol();
+  }
+
+  public boolean checkWordOnlyContainsGrammarTerminals(String word){
+    Stream<String> wordSplit = Arrays.stream(word.split("(?!^)"));
+    String[] terminals = this.getSortedGrammarTerminals();
+    for (String terminal: terminals) {
+      wordSplit = wordSplit.filter(s -> !s.equals(terminal));
+    }
+    return wordSplit.toList().isEmpty();
+  }
+
+  private String[] getSortedGrammarTerminals() {
+    String[] tmp = grammar.getTerminals();
+    Arrays.sort(tmp);
+    return tmp;
   }
 
   private Grammar formatGrammar(String json) {

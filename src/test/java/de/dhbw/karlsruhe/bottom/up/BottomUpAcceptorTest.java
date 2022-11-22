@@ -101,6 +101,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
          }
      }
 
+     @ParameterizedTest
+     @ValueSource(strings = {"src/test/resources/derivation_tree/grammarCorrect2.json",
+             "src/test/resources/derivation_tree/grammarWithWrongTerminalInProduction1.json"
+            })
+     void checkWrongGrammarForBottomUpAcceptorAndWordTest(String grammarPath) throws FileNotFoundException {
+         String grammarAsJson = getGrammarAsJson(grammarPath);
+
+         Gson gson = new Gson();
+
+         try (Reader reader = new FileReader(
+                 "src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
+             BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
+             BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+             String word = "(())";
+             assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+     }
+
 
     private String getGrammarAsJson(String path) throws FileNotFoundException {
     return new Scanner(new File(path)).useDelimiter("\\Z").next();
