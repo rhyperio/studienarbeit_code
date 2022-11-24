@@ -2,8 +2,6 @@ package de.dhbw.karlsruhe.top.down.parsing.models;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
 
-import java.util.List;
-
 public class TopDownStep {
     private String readInput;
     private TopDownState newState;
@@ -16,6 +14,8 @@ public class TopDownStep {
         this.setNewStack(pNewStack);
         this.setUsedProduction(pUsedProduction);
     }
+
+    // TODO: implement toString
 
     public String getReadInput() {
         return readInput;

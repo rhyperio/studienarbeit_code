@@ -7,13 +7,15 @@ import java.util.List;
 
 public class TopDownAcceptor {
 
-    private List<TopDownStep> topDownSteps = new ArrayList<>();
+    private final List<TopDownStep> topDownSteps = new ArrayList<>();
 
-    public void addStep(String pReadInput, TopDownState pNewState, String pNewStack, GrammarRule pUsedProduction) {
-        TopDownStep tdstep = new TopDownStep(pReadInput, pNewState, pNewStack, pUsedProduction);
+    public void addStep(String readInput, TopDownState newState, String newStack, GrammarRule usedProduction) {
+        TopDownStep tdStep = new TopDownStep(readInput, newState, newStack, usedProduction);
 
-        this.topDownSteps.add(tdstep);
+        this.topDownSteps.add(tdStep);
     }
+
+    // TODO: implement toString
 
     public List<TopDownStep> getTopDownSteps() {
         return this.topDownSteps;
