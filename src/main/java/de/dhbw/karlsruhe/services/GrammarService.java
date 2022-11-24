@@ -14,7 +14,6 @@ public class GrammarService {
 
   public GrammarService(String json) {
     grammar = formatGrammar(json);
-
   }
 
   public List<GrammarRule> getGrammarRules() {
