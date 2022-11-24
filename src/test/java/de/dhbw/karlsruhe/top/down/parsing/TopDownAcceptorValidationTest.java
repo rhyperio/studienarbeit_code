@@ -14,10 +14,10 @@ public class TopDownAcceptorValidationTest {
 
     @Test
     public void correctTopDownParsingTest() throws FileNotFoundException {
-        String grammarAsJson = getGrammarAsJson("src/test/resources/top_down_parsing/TopDownCorrect.json");
+        String grammarAsJson = getGrammarAsJson("src/test/resources/derivation_tree/grammarCorrect1.json");
         Gson gson = new Gson();
 
-        try (Reader reader = new FileReader("src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
+        try (Reader reader = new FileReader("src/test/resources/top_down_parsing/TopDownCorrect.json")) {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
             String word = "()()";
