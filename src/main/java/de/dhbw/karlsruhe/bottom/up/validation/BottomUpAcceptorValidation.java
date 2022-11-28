@@ -4,6 +4,7 @@ import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpState;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpStep;
 import de.dhbw.karlsruhe.services.GrammarService;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,9 +47,9 @@ public class BottomUpAcceptorValidation {
     private boolean isValidFirstStep(BottomUpStep step, String word) {
         if (step.getState() != BottomUpState.z0)
             return false;
-        if (!Objects.equals(step.getStack(), "*"))
+        if (!StringUtils.equals(step.getStack(), "*"))
             return false;
-        if (!Objects.equals(step.getRemainingWord(), word))
+        if (!StringUtils.equals(step.getRemainingWord(), word))
             return false;
         if (step.getProduction() != null)
             return false;
@@ -106,13 +107,13 @@ public class BottomUpAcceptorValidation {
     private boolean isValidLastStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getState() != BottomUpState.zf)
             return false;
-        if (!Objects.equals(step.getStack(), "*" + grammarService.getStartSymbol()))
+        if (!StringUtils.equals(step.getStack(), "*" + grammarService.getStartSymbol()))
             return false;
         if (!step.getStack().equals(priorStep.getStack()) ||
                     ! priorStep.getState().equals(BottomUpState.z) ||
-                    ! Objects.equals(priorStep.getRemainingWord(), ""))
+                    ! StringUtils.equals(priorStep.getRemainingWord(), ""))
             return false;
-        if (!Objects.equals(step.getRemainingWord(), ""))
+        if (!StringUtils.equals(step.getRemainingWord(), ""))
             return false;
         if (step.getProduction() != null)
             return false;
