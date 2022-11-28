@@ -8,11 +8,11 @@ public class TopDownStep {
     private String newStack;
     private GrammarRule usedProduction;
 
-    public TopDownStep(String pReadInput, TopDownState pNewState, String pNewStack, GrammarRule pUsedProduction) {
-        this.setReadInput(pReadInput);
-        this.setNewState(pNewState);
-        this.setNewStack(pNewStack);
-        this.setUsedProduction(pUsedProduction);
+    public TopDownStep(String readInput, TopDownState newState, String newStack, GrammarRule usedProduction) {
+        this.setReadInput(readInput);
+        this.setNewState(newState);
+        this.setNewStack(newStack);
+        this.setUsedProduction(usedProduction);
     }
 
     // TODO: implement toString

@@ -3,8 +3,7 @@
 		{
 			"readInput":"",
 			"newState":"Z0",
-			"newStack":"*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":"*"
 		},
 		{
 			"readInput":"",
@@ -21,8 +20,7 @@
 		{
 			"readInput":"",
 			"newState":"Z",
-			"newStack":"(S)S*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":"(S)S*"
 		},
 		{
 			"readInput":"(",
@@ -33,8 +31,7 @@
 		{
 			"readInput":"(",
 			"newState":"Z",
-			"newStack":")S*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":")S*"
 		},
 		{
 			"readInput":"()",
@@ -45,8 +42,7 @@
 		{
 			"readInput":"()",
 			"newState":"Z",
-			"newStack":"(S)*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":"(S)*"
 		},
 		{
 			"readInput":"()(",
@@ -57,20 +53,17 @@
 		{
 			"readInput":"()(",
 			"newState":"Z",
-			"newStack":")*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":")*"
 		},
 		{
 			"readInput":"()()",
 			"newState":"Z",
-			"newStack":"*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":"*"
 		},
 		{
 			"readInput":"()()",
 			"newState":"ZF",
-			"newStack":"*",
-			"usedProduction":{"leftSide":"","rightSide":""}
+			"newStack":"*"
 		}
 	]
 }
