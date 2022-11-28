@@ -7,7 +7,6 @@ import de.dhbw.karlsruhe.services.GrammarService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 public class BottomUpAcceptorValidation {
 
@@ -95,8 +94,9 @@ public class BottomUpAcceptorValidation {
             return false;
         if (step.getState() != BottomUpState.z)
             return false;
-        if (!isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(step, priorStep) ||
-                !isStepStackLastCharacterEqualPriorStepFirstRemainingWordCharacter(step, priorStep))
+        if (!isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(step, priorStep))
+            return false;
+        if (!isStepStackLastCharacterEqualPriorStepFirstRemainingWordCharacter(step, priorStep))
             return false;
         if (!isStepStackEqualPriorStackPlusOneCharacter(step, priorStep))
             return false;
@@ -111,9 +111,9 @@ public class BottomUpAcceptorValidation {
             return false;
         if (!step.getStack().equals(priorStep.getStack()) ||
                     ! priorStep.getState().equals(BottomUpState.z) ||
-                    ! StringUtils.equals(priorStep.getRemainingWord(), ""))
+                    ! priorStep.getRemainingWord().isBlank())
             return false;
-        if (!StringUtils.equals(step.getRemainingWord(), ""))
+        if (!step.getRemainingWord().isBlank())
             return false;
         if (step.getProduction() != null)
             return false;
