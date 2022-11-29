@@ -1,6 +1,6 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import de.dhbw.karlsruhe.grammar.genertion.GrammarGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
 
-public class GrammarGenerationTest {
+class GrammarGenerationTest {
 	
 	@Test
 	void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
@@ -24,7 +24,6 @@ public class GrammarGenerationTest {
 		        .toList().isEmpty());
 	}
 	
-	
 	@Test
 	void checkThatGrammarParstAreNotEmpty() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
@@ -33,7 +32,7 @@ public class GrammarGenerationTest {
 		assertNotEquals(generatedGrammar.getTerminals().length, 0);
 		assertNotEquals(generatedGrammar.getNonTerminals().length, 0);
 		assertNotEquals(generatedGrammar.getProductions().length, 0);
-		assertTrue(!generatedGrammar.getStartSymbol().isBlank());
+		assertFalse(generatedGrammar.getStartSymbol().isBlank());
 	}
 	
 	@Test

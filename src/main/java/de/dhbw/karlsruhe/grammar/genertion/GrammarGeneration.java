@@ -10,17 +10,18 @@ import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarGeneration {
 	
+	private String[] terminals = {};
+	private String[] nonTerminals = {};
+	private String[] productions = {};
+	private String startSymbol;
+	
 	public Grammar generateGrammar() {
-		String[] terminals = {};
-		String[] nonTerminals = {};
-		String[] productions = {};
-		String startSymbol = "";
 		
 		return new Grammar(terminals, nonTerminals, productions, startSymbol);
 	}
 	
 	public Set<String> generateTerminals() {
-		Set<String> terminals = new HashSet<String>();
+		Set<String> terminals = new HashSet<>();
 		while (terminals.size() < 5) {
 			terminals.add(RandomStringUtils.randomAlphabetic(1).toLowerCase());
 		}
@@ -28,19 +29,38 @@ public class GrammarGeneration {
 	}
 	
 	public Set<String> generateNonTerminals() {
-		Set<String> nonTerminals = new HashSet<String>();
-		while (nonTerminals.size() < 5) {
-			nonTerminals.add(RandomStringUtils.randomAlphabetic(1).toUpperCase());
+		Set<String> generatedNonTerminals = new HashSet<String>();
+		while (generatedNonTerminals.size() < 5) {
+			generatedNonTerminals.add(RandomStringUtils.randomAlphabetic(1).toUpperCase());
 		}
-		return nonTerminals;
+		return generatedNonTerminals;
 	}
 	
-	public Set<String> generateProductions() {
-		return Set.of();
+	public Set<String> generateProductions(Set<String> terminals, Set<String> nonTerminals) {
+		Set<String> generatedProductions = new HashSet<>();
+	    String generatedStartSymbol = nonTerminals.iterator().next();
+	    setStartSymbol(generatedStartSymbol);
+	    
+	    boolean finishedGeneration = false;
+	    
+	    while (!finishedGeneration) {
+	    	generatedProductions.add(generateProduction());
+	    	finishedGeneration = checkGeneratedProductions(generatedProductions);
+		}
+	    
+		return generatedProductions;
 	}
 	
-	public String generateStartSymbol() {
-		return "S";
+	private boolean checkGeneratedProductions(Set<String> generatedProductions) {
+		return generatedProductions.isEmpty();
+	}
+
+	private void setStartSymbol(String startSymbol) {
+		this.startSymbol = startSymbol;
+	}
+	
+	private String generateProduction() {
+		return "";
 	}
 
 }
