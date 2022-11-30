@@ -1,8 +1,8 @@
 {
 	"topDownSteps":[
 		{
-			"readInput":"",
-			"newState":"Z0",
+			"readInput":"()",
+			"newState":"Z",
 			"newStack":"*"
 		},
 		{
