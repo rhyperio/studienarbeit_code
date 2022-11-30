@@ -15,7 +15,12 @@ public class TopDownAcceptor {
         this.topDownSteps.add(tdStep);
     }
 
-    // TODO: implement toString
+    @Override
+    public String toString() {
+        return "TopDownAcceptor{" +
+                "topDownSteps=" + topDownSteps +
+                '}';
+    }
 
     public List<TopDownStep> getTopDownSteps() {
         return this.topDownSteps;
