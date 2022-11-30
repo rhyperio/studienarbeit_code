@@ -15,7 +15,15 @@ public class TopDownStep {
         this.setUsedProduction(usedProduction);
     }
 
-    // TODO: implement toString
+    @Override
+    public String toString() {
+        return "TopDownStep{" +
+                "readInput='" + readInput + '\'' +
+                ", newState=" + newState +
+                ", newStack='" + newStack + '\'' +
+                ", usedProduction=" + usedProduction +
+                '}';
+    }
 
     public String getReadInput() {
         return readInput;

@@ -22,6 +22,14 @@ public class GrammarService {
     return grammar.getStartSymbol();
   }
 
+  public String[] getTerminals() {
+    return this.grammar.getTerminals();
+  }
+
+  public String[] getNonTerminals() {
+    return this.grammar.getNonTerminals();
+  }
+
   private Grammar formatGrammar(String json) {
     Gson gson = new Gson();
     return gson.fromJson(json, Grammar.class);
