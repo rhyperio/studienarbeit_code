@@ -22,6 +22,10 @@ public class TopDownAcceptorValidation {
     }
 
     public boolean validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
+        if (pTDAcceptor == null || pWord == null) {
+            return false;
+        }
+
         this.tdAcceptor = pTDAcceptor;
         this.wordToPars = pWord;
 
@@ -83,6 +87,9 @@ public class TopDownAcceptorValidation {
                 success = this.validateReadStep(currStep, nextStep);
             } else if (Arrays.stream(this.grammarService.getNonTerminals()).anyMatch(firstStackChar::equals)) {
                 success = this.validateProductionStep(currStep, nextStep);
+            }
+            if (!success) {
+                return success;
             }
         }
 

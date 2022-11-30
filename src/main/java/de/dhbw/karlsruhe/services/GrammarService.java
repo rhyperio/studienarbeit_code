@@ -41,6 +41,12 @@ public class GrammarService {
     return wordSplit.toList().isEmpty();
   }
 
+  private String[] getSortedGrammarTerminals() {
+    String[] tmp = grammar.getTerminals();
+    Arrays.sort(tmp);
+    return tmp;
+  }
+
   private Grammar formatGrammar(String json) {
     Gson gson = new Gson();
     return gson.fromJson(json, Grammar.class);
