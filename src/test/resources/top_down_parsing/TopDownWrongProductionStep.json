@@ -20,7 +20,7 @@
 		{
 			"readInput":"",
 			"newState":"Z",
-			"newStack":"(S)S*"
+			"newStack":"S)S*"
 		},
 		{
 			"readInput":"(",

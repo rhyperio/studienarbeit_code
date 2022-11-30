@@ -61,8 +61,8 @@
 			"newStack":"*"
 		},
 		{
-			"readInput":"()()",
-			"newState":"ZF",
+			"readInput":"()(",
+			"newState":"Z0",
 			"newStack":"*"
 		}
 	]

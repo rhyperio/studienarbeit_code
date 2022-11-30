@@ -23,7 +23,7 @@
 			"newStack":"(S)S*"
 		},
 		{
-			"readInput":"(",
+			"readInput":")",
 			"newState":"Z",
 			"newStack":"S)S*",
 			"usedProduction":{"leftSide":"S","rightSide":"epsilon"}
