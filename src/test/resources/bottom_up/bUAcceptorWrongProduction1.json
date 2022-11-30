@@ -1,0 +1,52 @@
+{
+	"steps":[
+		{
+			"stack":"*",
+			"state":"z0",
+			"remainingWord":"(())"
+		},
+		{
+			"stack":"*(",
+			"state":"z",
+			"remainingWord":"())"
+		},
+		{
+			"stack":"*((",
+			"state":"z",
+			"remainingWord":"))"
+		},
+		{
+			"stack":"*((S",
+			"state":"z",
+			"remainingWord":"))",
+			"production":{"leftSide":"S","rightSide":"( S )"}
+		},
+		{
+			"stack":"*((S)",
+			"state":"z",
+			"remainingWord":")"
+		},
+		{
+			"stack":"*(S",
+			"state":"z",
+			"remainingWord":")",
+			"production":{"leftSide":"S","rightSide":"( S )"}
+		},
+		{
+			"stack":"*(S)",
+			"state":"z",
+			"remainingWord":""
+		},
+		{
+			"stack":"*S",
+			"state":"z",
+			"remainingWord":"",
+			"production":{"leftSide":"S","rightSide":"( S )"}
+		},
+		{
+			"stack":"*S",
+			"state":"zf",
+			"remainingWord":""
+		}
+	]
+}

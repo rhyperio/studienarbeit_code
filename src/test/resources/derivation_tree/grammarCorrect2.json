@@ -1,0 +1,29 @@
+{
+  "terminals": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "nonTerminals": [
+    "GZAHL",
+    "ZAHL",
+    "NNZ",
+    "GZ",
+    "ZIFFER"
+  ],
+  "productions": [
+    "GZAHL->GZ|NNZ ZAHL GZ",
+    "ZAHL->ZAHL ZIFFER|epsilon",
+    "ZIFFER->0|NNZ",
+    "NNZ->1|2|3|4|5|6|7|8|9",
+    "GZ->0|2|4|6|8"
+  ],
+  "startSymbol": "GZAHL"
+}
