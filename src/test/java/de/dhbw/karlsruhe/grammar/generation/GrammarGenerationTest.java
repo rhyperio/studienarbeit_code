@@ -6,41 +6,40 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import de.dhbw.karlsruhe.grammar.genertion.GrammarGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
 
-class GrammarGenerationTest {
-	
+public class GrammarGenerationTest {
+
 	@Test
-	void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
+	public void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
-		
-		assertTrue(Arrays.stream(generatedGrammar.getTerminals())
-		        .distinct()
-		        .filter(x -> Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(y -> y == x))
-		        .toList().isEmpty());
+
+		assertTrue(Arrays.stream(generatedGrammar.getTerminals()).distinct()
+				.filter(x -> Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(y -> y == x)).toList()
+				.isEmpty());
 	}
-	
+
 	@Test
-	void checkThatGrammarParstAreNotEmpty() {
+	public void checkThatGrammarParstAreNotEmpty() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
-		
-		assertNotEquals(generatedGrammar.getTerminals().length, 0);
-		assertNotEquals(generatedGrammar.getNonTerminals().length, 0);
-		assertNotEquals(generatedGrammar.getProductions().length, 0);
+
+		assertNotEquals(0, generatedGrammar.getTerminals().length);
+		assertNotEquals(0, generatedGrammar.getNonTerminals().length);
+		assertNotEquals(0, generatedGrammar.getProductions().length);
 		assertFalse(generatedGrammar.getStartSymbol().isBlank());
 	}
-	
+
 	@Test
-	void checkThatStartSymbolIsNonTerminal() {
+	public void checkThatStartSymbolIsNonTerminal() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
-		
-		assertTrue(Arrays.stream(generatedGrammar.getNonTerminals())
-				.anyMatch(generatedGrammar.getTerminals()::equals));
+
+		assertTrue(
+				Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(generatedGrammar.getStartSymbol()::equals));
 	}
 }
