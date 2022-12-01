@@ -1,11 +1,8 @@
-package de.dhbw.karlsruhe.grammar.genertion;
+package de.dhbw.karlsruhe.grammar.generation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
+import de.dhbw.karlsruhe.models.ProductionRightSide;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,7 +36,9 @@ public class GrammarGeneration {
 	private List<String> generateNonTerminals() {
 		List<String> generatedNonTerminals = new ArrayList<>();
 		while (generatedNonTerminals.size() < 5) {
-			generatedNonTerminals.add(RandomStringUtils.randomAlphabetic(1).toUpperCase());
+			String newNonTerminal = RandomStringUtils.randomAlphabetic(1).toUpperCase();
+			if (!generatedNonTerminals.contains(newNonTerminal))
+				generatedNonTerminals.add(newNonTerminal);
 		}
 		return generatedNonTerminals;
 	}
@@ -51,45 +50,45 @@ public class GrammarGeneration {
 		String generatedStartSymbol = nonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
 
-		List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
-		// Added production for startsymbol
-		String nonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-		neededNonTerminalsOnLeftSide.add(nonTerminal);
-		generatedProductions.add(startSymbol + "->" + nonTerminal);
+		String randNonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
 
-		float probabiltyForTerminal = 0.2f;
-		float probabiltyForNonTerminal = 0.3f;
+		while (StringUtils.equals(randNonTerminal, startSymbol))
+			randNonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
 
-		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
-			if (rand.nextFloat() <= probabiltyForTerminal) {
-				String nonTerminal4 = "";
-				if (rand.nextFloat() <= probabiltyForNonTerminal) {
-					if (rand.nextFloat() <= 0.5) {
-						nonTerminal4 = neededNonTerminalsOnLeftSide
-								.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
-					} else {
-						nonTerminal4 = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-						neededNonTerminalsOnLeftSide.add(nonTerminal4);
+		generatedProductions.add(startSymbol + "->" + randNonTerminal);
+
+		for ( String nonTerminal: nonTerminals) {
+			ProductionRightSide production = ProductionRightSide.randomProduction();
+			String[] rightSideCompounds = production.rightSide.split(" ");
+			for (int i = 0; i<rightSideCompounds.length; i++) {
+					if (StringUtils.equals(rightSideCompounds[i], "t")){
+						int index = rand.nextInt(terminals.size());
+						rightSideCompounds[i] = terminals.get(index);
+
 					}
-					probabiltyForNonTerminal -= 0.1;
-				}
-				String terminal = terminals.get(rand.nextInt(terminals.size()));
-				String nonTerminal2 = neededNonTerminalsOnLeftSide
-						.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
-				neededNonTerminalsOnLeftSide.remove(nonTerminal2);
-				generatedProductions.add(nonTerminal2 + "->" + terminal + " " + nonTerminal4);
-			} else {
-				probabiltyForTerminal += 0.1;
-				String nonTerminal3 = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-				neededNonTerminalsOnLeftSide.add(nonTerminal3);
-				generatedProductions.add(startSymbol + "->" + nonTerminal3);
+					if (StringUtils.equals(rightSideCompounds[i], "N")){
+						int index = rand.nextInt(nonTerminals.size());
+						if (production == ProductionRightSide.p2 &&
+								!rightSideCompounds[i].equals(terminals.get(index))) {
+							rightSideCompounds[i] = nonTerminals.get(index);
+						}else
+							rightSideCompounds[i] = nonTerminals.get((index+1) % terminals.size());
+					}
 			}
+
+			String rightSide = String.join(" ",rightSideCompounds);
+			generatedProductions.add(nonTerminal + "->" + rightSide);
 		}
-		Set<String> set = new HashSet<>(generatedProductions);
-		generatedProductions.clear();
-		generatedProductions.addAll(set);
+		generatedProductions = generatedProductions.stream().distinct().toList();
+
+		System.out.println(startSymbol);
+		System.out.println(terminals);
+		System.out.println(nonTerminals);
+		System.out.println(generatedProductions);
+
 
 		return generatedProductions;
+
 	}
 
 	private boolean checkGeneratedProductions(List<String> generatedProductions) {

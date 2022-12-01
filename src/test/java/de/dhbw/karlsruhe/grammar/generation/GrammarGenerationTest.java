@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import de.dhbw.karlsruhe.grammar.genertion.GrammarGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarGenerationTest {
