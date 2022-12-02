@@ -59,7 +59,11 @@ class BottomUpAcceptorTest {
              "src/test/resources/bottom_up/bUAcceptorWrongMissingReading1.json",
              "src/test/resources/bottom_up/bUAcceptorWrongReading2.json",
              "src/test/resources/bottom_up/bUAcceptorWrongMissingPriorToLastStep.json",
-             "src/test/resources/bottom_up/bUAcceptorWrongMissingProduction4.json"
+             "src/test/resources/bottom_up/bUAcceptorWrongMissingProduction4.json",
+             "src/test/resources/bottom_up/bUAcceptorWrongFirstStepState.json",
+             "src/test/resources/bottom_up/bUAcceptorWrongFirstStepHasProduction.json",
+             "src/test/resources/bottom_up/bUAcceptorWrongFirstStepStack.json",
+             "src/test/resources/bottom_up/bUAcceptorWrongFirstStepRemainingWord.json"
             })
      void checkWrongBottomUpAcceptorValidationTest(String buAcceptorPath) throws FileNotFoundException {
          String grammarAsJson = getGrammarAsJson(
