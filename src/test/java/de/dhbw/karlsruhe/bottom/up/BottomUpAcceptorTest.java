@@ -10,27 +10,22 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.*;
 import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
- class BottomUpAcceptorTest {
+class BottomUpAcceptorTest {
 
     @Test
      void checkCorrectBottomUpAcceptorValidationTest() throws FileNotFoundException {
         String grammarAsJson = getGrammarAsJson(
                 "src/test/resources/derivation_tree/grammarCorrect1.json");
-
+        String bottomUpAcceptorAsJson = getBottomUpAcceptorAsJson(
+                "src/test/resources/bottom_up/bUAcceptorCorrect1.json");
         Gson gson = new Gson();
 
-        try (Reader reader = new FileReader(
-                "src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
-            BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
-            BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
-            String word = "(())";
-            assertTrue(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BottomUpAcceptor buAcceptor = gson.fromJson(bottomUpAcceptorAsJson, BottomUpAcceptor.class);
+        BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+        String word = "(())";
+        assertTrue(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
     }
 
 
@@ -38,17 +33,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
      void checkNullWordBottomUpAcceptorValidationTest() throws IOException {
         String grammarAsJson = getGrammarAsJson(
                 "src/test/resources/derivation_tree/grammarCorrect1.json");
-
+        String bottomUpAcceptorAsJson = getBottomUpAcceptorAsJson(
+                "src/test/resources/bottom_up/bUAcceptorCorrect1.json");
         Gson gson = new Gson();
 
-        try (Reader reader = new FileReader(
-                "src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
-            BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
-            BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
-            assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, null));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BottomUpAcceptor buAcceptor = gson.fromJson(bottomUpAcceptorAsJson, BottomUpAcceptor.class);
+        BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+        assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, null));
     }
 
      @Test
@@ -73,16 +64,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
      void checkWrongBottomUpAcceptorValidationTest(String buAcceptorPath) throws FileNotFoundException {
          String grammarAsJson = getGrammarAsJson(
                  "src/test/resources/derivation_tree/grammarCorrect1.json");
+         String bottomUpAcceptorAsJson = getBottomUpAcceptorAsJson(buAcceptorPath);
          Gson gson = new Gson();
 
-         try (Reader reader = new FileReader(buAcceptorPath)) {
-             BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
-             BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
-             String word = "(())";
-             assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
+         BottomUpAcceptor buAcceptor = gson.fromJson(bottomUpAcceptorAsJson, BottomUpAcceptor.class);
+         BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+         String word = "(())";
+         assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
      }
 
      @ParameterizedTest
@@ -90,15 +78,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
      void checkWrongWordForBottomUpAcceptorValidationTest(String word) throws FileNotFoundException {
          String grammarAsJson = getGrammarAsJson(
                  "src/test/resources/derivation_tree/grammarCorrect1.json");
+         String bottomUpAcceptorAsJson = getBottomUpAcceptorAsJson(
+                 "src/test/resources/bottom_up/bUAcceptorCorrect1.json");
          Gson gson = new Gson();
-         try (Reader reader = new FileReader(
-                 "src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
-             BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
-             BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
-             assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
+
+         BottomUpAcceptor buAcceptor = gson.fromJson(bottomUpAcceptorAsJson, BottomUpAcceptor.class);
+         BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+         assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
      }
 
      @ParameterizedTest
@@ -107,24 +93,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             })
      void checkWrongGrammarForBottomUpAcceptorAndWordTest(String grammarPath) throws FileNotFoundException {
          String grammarAsJson = getGrammarAsJson(grammarPath);
-
+         String bottomUpAcceptorAsJson = getBottomUpAcceptorAsJson(
+                 "src/test/resources/bottom_up/bUAcceptorCorrect1.json");
          Gson gson = new Gson();
 
-         try (Reader reader = new FileReader(
-                 "src/test/resources/bottom_up/bUAcceptorCorrect1.json")) {
-             BottomUpAcceptor buAcceptor = gson.fromJson(reader, BottomUpAcceptor.class);
-             BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
-             String word = "(())";
-             assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
+         BottomUpAcceptor buAcceptor = gson.fromJson(bottomUpAcceptorAsJson, BottomUpAcceptor.class);
+         BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+         String word = "(())";
+         assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word));
      }
 
 
     private String getGrammarAsJson(String path) throws FileNotFoundException {
     return new Scanner(new File(path)).useDelimiter("\\Z").next();
   }
+
+    private String getBottomUpAcceptorAsJson(String path) throws FileNotFoundException {
+        return new Scanner(new File(path)).useDelimiter("\\Z").next();
+    }
 
 }
 
