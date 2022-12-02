@@ -1,0 +1,53 @@
+{
+	"steps":[
+		{
+			"stack":"*",
+			"state":"z0",
+			"remainingWord":"(())",
+			"production":{"leftSide":"S","rightSide":"epsilon"}
+		},	
+		{
+			"stack":"*(",
+			"state":"z",
+			"remainingWord":"())"
+		},
+		{
+			"stack":"*((",
+			"state":"z",
+			"remainingWord":"))"
+		},
+		{
+			"stack":"*((S",
+			"state":"z",
+			"remainingWord":"))",
+			"production":{"leftSide":"S","rightSide":"epsilon"}
+		},
+		{
+			"stack":"*((S)",
+			"state":"z",
+			"remainingWord":")"
+		},
+		{
+			"stack":"*(S",
+			"state":"z",
+			"remainingWord":")",
+			"production":{"leftSide":"S","rightSide":"( S )"}
+		},
+		{
+			"stack":"*(S)",
+			"state":"z",
+			"remainingWord":""
+		},
+		{
+			"stack":"*S",
+			"state":"z",
+			"remainingWord":"",
+			"production":{"leftSide":"S","rightSide":"( S )"}
+		},
+		{
+			"stack":"*S",
+			"state":"zf",
+			"remainingWord":""
+		}
+	]
+}

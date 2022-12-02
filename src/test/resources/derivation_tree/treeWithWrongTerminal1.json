@@ -1,0 +1,38 @@
+{
+  "content": "S",
+  "classification": "NON_TERMINAL",
+  "children": [
+    {
+      "content": "(",
+      "classification": "TERMINAL"
+    },
+    {
+      "content": "S",
+      "classification": "NON_TERMINAL",
+      "children": [
+        {
+          "content": "a",
+          "classification": "TERMINAL"
+        },
+        {
+          "content": "S",
+          "classification": "NON_TERMINAL",
+          "children": [
+            {
+              "content": "epsilon",
+              "classification": "TERMINAL"
+            }
+          ]
+        },
+        {
+          "content": ")",
+          "classification": "TERMINAL"
+        }
+      ]
+    },
+    {
+      "content": ")",
+      "classification": "TERMINAL"
+    }
+  ]
+}
