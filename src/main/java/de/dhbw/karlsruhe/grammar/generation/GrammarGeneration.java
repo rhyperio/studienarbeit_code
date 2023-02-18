@@ -2,6 +2,7 @@ package de.dhbw.karlsruhe.grammar.generation;
 
 import java.util.*;
 
+import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.models.ProductionRightSide;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,7 @@ public class GrammarGeneration {
 
 		terminals = generateTerminals();
 		nonTerminals = generateNonTerminals();
-		productions = generateProductions();
+		generateProductions();
 
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
 				productions.toArray(new String[0]), startSymbol);
@@ -43,8 +44,8 @@ public class GrammarGeneration {
 		return generatedNonTerminals;
 	}
 
-	private List<String> generateProductions() {
-		List<String> generatedProductions = new ArrayList<>();
+	private List<GrammarRule> generateProductions() {
+		List<GrammarRule> generatedProductions = new ArrayList<>();
 		Random rand = new Random();
 
 		String generatedStartSymbol = nonTerminals.iterator().next();
@@ -55,7 +56,7 @@ public class GrammarGeneration {
 		while (StringUtils.equals(randNonTerminal, startSymbol))
 			randNonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
 
-		generatedProductions.add(startSymbol + "->" + randNonTerminal);
+		generatedProductions.add(new GrammarRule(startSymbol , randNonTerminal));
 
 		for ( String nonTerminal: nonTerminals) {
 			ProductionRightSide production = ProductionRightSide.randomProduction();
@@ -64,8 +65,8 @@ public class GrammarGeneration {
 					if (StringUtils.equals(rightSideCompounds[i], "t")){
 						int index = rand.nextInt(terminals.size());
 						rightSideCompounds[i] = terminals.get(index);
-
 					}
+
 					if (StringUtils.equals(rightSideCompounds[i], "N")){
 						int index = rand.nextInt(nonTerminals.size());
 						if (production == ProductionRightSide.p2 &&
@@ -77,7 +78,7 @@ public class GrammarGeneration {
 			}
 
 			String rightSide = String.join(" ",rightSideCompounds);
-			generatedProductions.add(nonTerminal + "->" + rightSide);
+			generatedProductions.add(new GrammarRule(nonTerminal, rightSide));
 		}
 		generatedProductions = generatedProductions.stream().distinct().toList();
 
