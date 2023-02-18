@@ -5,25 +5,26 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Objects;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.dhbw.karlsruhe.models.Grammar;
 
-public class GrammarGenerationTest {
+class GrammarGenerationTest {
 
 	@Test
-	public void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
+	 void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		assertTrue(Arrays.stream(generatedGrammar.getTerminals()).distinct()
-				.filter(x -> Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(y -> y == x)).toList()
+				.filter(x -> Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(y -> Objects.equals(y, x))).toList()
 				.isEmpty());
 	}
 
 	@Test
-	public void checkThatGrammarParstAreNotEmpty() {
+	 void checkThatGrammarParstAreNotEmpty() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
@@ -34,11 +35,11 @@ public class GrammarGenerationTest {
 	}
 
 	@Test
-	public void checkThatStartSymbolIsNonTerminal() {
+	 void checkThatStartSymbolIsNonTerminal() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		assertTrue(
-				Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(generatedGrammar.getStartSymbol()::equals));
+				Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
 	}
 }
