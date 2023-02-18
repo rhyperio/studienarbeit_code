@@ -1,9 +1,11 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.models.ProductionRightSide;
+import de.dhbw.karlsruhe.models.ProductionSet;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,7 +22,10 @@ public class GrammarGeneration {
 
 		terminals = generateTerminals();
 		nonTerminals = generateNonTerminals();
-		generateProductions();
+
+		for (GrammarRule gr: generateProductions()){
+			productions.add(gr.toString());
+		}
 
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
 				productions.toArray(new String[0]), startSymbol);
@@ -28,7 +33,7 @@ public class GrammarGeneration {
 
 	private List<String> generateTerminals() {
 		List<String> terminals = new ArrayList<>();
-		while (terminals.size() < 5) {
+		while (terminals.size() < 4) {
 			terminals.add(RandomStringUtils.randomAlphabetic(1).toLowerCase());
 		}
 		return terminals;
@@ -36,7 +41,7 @@ public class GrammarGeneration {
 
 	private List<String> generateNonTerminals() {
 		List<String> generatedNonTerminals = new ArrayList<>();
-		while (generatedNonTerminals.size() < 5) {
+		while (generatedNonTerminals.size() < 4) {
 			String newNonTerminal = RandomStringUtils.randomAlphabetic(1).toUpperCase();
 			if (!generatedNonTerminals.contains(newNonTerminal))
 				generatedNonTerminals.add(newNonTerminal);
@@ -87,9 +92,69 @@ public class GrammarGeneration {
 		System.out.println(nonTerminals);
 		System.out.println(generatedProductions);
 
+		generatedProductions = completeProductions(generatedProductions);
+
+		System.out.println(startSymbol);
+		System.out.println(terminals);
+		System.out.println(nonTerminals);
+		System.out.println(generatedProductions);
 
 		return generatedProductions;
 
+	}
+
+	private List<GrammarRule> completeProductions(List<GrammarRule> generatedProductions) {
+
+		ProductionSet pSet = new ProductionSet(generatedProductions.get(0));
+		List<GrammarRule> grammarRules = new ArrayList<>(generatedProductions);
+
+		int pSetsize = 0;
+		int tmpSize = -1;
+		while (pSetsize != tmpSize){
+			tmpSize = pSet.size();
+			for (GrammarRule gr : generatedProductions) {
+				pSet.addProduction(gr);
+			}
+			pSetsize = pSet.size();
+		}
+
+		do{
+			for (int i = 0; i< grammarRules.size();i++) {
+				if (pSet.isRuleInSet(grammarRules.get(i)))
+					continue;
+				if (pSet.isOnRightSide(grammarRules.get(i).leftSide())){
+					pSet.addProduction(grammarRules.get(i));
+				}else {
+					GrammarRule tmpGR = generateSingleProduction(pSet.getRandomRightSideNonTerminal(), grammarRules.get(i).leftSide());
+					grammarRules.add(tmpGR);
+					pSet.addProduction(tmpGR);
+				}
+			}
+			grammarRules = new ArrayList<>(new HashSet<>(grammarRules));
+		} while (pSet.size() != grammarRules.size());
+
+		return grammarRules;
+
+	}
+
+	private GrammarRule generateSingleProduction(String leftSideNonTerminal, String rightSideNonTerminal){
+		Random rand = new Random();
+		ProductionRightSide production = ProductionRightSide.randomProduction();
+		String[] rightSideCompounds = production.rightSide.split(" ");
+		for (int i = 0; i<rightSideCompounds.length; i++) {
+			if (StringUtils.equals(rightSideCompounds[i], "t")){
+				int index = rand.nextInt(terminals.size());
+				rightSideCompounds[i] = terminals.get(index);
+			}
+
+			if (StringUtils.equals(rightSideCompounds[i], "N")){
+					rightSideCompounds[i] = rightSideNonTerminal.toUpperCase();
+			}
+		}
+
+		String rightSide = String.join(" ",rightSideCompounds);
+
+		return new GrammarRule(leftSideNonTerminal, rightSide);
 	}
 
 	private boolean checkGeneratedProductions(List<String> generatedProductions) {
