@@ -1,7 +1,6 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.models.ProductionRightSide;
@@ -17,6 +16,7 @@ public class GrammarGeneration {
 	private List<String> nonTerminals = new ArrayList<>();
 	private List<String> productions = new ArrayList<>();
 	private String startSymbol;
+	private Random rand = new Random();
 
 	public Grammar generateGrammar() {
 
@@ -32,11 +32,11 @@ public class GrammarGeneration {
 	}
 
 	private List<String> generateTerminals() {
-		List<String> terminals = new ArrayList<>();
-		while (terminals.size() < 4) {
-			terminals.add(RandomStringUtils.randomAlphabetic(1).toLowerCase());
+		List<String> tmpTerminals = new ArrayList<>();
+		while (tmpTerminals.size() < 4) {
+			tmpTerminals.add(RandomStringUtils.randomAlphabetic(1).toLowerCase());
 		}
-		return terminals;
+		return tmpTerminals;
 	}
 
 	private List<String> generateNonTerminals() {
@@ -51,17 +51,9 @@ public class GrammarGeneration {
 
 	private List<GrammarRule> generateProductions() {
 		List<GrammarRule> generatedProductions = new ArrayList<>();
-		Random rand = new Random();
 
 		String generatedStartSymbol = nonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
-
-		String randNonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-
-		while (StringUtils.equals(randNonTerminal, startSymbol))
-			randNonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-
-		generatedProductions.add(new GrammarRule(startSymbol , randNonTerminal));
 
 		for ( String nonTerminal: nonTerminals) {
 			ProductionRightSide production = ProductionRightSide.randomProduction();
@@ -86,11 +78,6 @@ public class GrammarGeneration {
 			generatedProductions.add(new GrammarRule(nonTerminal, rightSide));
 		}
 		generatedProductions = generatedProductions.stream().distinct().toList();
-
-		System.out.println(startSymbol);
-		System.out.println(terminals);
-		System.out.println(nonTerminals);
-		System.out.println(generatedProductions);
 
 		generatedProductions = completeProductions(generatedProductions);
 
@@ -138,7 +125,6 @@ public class GrammarGeneration {
 	}
 
 	private GrammarRule generateSingleProduction(String leftSideNonTerminal, String rightSideNonTerminal){
-		Random rand = new Random();
 		ProductionRightSide production = ProductionRightSide.randomProduction();
 		String[] rightSideCompounds = production.rightSide.split(" ");
 		for (int i = 0; i<rightSideCompounds.length; i++) {
@@ -158,10 +144,10 @@ public class GrammarGeneration {
 	}
 
 	private boolean checkGeneratedProductions(List<String> generatedProductions) {
-		return areAllNonTerminalsAreOnLeftSide(generatedProductions) && areAllTerminalsInUsage(generatedProductions);
+		return areAllNonTerminalsOnLeftSide(generatedProductions) && areAllTerminalsInUsage(generatedProductions);
 	}
 
-	private boolean areAllNonTerminalsAreOnLeftSide(List<String> generatedProductions) {
+	private boolean areAllNonTerminalsOnLeftSide(List<String> generatedProductions) {
 		for (String nonTerminal : nonTerminals) {
 			if (generatedProductions.stream().anyMatch(production -> StringUtils.startsWith(production, nonTerminal))) {
 				return true;
