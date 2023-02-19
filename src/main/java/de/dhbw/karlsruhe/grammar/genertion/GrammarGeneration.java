@@ -13,6 +13,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarGeneration {
 
+	Random rand = new Random();
 	private List<String> terminals = new ArrayList<>();
 	private List<String> nonTerminals = new ArrayList<>();
 	private List<String> productions = new ArrayList<>();
@@ -46,50 +47,82 @@ public class GrammarGeneration {
 
 	private List<String> generateProductions() {
 		List<String> generatedProductions = new ArrayList<>();
-		Random rand = new Random();
 
 		String generatedStartSymbol = nonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
 
-		List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
+		//Generate random start amount of non terminals
+		List<String> neededNonTerminalsOnLeftSide = new ArrayList<>(getRandomNonTerminals(3));
+
 		// Added production for startsymbol
 		String nonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
 		neededNonTerminalsOnLeftSide.add(nonTerminal);
 		generatedProductions.add(startSymbol + "->" + nonTerminal);
 
 		float probabiltyForTerminal = 0.2f;
-		float probabiltyForNonTerminal = 0.3f;
+		float probabiltyForNewNonTerminal = 0.3f;
+		float probabiltyForMultipleRightSide = 0.3f;
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
+
 			if (rand.nextFloat() <= probabiltyForTerminal) {
-				String nonTerminal4 = "";
-				if (rand.nextFloat() <= probabiltyForNonTerminal) {
+
+				StringBuilder rightSide = new StringBuilder(terminals.get(rand.nextInt(terminals.size())));
+
+				while (rand.nextFloat()<= probabiltyForMultipleRightSide) {
 					if (rand.nextFloat() <= 0.5) {
-						nonTerminal4 = neededNonTerminalsOnLeftSide
-								.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
+						// Füge noch ein Nichtterminal zur rechten Seite hinzu
+						if (rand.nextFloat() <= probabiltyForNewNonTerminal) {
+							String newNonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
+							if (neededNonTerminalsOnLeftSide.contains(newNonTerminal)) {
+								rightSide.append(newNonTerminal);
+							} else {
+								rightSide.append(newNonTerminal);
+								neededNonTerminalsOnLeftSide.add(newNonTerminal);
+							}
+							probabiltyForNewNonTerminal = (float) (probabiltyForNewNonTerminal - 0.1);
+						} else {
+							String newNonTerminal = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
+							rightSide.append(newNonTerminal);
+						}
 					} else {
-						nonTerminal4 = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-						neededNonTerminalsOnLeftSide.add(nonTerminal4);
+						// Füge noch ein Terminal zur rechten Seite hinzu
+						rightSide.append(terminals.get(rand.nextInt(terminals.size())));
 					}
-					probabiltyForNonTerminal -= 0.1;
+					probabiltyForMultipleRightSide = (float) (probabiltyForMultipleRightSide - 0.1);
 				}
-				String terminal = terminals.get(rand.nextInt(terminals.size()));
-				String nonTerminal2 = neededNonTerminalsOnLeftSide
-						.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
-				neededNonTerminalsOnLeftSide.remove(nonTerminal2);
-				generatedProductions.add(nonTerminal2 + "->" + terminal + " " + nonTerminal4);
+
+				String leftSide = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
+				neededNonTerminalsOnLeftSide.remove(leftSide);
+				generatedProductions.add(leftSide + "->" + rightSide);
 			} else {
 				probabiltyForTerminal += 0.1;
-				String nonTerminal3 = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-				neededNonTerminalsOnLeftSide.add(nonTerminal3);
-				generatedProductions.add(startSymbol + "->" + nonTerminal3);
+				String nonTerminalLeft = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
+				neededNonTerminalsOnLeftSide.remove(nonTerminalLeft);
+				String nonTerminalRight = nonTerminals.get(rand.nextInt(nonTerminals.size()));
+
+				while (nonTerminalRight.equals(nonTerminalLeft)) {
+					nonTerminalRight = nonTerminals.get(rand.nextInt(nonTerminals.size()));
+				}
+
+				neededNonTerminalsOnLeftSide.add(nonTerminalRight);
+				generatedProductions.add(nonTerminalLeft + "->" + nonTerminalRight);
 			}
 		}
 		Set<String> set = new HashSet<>(generatedProductions);
 		generatedProductions.clear();
 		generatedProductions.addAll(set);
 
-		return generatedProductions;
+		return cleanedProductions(generatedProductions);
+
+	}
+
+	private List<String> getRandomNonTerminals(int amount) {
+		List<String> randomNonTerminals = new ArrayList<>();
+		while (randomNonTerminals.size() <  amount) {
+			randomNonTerminals.add(nonTerminals.get(rand.nextInt(nonTerminals.size())));
+		}
+		return randomNonTerminals;
 	}
 
 	private boolean checkGeneratedProductions(List<String> generatedProductions) {
@@ -119,4 +152,34 @@ public class GrammarGeneration {
 		this.startSymbol = startSymbol;
 	}
 
+	private List<String> cleanedProductions(List<String> generatedProductions) {
+		List<String> cleanedProductions = new ArrayList<>();
+
+		for (String currProduction : generatedProductions) {
+			char first = currProduction.charAt(0);
+			if (isNotAlreadyInList(cleanedProductions, first)) {
+				StringBuilder currProductionBuilder = new StringBuilder(currProduction);
+				for (String production2: generatedProductions) {
+					if (currProduction.equals(production2)) {
+						continue;
+					}
+					char second = production2.charAt(0);
+					if (first == second) {
+						currProductionBuilder.append(" | ").append(production2.substring(production2.indexOf('>') + 1));
+					}
+				}
+				cleanedProductions.add(currProductionBuilder.toString());
+			}
+		}
+		return cleanedProductions;
+	}
+
+	private boolean isNotAlreadyInList(List<String> cleanedProductions, char leftSide) {
+		for (String currProd: cleanedProductions) {
+			if (currProd.charAt(0) == leftSide) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
