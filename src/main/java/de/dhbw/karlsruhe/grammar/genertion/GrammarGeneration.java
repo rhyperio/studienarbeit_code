@@ -64,9 +64,9 @@ public class GrammarGeneration {
 		addToNeededNonTerminalsOnLeftSide(nonTerminal);
 		generatedProductions.add(startSymbol + "->" + nonTerminal);
 
-		float probabiltyForTerminal = 0.1f;
-		float probabiltyForNewNonTerminal = 0.9f;
-		float probabiltyForMultipleRightSide = 0.9f;
+		float probabiltyForTerminal = 0.8f;
+		float probabiltyForNewNonTerminal = 0.3f;
+		float probabiltyForMultipleRightSide = 0.5f;
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
 
@@ -96,7 +96,7 @@ public class GrammarGeneration {
 					}
 					probabiltyForMultipleRightSide = (float) (probabiltyForMultipleRightSide - 0.1);
 				}
-
+				probabiltyForMultipleRightSide = 0.5f;
 				generatedProductions.add(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()) + "->" + rightSide);
 			} else {
 				probabiltyForTerminal += 0.1;
