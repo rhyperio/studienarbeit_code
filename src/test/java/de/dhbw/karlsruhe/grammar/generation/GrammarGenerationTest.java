@@ -14,7 +14,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 class GrammarGenerationTest {
 
 	@Test
-	 void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
+	 void checkEmptyIntersectionBetweenTerminalsAndNonTerminals() {
 		GrammarGeneration grammarGeneration = new GrammarGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 

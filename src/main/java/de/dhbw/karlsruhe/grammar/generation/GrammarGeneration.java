@@ -67,7 +67,7 @@ public class GrammarGeneration {
 					if (StringUtils.equals(rightSideCompounds[i], "N")){
 						int index = rand.nextInt(nonTerminals.size());
 						if (production == ProductionRightSide.p2 &&
-								!rightSideCompounds[i].equals(terminals.get(index))) {
+								!nonTerminal.equals(nonTerminals.get(index))) {
 							rightSideCompounds[i] = nonTerminals.get(index);
 						}else
 							rightSideCompounds[i] = nonTerminals.get((index+1) % terminals.size());
