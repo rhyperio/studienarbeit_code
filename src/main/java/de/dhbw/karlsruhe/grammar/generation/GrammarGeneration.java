@@ -20,28 +20,36 @@ public class GrammarGeneration {
 
 	public Grammar generateGrammar() {
 
-		terminals = generateTerminals();
-		nonTerminals = generateNonTerminals();
+		terminals = generateTerminals(2);
+		nonTerminals = generateNonTerminals(3);
 
 		for (GrammarRule gr: generateProductions()){
 			productions.add(gr.toString());
 		}
 
+		System.out.println(startSymbol);
+		System.out.println(terminals);
+		System.out.println(nonTerminals);
+		System.out.println(productions);
+
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
 				productions.toArray(new String[0]), startSymbol);
 	}
 
-	private List<String> generateTerminals() {
+	private List<String> generateTerminals(int countTerminals) {
 		List<String> tmpTerminals = new ArrayList<>();
-		while (tmpTerminals.size() < 4) {
-			tmpTerminals.add(RandomStringUtils.randomAlphabetic(1).toLowerCase());
+		while (tmpTerminals.size() < countTerminals) {
+			String tmpStr = RandomStringUtils.randomAlphabetic(1).toLowerCase();
+			if (!tmpTerminals.contains(tmpStr)) {
+				tmpTerminals.add(tmpStr);
+			}
 		}
 		return tmpTerminals;
 	}
 
-	private List<String> generateNonTerminals() {
+	private List<String> generateNonTerminals(int countNonTerminals) {
 		List<String> generatedNonTerminals = new ArrayList<>();
-		while (generatedNonTerminals.size() < 4) {
+		while (generatedNonTerminals.size() < countNonTerminals) {
 			String newNonTerminal = RandomStringUtils.randomAlphabetic(1).toUpperCase();
 			if (!generatedNonTerminals.contains(newNonTerminal))
 				generatedNonTerminals.add(newNonTerminal);
@@ -79,15 +87,7 @@ public class GrammarGeneration {
 		}
 		generatedProductions = generatedProductions.stream().distinct().toList();
 
-		generatedProductions = completeProductions(generatedProductions);
-
-		System.out.println(startSymbol);
-		System.out.println(terminals);
-		System.out.println(nonTerminals);
-		System.out.println(generatedProductions);
-
-		return generatedProductions;
-
+		return completeProductions(generatedProductions);
 	}
 
 	private List<GrammarRule> completeProductions(List<GrammarRule> generatedProductions) {
@@ -121,7 +121,6 @@ public class GrammarGeneration {
 		} while (pSet.size() != grammarRules.size());
 
 		return grammarRules;
-
 	}
 
 	private GrammarRule generateSingleProduction(String leftSideNonTerminal, String rightSideNonTerminal){
