@@ -20,7 +20,7 @@ public class GrammarGeneration {
 
 	public Grammar generateGrammar() {
 
-		terminals = generateTerminals(2);
+		terminals = generateTerminals(3);
 		nonTerminals = generateNonTerminals(3);
 
 		for (GrammarRule gr: generateProductions()){
@@ -120,7 +120,7 @@ public class GrammarGeneration {
 			grammarRules = new ArrayList<>(new HashSet<>(grammarRules));
 		} while (pSet.size() != grammarRules.size());
 
-		return grammarRules;
+		return completeTerminalProductions(grammarRules);
 	}
 
 	private GrammarRule generateSingleProduction(String leftSideNonTerminal, String rightSideNonTerminal){
@@ -140,6 +140,23 @@ public class GrammarGeneration {
 		String rightSide = String.join(" ",rightSideCompounds);
 
 		return new GrammarRule(leftSideNonTerminal, rightSide);
+	}
+
+	private List<GrammarRule> completeTerminalProductions(List<GrammarRule> grammarRules){
+		List<String> tmpTerminals = new ArrayList<>(terminals);
+		for (String str: terminals) {
+			for (GrammarRule gr : grammarRules) {
+				if (gr.rightSide().contains(str)){
+					tmpTerminals.remove(str);
+				}
+			}
+		}
+		for (String terminal: tmpTerminals){
+			int index = rand.nextInt(terminals.size());
+			grammarRules.add(new GrammarRule(nonTerminals.get(index), terminal));
+		}
+
+		return grammarRules;
 	}
 
 	private boolean checkGeneratedProductions(List<String> generatedProductions) {
