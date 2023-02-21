@@ -34,7 +34,10 @@ public class GrammarGeneration {
 	private List<String> generateTerminals() {
 		List<String> terminals = new ArrayList<>();
 		while (terminals.size() < 5) {
-			terminals.add(RandomStringUtils.randomAlphabetic(1).toLowerCase());
+			String terminal = RandomStringUtils.randomAlphabetic(1).toLowerCase();
+			if (!terminals.contains(terminal)) {
+				terminals.add(terminal);
+			}
 		}
 		return terminals;
 	}
@@ -42,7 +45,10 @@ public class GrammarGeneration {
 	private List<String> generateNonTerminals() {
 		List<String> generatedNonTerminals = new ArrayList<>();
 		while (generatedNonTerminals.size() < 5) {
-			generatedNonTerminals.add(RandomStringUtils.randomAlphabetic(1).toUpperCase());
+			String nonTerminal = RandomStringUtils.randomAlphabetic(1).toUpperCase();
+			if (!generatedNonTerminals.contains(nonTerminal)) {
+				generatedNonTerminals.add(nonTerminal);
+			}
 		}
 		return generatedNonTerminals;
 	}
