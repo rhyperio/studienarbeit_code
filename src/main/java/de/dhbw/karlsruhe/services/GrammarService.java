@@ -14,11 +14,14 @@ public class GrammarService {
 
   public GrammarService(String json) {
     grammar = formatGrammar(json);
-
   }
 
   public List<GrammarRule> getGrammarRules() {
-    return createGrammarRules(grammar);
+    List<GrammarRule> splitGrammarRules = new ArrayList<>();
+    for (GrammarRule gr: grammar.getProductionsAsGrammarRule()){
+      splitGrammarRules.addAll(buildGrammarRules(gr.toString()));
+    }
+    return splitGrammarRules;
   }
 
   public String getStartSymbol() {
@@ -43,14 +46,6 @@ public class GrammarService {
   private Grammar formatGrammar(String json) {
     Gson gson = new Gson();
     return gson.fromJson(json, Grammar.class);
-  }
-
-  private List<GrammarRule> createGrammarRules(Grammar grammar) {
-    List<GrammarRule> grammarRules = new ArrayList<>();
-    for (String production : grammar.getProductions()) {
-      grammarRules.addAll(buildGrammarRules(production));
-    }
-    return grammarRules;
   }
 
   private List<GrammarRule> buildGrammarRules(String production) {
