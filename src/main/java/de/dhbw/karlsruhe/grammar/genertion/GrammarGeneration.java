@@ -13,6 +13,10 @@ import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarGeneration {
 
+	private final float PROBABILTY_FOR_NEW_NON_TERMINAL = 0.3f;
+	private final float PROBABILTY_FOR_TERMINAL = 0.8f;
+	private final float PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE = 0.8f;
+
 	Random rand = new Random();
 	private List<String> terminals = new ArrayList<>();
 	private List<String> nonTerminals = new ArrayList<>();
@@ -51,16 +55,15 @@ public class GrammarGeneration {
 	}
 
 	private List<String> generateProductions() {
-		float probabiltyForMultipleRightSide = 0.8f;
-		float probabiltyForTerminal = 0.8f;
-		float probabiltyForNewNonTerminal = 0.3f;
+		float probabiltyForTerminal = PROBABILTY_FOR_TERMINAL;
+		float probabiltyForNewNonTerminal = PROBABILTY_FOR_NEW_NON_TERMINAL;
 		List<String> generatedProductions = new ArrayList<>();
 		String generatedStartSymbol = nonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
 		generatedProductions.add(generateStartProduction());
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
-			probabiltyForMultipleRightSide = 0.8f;
+			float probabiltyForMultipleRightSide = PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE;
 			if (rand.nextFloat() <= probabiltyForTerminal) {
 				StringBuilder rightSide = new StringBuilder(terminals.get(rand.nextInt(terminals.size())));
 				while (rand.nextFloat() <= probabiltyForMultipleRightSide) {
