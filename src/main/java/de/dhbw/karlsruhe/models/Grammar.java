@@ -4,17 +4,15 @@ public class Grammar {
 
   private String[] terminals;
   private String[] nonTerminals;
-  private String[] productions;
+  private GrammarRule[] productions;
   private String startSymbol;
 
-  
-  
-  public Grammar(String[] terminals, String[] nonTerminals, String[] productions, String startSymbol) {
-	this.terminals = terminals;
-	this.nonTerminals = nonTerminals;
-	this.productions = productions;
-	this.startSymbol = startSymbol;
-}
+  public Grammar(String[] terminals, String[] nonTerminals, GrammarRule[] productions, String startSymbol) {
+    this.terminals = terminals;
+    this.nonTerminals = nonTerminals;
+    this.productions = productions;
+    this.startSymbol = startSymbol;
+  }
 
   public String[] getTerminals() {
     return terminals;
@@ -25,6 +23,14 @@ public class Grammar {
   }
 
   public String[] getProductions() {
+    String[] strArray = new String[productions.length];
+    for (int i=0; i <strArray.length; i++){
+      strArray[i] = productions[i].toString();
+    }
+    return strArray;
+  }
+
+  public GrammarRule[] getProductionsAsGrammarRule(){
     return productions;
   }
 

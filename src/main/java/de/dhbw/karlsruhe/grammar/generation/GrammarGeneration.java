@@ -14,26 +14,22 @@ public class GrammarGeneration {
 
 	private List<String> terminals = new ArrayList<>();
 	private List<String> nonTerminals = new ArrayList<>();
-	private List<String> productions = new ArrayList<>();
+	private List<GrammarRule> productions = new ArrayList<>();
 	private String startSymbol;
 	private Random rand = new Random();
 
 	public Grammar generateGrammar() {
+		return generateGrammar(3,3);
+	}
 
-		terminals = generateTerminals(3);
-		nonTerminals = generateNonTerminals(3);
+	public Grammar generateGrammar(int countTerminals, int countNonTerminals) {
 
-		for (GrammarRule gr: generateProductions()){
-			productions.add(gr.toString());
-		}
-
-		System.out.println(startSymbol);
-		System.out.println(terminals);
-		System.out.println(nonTerminals);
-		System.out.println(productions);
+		terminals = generateTerminals(countTerminals);
+		nonTerminals = generateNonTerminals(countNonTerminals);
+		productions = generateProductions();
 
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
-				productions.toArray(new String[0]), startSymbol);
+				productions.toArray(new GrammarRule[0]), startSymbol);
 	}
 
 	private List<String> generateTerminals(int countTerminals) {
@@ -146,7 +142,7 @@ public class GrammarGeneration {
 		List<String> tmpTerminals = new ArrayList<>(terminals);
 		for (String str: terminals) {
 			for (GrammarRule gr : grammarRules) {
-				if (gr.rightSide().contains(str)){
+				if (!gr.rightSide().contains("epsilon") && gr.rightSide().contains(str)){
 					tmpTerminals.remove(str);
 				}
 			}
@@ -157,29 +153,6 @@ public class GrammarGeneration {
 		}
 
 		return grammarRules;
-	}
-
-	private boolean checkGeneratedProductions(List<String> generatedProductions) {
-		return areAllNonTerminalsOnLeftSide(generatedProductions) && areAllTerminalsInUsage(generatedProductions);
-	}
-
-	private boolean areAllNonTerminalsOnLeftSide(List<String> generatedProductions) {
-		for (String nonTerminal : nonTerminals) {
-			if (generatedProductions.stream().anyMatch(production -> StringUtils.startsWith(production, nonTerminal))) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean areAllTerminalsInUsage(List<String> generatedProductions) {
-		for (String terminal : terminals) {
-			if (generatedProductions.stream()
-					.anyMatch(production -> StringUtils.contains(production.substring(2), terminal))) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void setStartSymbol(String startSymbol) {

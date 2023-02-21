@@ -1,15 +1,16 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.List;
 
+import de.dhbw.karlsruhe.models.GrammarRule;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import de.dhbw.karlsruhe.models.Grammar;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class GrammarGenerationTest {
 
@@ -19,7 +20,7 @@ class GrammarGenerationTest {
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		assertTrue(Arrays.stream(generatedGrammar.getTerminals()).distinct()
-				.filter(x -> Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(y -> Objects.equals(y, x))).toList()
+				.filter(x -> Arrays.asList(generatedGrammar.getNonTerminals()).contains(x)).toList()
 				.isEmpty());
 	}
 
@@ -42,4 +43,34 @@ class GrammarGenerationTest {
 		assertTrue(
 				Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
 	}
+
+	@Test
+	void checkAllNonTerminalsOnLeftSide(){
+		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		Grammar generatedGrammar = grammarGeneration.generateGrammar();
+
+		for (String nonTerminal : generatedGrammar.getNonTerminals()) {
+			List<GrammarRule> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarRule()).toList()));
+			if (grList.stream().noneMatch(production -> StringUtils.startsWith(production.leftSide(), nonTerminal))) {
+				fail();
+			}
+		}
+		assertTrue(true);
+	}
+
+	@Test
+	void checkAllTerminalsUsed(){
+		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		Grammar generatedGrammar = grammarGeneration.generateGrammar();
+
+		for (String terminal : generatedGrammar.getTerminals()) {
+			List<GrammarRule> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarRule()).toList()));
+			if (grList.stream().noneMatch(production -> StringUtils.contains(production.rightSide(), terminal) && !production.rightSide().equals("epsilon"))) {
+				fail();
+			}
+		}
+		assertTrue(true);
+	}
+
+
 }
