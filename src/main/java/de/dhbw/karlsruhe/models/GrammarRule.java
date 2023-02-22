@@ -14,4 +14,14 @@ public record GrammarRule(String leftSide, String rightSide) {
         }
         return b;
     }
+
+    public String getRightSideNonTerminal(){
+        if (isEndProduction())
+            return null;
+        for(Character c: rightSide.toCharArray()){
+            if (Character.isUpperCase(c))
+                return c.toString();
+        }
+        return null;
+    }
 }

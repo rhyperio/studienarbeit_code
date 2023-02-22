@@ -119,7 +119,61 @@ public class GrammarGeneration {
 			grammarRules = new ArrayList<>(new HashSet<>(grammarRules));
 		} while (pSet.size() != grammarRules.size());
 
-		return completeTerminalProductions(grammarRules);
+		return completeEndProductions(completeTerminalProductions(grammarRules));
+	}
+
+	private List<GrammarRule> completeEndProductions(List<GrammarRule> grammarRules) {
+		List<GrammarRule> endProductions = new ArrayList<>(grammarRules.stream().filter(GrammarRule::isEndProduction).toList());
+
+		if (endProductions.isEmpty()) {
+			endProductions.add(getEndProduction(grammarRules.get(rand.nextInt(grammarRules.size()))));
+		}
+
+		int completeSize = -1;
+		List<GrammarRule> completeProductions = new ArrayList<>(grammarRules);
+		while (completeSize != completeProductions.size()) {
+			completeSize = completeProductions.size();
+			ProductionSet tmpProductions = new ProductionSet(endProductions);
+			List<GrammarRule> remainingProductions = new ArrayList<>(completeProductions);
+			remainingProductions.removeAll(endProductions);
+
+			for (GrammarRule pr : endProductions) {
+				tmpProductions.addProduction(pr);
+				int tmpSize;
+				do {
+					tmpSize = tmpProductions.size();
+					for (GrammarRule remainingPR : completeProductions) {
+						int shortTmpSize = tmpProductions.size();
+						tmpProductions.addProductionInReverse(remainingPR);
+						if (shortTmpSize != tmpProductions.size()) {
+							remainingProductions.remove(remainingPR);
+						}
+					}
+				} while (tmpSize != tmpProductions.size());
+			}
+
+			if (!remainingProductions.isEmpty()) {
+				GrammarRule newProduction = getEndProduction(
+						remainingProductions.stream().filter(pr -> (!Objects.equals(pr.leftSide(), this.startSymbol))).findAny().get());
+				completeProductions.add(newProduction);
+				endProductions.add(newProduction);
+			}
+		}
+		return completeProductions;
+	}
+
+	private GrammarRule getEndProduction(GrammarRule production) {
+		ProductionRightSide productionRightSide = ProductionRightSide.randomEndProduction();
+		String[] rightSideCompounds = productionRightSide.rightSide.split(" ");
+		for (int i = 0; i<rightSideCompounds.length; i++) {
+			if (StringUtils.equals(rightSideCompounds[i], "t")){
+				int index = rand.nextInt(terminals.size());
+				rightSideCompounds[i] = terminals.get(index);
+			}
+		}
+		String rightSide = String.join(" ",rightSideCompounds);
+
+		return new GrammarRule(production.getRightSideNonTerminal(), rightSide);
 	}
 
 	private GrammarRule generateSingleProduction(String leftSideNonTerminal, String rightSideNonTerminal){
@@ -142,9 +196,10 @@ public class GrammarGeneration {
 	}
 
 	private List<GrammarRule> completeTerminalProductions(List<GrammarRule> grammarRules){
+		List<GrammarRule> resultProductions = new ArrayList<>(grammarRules);
 		List<String> tmpTerminals = new ArrayList<>(terminals);
 		for (String str: terminals) {
-			for (GrammarRule gr : grammarRules) {
+			for (GrammarRule gr : resultProductions) {
 				if (!gr.rightSide().contains("epsilon") && gr.rightSide().contains(str)){
 					tmpTerminals.remove(str);
 				}
@@ -152,10 +207,10 @@ public class GrammarGeneration {
 		}
 		for (String terminal: tmpTerminals){
 			int index = rand.nextInt(terminals.size());
-			grammarRules.add(new GrammarRule(nonTerminals.get(index), terminal));
+			resultProductions.add(new GrammarRule(nonTerminals.get(index), terminal));
 		}
 
-		return grammarRules;
+		return resultProductions;
 	}
 
 	private void setStartSymbol(String startSymbol) {

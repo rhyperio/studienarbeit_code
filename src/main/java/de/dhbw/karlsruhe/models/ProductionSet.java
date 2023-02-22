@@ -9,11 +9,22 @@ public class ProductionSet {
         grammarRules.add(startRule);
     }
 
+    public ProductionSet(List<GrammarRule> grList){
+        grammarRules.addAll(grList);
+    }
+
     public void addProduction(GrammarRule gr){
         if (isOnRightSide(gr.leftSide()) || isOnLeftSide(gr.leftSide())){
             grammarRules.add(gr);
         }
+    }
 
+    public void addProductionInReverse(GrammarRule gr){
+        String nonTerminal = gr.getRightSideNonTerminal();
+
+        if (nonTerminal!= null && isOnLeftSide(nonTerminal)){
+            grammarRules.add(gr);
+        }
     }
 
     public boolean isRuleInSet(GrammarRule gr){
@@ -24,7 +35,7 @@ public class ProductionSet {
         return grammarRules.size();
     }
 
-    // In case no right side terminals exist, returns start non terminal
+    // In case no right side terminals exist, returns start nonterminal
     public String getRandomRightSideNonTerminal(){
 
         List<String> nonTerminal = new ArrayList<>();
