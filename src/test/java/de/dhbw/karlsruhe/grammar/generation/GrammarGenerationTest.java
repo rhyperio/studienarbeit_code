@@ -74,15 +74,20 @@ class GrammarGenerationTest {
 
 	@Test
 	void checkAtLeastOneEndproduction() {
-		GrammarGeneration grammarGeneration = new GrammarGeneration();
-		Grammar generatedGrammar = grammarGeneration.generateGrammar();
-		boolean endProductionExists = false;
-		for (GrammarRule gr: generatedGrammar.getProductionsAsGrammarRule()){
-			if (gr.isEndProduction()){
-				endProductionExists = true;
+		for (int i =0; i<100; i++) {
+			GrammarGeneration grammarGeneration = new GrammarGeneration();
+			Grammar generatedGrammar = grammarGeneration.generateGrammar();
+			boolean endProductionExists = false;
+			for (GrammarRule gr : generatedGrammar.getProductionsAsGrammarRule()) {
+				if (gr.isEndProduction()) {
+					endProductionExists = true;
+				}
+			}
+			if (!endProductionExists){
+				fail();
 			}
 		}
-		assertTrue(endProductionExists); 
+		assertTrue(true);
 	}
 
 }
