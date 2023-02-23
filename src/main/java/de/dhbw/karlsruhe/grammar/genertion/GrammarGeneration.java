@@ -14,7 +14,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 public class GrammarGeneration {
 
 	private final float PROBABILTY_FOR_NEW_NON_TERMINAL = 0.3f;
-	private final float PROBABILTY_FOR_TERMINAL = 0.8f;
+	private final float PROBABILTY_FOR_TERMINAL = 0.4f;
 	private final float PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE = 0.3f;
 
 	Random rand = new Random();
@@ -207,13 +207,20 @@ public class GrammarGeneration {
 		String leftSide = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
 		if (rightSide != null && rightSide.contains(leftSide) && notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
 			neededNonTerminalsOnLeftSide.remove(leftSide);
-		} else if (rightSide != null && !isLoop(generatedProductions, leftSide, rightSide)) {
-			neededNonTerminalsOnLeftSide.remove(leftSide);
+		} else {
+			if (rightSide != null) {
+				for (char element : rightSide.toCharArray()) {
+					if (Character.isUpperCase(element) && isLoop(generatedProductions, leftSide, element)) {
+						return leftSide;
+					}
+				}
+				neededNonTerminalsOnLeftSide.remove(leftSide);
+			}
 		}
 		return leftSide;
 	}
 
-	private boolean isLoop(List<String> productions, String leftSide, String rightSide) {
+	private boolean isLoop(List<String> productions, String leftSide, char rightSide) {
 		List<String> productionsWithRightSideOnLeft = new ArrayList<>();
 		productions.forEach(production -> {
 			if (production.substring(production.indexOf('>') + 1 ).contains(leftSide)) {
@@ -222,7 +229,7 @@ public class GrammarGeneration {
 		});
 
 		for (String production : productionsWithRightSideOnLeft) {
-			if (production.charAt(0) == rightSide.charAt(0)) {
+			if (production.charAt(0) == rightSide) {
 				return true;
 			} else if (production.charAt(0) == startSymbol.charAt(0)) {
 				return true;
