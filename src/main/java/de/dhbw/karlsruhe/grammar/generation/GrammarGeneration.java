@@ -124,13 +124,16 @@ public class GrammarGeneration {
 
 	private List<GrammarRule> completeEndProductions(List<GrammarRule> grammarRules) {
 		List<GrammarRule> endProductions = new ArrayList<>(grammarRules.stream().filter(GrammarRule::isEndProduction).toList());
+		List<GrammarRule> completeProductions = new ArrayList<>(grammarRules);
 
 		if (endProductions.isEmpty()) {
-			endProductions.add(getEndProduction(grammarRules.get(rand.nextInt(grammarRules.size()))));
+			GrammarRule tmpProduction = getEndProduction(grammarRules.get(rand.nextInt(grammarRules.size())));
+			endProductions.add(tmpProduction);
+			completeProductions.add(tmpProduction);
 		}
 
 		int completeSize = -1;
-		List<GrammarRule> completeProductions = new ArrayList<>(grammarRules);
+
 		while (completeSize != completeProductions.size()) {
 			completeSize = completeProductions.size();
 			ProductionSet tmpProductions = new ProductionSet(endProductions);

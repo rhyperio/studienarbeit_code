@@ -72,4 +72,17 @@ class GrammarGenerationTest {
 		assertTrue(true);
 	}
 
+	@Test
+	void checkAtLeastOneEndproduction() {
+		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		Grammar generatedGrammar = grammarGeneration.generateGrammar();
+		boolean endProductionExists = false;
+		for (GrammarRule gr: generatedGrammar.getProductionsAsGrammarRule()){
+			if (gr.isEndProduction()){
+				endProductionExists = true;
+			}
+		}
+		assertTrue(endProductionExists); 
+	}
+
 }
