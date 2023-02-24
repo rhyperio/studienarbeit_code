@@ -207,15 +207,16 @@ public class GrammarGeneration {
 		String leftSide = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
 		if (rightSide != null && rightSide.contains(leftSide) && notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
 			neededNonTerminalsOnLeftSide.remove(leftSide);
-		} else {
-			if (rightSide != null) {
-				for (char element : rightSide.toCharArray()) {
-					if (Character.isUpperCase(element) && isLoop(generatedProductions, leftSide, element)) {
-						return leftSide;
-					}
-				}
-				neededNonTerminalsOnLeftSide.remove(leftSide);
+		} else if (rightSide != null){
+			if (rightSide.contains(leftSide) && !notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
+				return leftSide;
 			}
+			for (char element : rightSide.toCharArray()) {
+				if (Character.isUpperCase(element) && isLoop(generatedProductions, leftSide, element)) {
+					return leftSide;
+				}
+			}
+			neededNonTerminalsOnLeftSide.remove(leftSide);
 		}
 		return leftSide;
 	}
