@@ -41,6 +41,6 @@ public class GrammarProbabilityGenerationTest {
 		Grammar generatedGrammar = grammarProbabilityGeneration.generateGrammar();
 
 		assertTrue(
-				Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(generatedGrammar.getStartSymbol()::equals));
+				Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
 	}
 }
