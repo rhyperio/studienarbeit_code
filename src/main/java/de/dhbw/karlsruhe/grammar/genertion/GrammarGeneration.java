@@ -12,21 +12,26 @@ import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarGeneration {
 
-	private final float PROBABILTY_FOR_NEW_NON_TERMINAL = 0.5f;
-	private final float PROBABILTY_FOR_TERMINAL = 0.4f;
-	private final float PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE = 0.6f;
+	/*
+	 * Probabilities which are used during grammar production generation
+	 */
+	private final float PROBABILITY_FOR_NEW_NON_TERMINAL = 0.5f;
+	private final float PROBABILITY_FOR_TERMINAL = 0.4f;
+	private final float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = 0.6f;
+	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = 0.5f;
+	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = 0.8f;
+	private final float DECREASING_PROBABILITY_FACTOR = 0.1f;
 
-	Random rand = new Random();
+	private final Random rand = new Random();
+	private final List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
 	private List<String> terminals = new ArrayList<>();
 	private List<String> nonTerminals = new ArrayList<>();
-	private List<String> productions = new ArrayList<>();
 	private String startSymbol;
-	private List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
 
 	public Grammar generateGrammar() {
 		terminals = generateTerminals();
 		nonTerminals = generateNonTerminals();
-		productions = generateProductions();
+		List<String> productions = generateProductions();
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
 				productions.toArray(new String[0]), startSymbol);
 	}
@@ -54,33 +59,33 @@ public class GrammarGeneration {
 	}
 
 	private List<String> generateProductions() {
-		float probabiltyForTerminal = PROBABILTY_FOR_TERMINAL;
-		float probabiltyForNewNonTerminal = PROBABILTY_FOR_NEW_NON_TERMINAL;
+		float probabiltyForTerminal = PROBABILITY_FOR_TERMINAL;
+		float probabiltyForNewNonTerminal = PROBABILITY_FOR_NEW_NON_TERMINAL;
 		List<String> generatedProductions = new ArrayList<>();
 		String generatedStartSymbol = nonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
 		generatedProductions.add(generateStartProduction());
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
-			float probabiltyForMultipleRightSide = PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE;
+			float probabiltyForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
 			if (rand.nextFloat() <= probabiltyForTerminal) {
 				StringBuilder rightSide = new StringBuilder(terminals.get(rand.nextInt(terminals.size())));
 				while (rand.nextFloat() <= probabiltyForMultipleRightSide) {
 					expandRightSide(rightSide, probabiltyForNewNonTerminal);
-					probabiltyForNewNonTerminal = (float) (probabiltyForNewNonTerminal - 0.1);
-					probabiltyForMultipleRightSide = (float) (probabiltyForMultipleRightSide - 0.1);
+					probabiltyForNewNonTerminal = (float) (probabiltyForNewNonTerminal - DECREASING_PROBABILITY_FACTOR);
+					probabiltyForMultipleRightSide = (float) (probabiltyForMultipleRightSide - DECREASING_PROBABILITY_FACTOR);
 				}
 				generatedProductions.add(buildProduction(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()), rightSide.toString()));
 			} else {
 				generateNonTerminalProduction(generatedProductions);
-				probabiltyForTerminal += 0.1;
+				probabiltyForTerminal += DECREASING_PROBABILITY_FACTOR;
 			}
 		}
 		return cleanProductions(generatedProductions);
 	}
 
 	private void expandRightSide(StringBuilder rightSide, float probabiltyForNewNonTerminal) {
-		if (rand.nextFloat() <= 0.5) {
+		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE) {
 			extandRightSideWithSeveralNonTerminals(rightSide, probabiltyForNewNonTerminal);
 		} else {
 			// Füge noch ein Terminal zur rechten Seite hinzu
@@ -129,31 +134,30 @@ public class GrammarGeneration {
 	}
 
 	private String generateStartProduction() {
-		float probabilityForMultipleRightSide = PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE;
-		String rightSide = "";
-		// TODO: Startnichtterminal Wahrscheinlichkeit anpassen
-		if (rand.nextFloat() <= 0.7) {
-			while (StringUtils.isBlank(rightSide) || startSymbol.equals(rightSide)) {
-				rightSide = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-				if (!startSymbol.equals(rightSide)) {
-					addToNeededNonTerminalsOnLeftSide(rightSide);
+		float probabilityForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+		StringBuilder rightSide = new StringBuilder();
+		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION) {
+			while (StringUtils.isBlank(rightSide.toString()) || startSymbol.equals(rightSide.toString())) {
+				rightSide = new StringBuilder(nonTerminals.get(rand.nextInt(nonTerminals.size())));
+				if (!startSymbol.equals(rightSide.toString())) {
+					addToNeededNonTerminalsOnLeftSide(rightSide.toString());
 				}
 			}
 		} else {
-			rightSide = terminals.get(rand.nextInt(terminals.size()));
+			rightSide = new StringBuilder(terminals.get(rand.nextInt(terminals.size())));
 		}
 
 		while (rand.nextFloat() <= probabilityForMultipleRightSide) {
-			if (rand.nextFloat() <= 0.5) {
+			if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE) {
 				String nonTerminal = nonTerminals.get(rand.nextInt(nonTerminals.size()));
-				rightSide += nonTerminal;
+				rightSide.append(nonTerminal);
 				addToNeededNonTerminalsOnLeftSide(nonTerminal);
 			} else {
-				rightSide += terminals.get(rand.nextInt(terminals.size()));
+				rightSide.append(terminals.get(rand.nextInt(terminals.size())));
 			}
-			probabilityForMultipleRightSide -= 0.1;
+			probabilityForMultipleRightSide -= DECREASING_PROBABILITY_FACTOR;
 		}
-		return buildProduction(startSymbol, rightSide);
+		return buildProduction(startSymbol, rightSide.toString());
 	}
 
 	private void setStartSymbol(String startSymbol) {
