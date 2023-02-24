@@ -1,14 +1,15 @@
 package de.dhbw.karlsruhe.top.down.parsing.models;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.ParserState;
 
 public class TopDownStep {
     private String readInput;
-    private TopDownState newState;
+    private ParserState newState;
     private String newStack;
     private GrammarRule usedProduction;
 
-    public TopDownStep(String readInput, TopDownState newState, String newStack, GrammarRule usedProduction) {
+    public TopDownStep(String readInput, ParserState newState, String newStack, GrammarRule usedProduction) {
         this.setReadInput(readInput);
         this.setNewState(newState);
         this.setNewStack(newStack);
@@ -33,11 +34,11 @@ public class TopDownStep {
         this.readInput = readInput;
     }
 
-    public TopDownState getNewState() {
+    public ParserState getNewState() {
         return newState;
     }
 
-    public void setNewState(TopDownState newState) {
+    public void setNewState(ParserState newState) {
         this.newState = newState;
     }
 

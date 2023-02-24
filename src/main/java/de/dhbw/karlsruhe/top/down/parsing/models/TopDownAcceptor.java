@@ -1,6 +1,7 @@
 package de.dhbw.karlsruhe.top.down.parsing.models;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.ParserState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ public class TopDownAcceptor {
 
     private final List<TopDownStep> topDownSteps = new ArrayList<>();
 
-    public void addStep(String readInput, TopDownState newState, String newStack, GrammarRule usedProduction) {
+    public void addStep(String readInput, ParserState newState, String newStack, GrammarRule usedProduction) {
         TopDownStep tdStep = new TopDownStep(readInput, newState, newStack, usedProduction);
 
         this.topDownSteps.add(tdStep);

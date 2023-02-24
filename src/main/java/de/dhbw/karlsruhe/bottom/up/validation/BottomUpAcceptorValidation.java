@@ -1,8 +1,8 @@
 package de.dhbw.karlsruhe.bottom.up.validation;
 
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
-import de.dhbw.karlsruhe.bottom.up.models.BottomUpState;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpStep;
+import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.services.GrammarService;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,7 +44,7 @@ public class BottomUpAcceptorValidation {
 
 
     private boolean isValidFirstStep(BottomUpStep step, String word) {
-        if (step.getState() != BottomUpState.z0)
+        if (step.getState() != ParserState.Z0)
             return false;
         if (!StringUtils.equals(step.getStack(), "*"))
             return false;
@@ -56,7 +56,7 @@ public class BottomUpAcceptorValidation {
     }
 
     private boolean isValidStep(BottomUpStep step, BottomUpStep priorStep) {
-        if (step.getState() != BottomUpState.z)
+        if (step.getState() != ParserState.Z)
             return false;
         if (step.getProduction() != null){
             return isValidReductionStep(step, priorStep);
@@ -92,7 +92,7 @@ public class BottomUpAcceptorValidation {
     private boolean isValidReadingStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getProduction() != null)
             return false;
-        if (step.getState() != BottomUpState.z)
+        if (step.getState() != ParserState.Z)
             return false;
         if (!isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(step, priorStep))
             return false;
@@ -105,12 +105,12 @@ public class BottomUpAcceptorValidation {
 
 
     private boolean isValidLastStep(BottomUpStep step, BottomUpStep priorStep) {
-        if (step.getState() != BottomUpState.zf)
+        if (step.getState() != ParserState.ZF)
             return false;
         if (!StringUtils.equals(step.getStack(), "*" + grammarService.getStartSymbol()))
             return false;
         if (!step.getStack().equals(priorStep.getStack()) ||
-                    ! priorStep.getState().equals(BottomUpState.z) ||
+                    ! priorStep.getState().equals(ParserState.Z) ||
                     ! priorStep.getRemainingWord().isBlank())
             return false;
         if (!step.getRemainingWord().isBlank())

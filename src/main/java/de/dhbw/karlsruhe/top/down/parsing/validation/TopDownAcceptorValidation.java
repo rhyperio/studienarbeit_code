@@ -3,7 +3,7 @@ package de.dhbw.karlsruhe.top.down.parsing.validation;
 import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.services.GrammarService;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
-import de.dhbw.karlsruhe.top.down.parsing.models.TopDownState;
+import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownStep;
 
 import java.util.Arrays;
@@ -12,13 +12,11 @@ import java.util.List;
 public class TopDownAcceptorValidation {
 
     private GrammarService grammarService;
-    private List<GrammarRule> grammarRules;
     private TopDownAcceptor tdAcceptor;
     private String wordToPars;
 
     public TopDownAcceptorValidation(String grammarAsJson) {
         this.grammarService = new GrammarService(grammarAsJson);
-        this.grammarRules = this.grammarService.getGrammarRules();
     }
 
     public boolean validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
@@ -39,12 +37,12 @@ public class TopDownAcceptorValidation {
         boolean success = false;
 
         TopDownStep stepToCheck = this.tdAcceptor.getFirstStep();
-        TopDownState currentState = stepToCheck.getNewState();
+        ParserState currentState = stepToCheck.getNewState();
         String stack = stepToCheck.getNewStack();
         String input = stepToCheck.getReadInput();
         GrammarRule usedProduction = stepToCheck.getUsedProduction();
 
-        if (currentState == TopDownState.Z0 && stack.equals("*") && input.equals("") && usedProduction == null) {
+        if (currentState == ParserState.Z0 && stack.equals("*") && input.equals("") && usedProduction == null) {
             success = true;
         }
 
@@ -55,12 +53,12 @@ public class TopDownAcceptorValidation {
         boolean success = false;
 
         TopDownStep stepToCheck = this.tdAcceptor.getLastStep();
-        TopDownState currentState = stepToCheck.getNewState();
+        ParserState currentState = stepToCheck.getNewState();
         String stack = stepToCheck.getNewStack();
         String input = stepToCheck.getReadInput();
         GrammarRule usedProduction = stepToCheck.getUsedProduction();
 
-        if (currentState == TopDownState.ZF && stack.equals("*") && input.equals(this.wordToPars) && usedProduction == null) {
+        if (currentState == ParserState.ZF && stack.equals("*") && input.equals(this.wordToPars) && usedProduction == null) {
             success = true;
         }
 
@@ -69,8 +67,8 @@ public class TopDownAcceptorValidation {
 
     private boolean validateSteps() {
         List<TopDownStep> tdSteps = this.tdAcceptor.getTopDownSteps();
-        TopDownStep nextStep = null;
-        TopDownStep currStep = null;
+        TopDownStep nextStep;
+        TopDownStep currStep;
         boolean success = false;
 
         for (int i=0; i < tdSteps.size(); i++) {
@@ -89,7 +87,7 @@ public class TopDownAcceptorValidation {
                 success = this.validateProductionStep(currStep, nextStep);
             }
             if (!success) {
-                return success;
+                return false;
             }
         }
 
@@ -97,70 +95,68 @@ public class TopDownAcceptorValidation {
     }
 
     private boolean validateReadStep(TopDownStep tdStep, TopDownStep nextStep) {
-        boolean valid = false;
+        boolean success = false;
 
         String stackNextStep = nextStep.getNewStack();
         String stackCurrStep = tdStep.getNewStack();
         String inputNextStep = nextStep.getReadInput();
         GrammarRule productionCurrStep = tdStep.getUsedProduction();
-        TopDownState stateCurrStep = tdStep.getNewState();
+        ParserState stateCurrStep = tdStep.getNewState();
 
-        if (stackCurrStep == null || stateCurrStep != TopDownState.Z) {
+        if (stackCurrStep == null || stateCurrStep != ParserState.Z) {
             return false;
         }
 
         if (this.checkReadInput(stackCurrStep, inputNextStep) && this.checkSideConditionsRead(stackCurrStep, stackNextStep, productionCurrStep)) {
-            valid = true;
-        }
-
-        return valid;
-    }
-
-    private boolean checkReadInput(String stackCurrStep, String inputNextStep) {
-        boolean success = false;
-
-        char firstCharStackCurrStep = stackCurrStep.charAt(0);
-        char firstCharInputNextStep = inputNextStep.charAt(inputNextStep.length()-1);
-
-        if (firstCharStackCurrStep == firstCharInputNextStep) {
             success = true;
         }
 
         return success;
     }
 
+    private boolean checkReadInput(String stackCurrStep, String inputNextStep) {
+        char firstCharStackCurrStep = stackCurrStep.charAt(0);
+        char firstCharInputNextStep = inputNextStep.charAt(inputNextStep.length()-1);
+
+        if (firstCharStackCurrStep == firstCharInputNextStep) {
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean checkSideConditionsRead(String stackCurrStep, String stackNextStep, GrammarRule productionCurrStep) {
-        boolean success = false;
+        // validate correct procedure of removing read character and display of stack in next step as well as current production
 
         char secondCharStackCurrStep = stackCurrStep.charAt(1);
         char firstCharStackNextStep = stackNextStep.charAt(0);
 
         if (productionCurrStep == null && (secondCharStackCurrStep == firstCharStackNextStep)) {
-            success = true;
+            return true;
         }
 
-        return success;
+        return false;
     }
 
     private boolean validateProductionStep(TopDownStep tdStep, TopDownStep nextStep) {
-        boolean valid = false;
+        boolean success = false;
 
         String stackCurrStep = tdStep.getNewStack();
         String stackNextStep = nextStep.getNewStack();
         GrammarRule productionCurrStep = tdStep.getUsedProduction();
         String inputCurrStep = tdStep.getReadInput();
         String inputNextStep = nextStep.getReadInput();
-        TopDownState stateCurrStep = tdStep.getNewState();
+        ParserState stateCurrStep = tdStep.getNewState();
 
-        if (stackCurrStep == null || productionCurrStep == null || stateCurrStep != TopDownState.Z) {
+        if (stackCurrStep == null || productionCurrStep == null || stateCurrStep != ParserState.Z) {
             return false;
         }
 
-        if (this.checkUsedProduction(stackCurrStep, stackNextStep, productionCurrStep) && this.checkSideConditionsProduction(inputCurrStep, inputNextStep)) {
-            valid = true;
+        if (this.checkUsedProduction(stackCurrStep, stackNextStep, productionCurrStep) && this.validateNoChangeOfStack(inputCurrStep, inputNextStep)) {
+            success = true;
         }
 
-        return valid;
+        return success;
     }
 
     private boolean checkUsedProduction(String stackCurrStep, String stackNextStep, GrammarRule productionCurrStep) {
@@ -187,13 +183,11 @@ public class TopDownAcceptorValidation {
         return success;
     }
 
-    private boolean checkSideConditionsProduction(String stackCurrStep, String stackNextStep) {
-        boolean success = false;
-
+    private boolean validateNoChangeOfStack(String stackCurrStep, String stackNextStep) {
         if (stackCurrStep.equals(stackNextStep)) {
-            success = true;
+            return true;
         }
 
-        return success;
+        return false;
     }
 }
