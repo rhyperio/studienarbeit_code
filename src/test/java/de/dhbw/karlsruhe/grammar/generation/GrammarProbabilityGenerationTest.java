@@ -15,17 +15,17 @@ import de.dhbw.karlsruhe.models.Grammar;
 public class GrammarProbabilityGenerationTest {
 
 	@Test
-	public void checkEmptyInersectionBetweenTerminalsAndNonTerminals() {
+	public void checkEmptyIntersectionBetweenTerminalsAndNonTerminals() {
 		GrammarGeneration grammarProbabilityGeneration = new GrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarProbabilityGeneration.generateGrammar();
 
 		assertTrue(Arrays.stream(generatedGrammar.getTerminals()).distinct()
-				.filter(x -> Arrays.stream(generatedGrammar.getNonTerminals()).anyMatch(y -> y == x)).toList()
+				.filter(x -> Arrays.asList(generatedGrammar.getNonTerminals()).contains(x)).toList()
 				.isEmpty());
 	}
 
 	@Test
-	public void checkThatGrammarParstAreNotEmpty() {
+	public void checkThatGrammarGenerationsAreNotEmpty() {
 		GrammarGeneration grammarProbabilityGeneration = new GrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarProbabilityGeneration.generateGrammar();
 
