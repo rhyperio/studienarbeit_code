@@ -74,7 +74,7 @@ class GrammarGenerationTest {
 
 	@Test
 	void checkAtLeastOneEndproduction() {
-		for (int i =0; i<100; i++) {
+		for (int i =0; i<1000; i++) {
 			GrammarGeneration grammarGeneration = new GrammarGeneration();
 			Grammar generatedGrammar = grammarGeneration.generateGrammar();
 			boolean endProductionExists = false;

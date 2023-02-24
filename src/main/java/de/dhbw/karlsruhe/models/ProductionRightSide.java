@@ -19,7 +19,10 @@ public enum ProductionRightSide {
     p12("t t", true),
     p13("t t t", true),
     p14("N N", false),
-    p15("N t N", false);
+    p15("N t N", false),
+    p16("t N N", false),
+    p17("N N t", false),
+    p18("N t t N", false);
 
     private static final List<ProductionRightSide> VALUES =
             List.of(values());
