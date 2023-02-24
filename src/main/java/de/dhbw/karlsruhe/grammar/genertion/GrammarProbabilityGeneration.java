@@ -3,10 +3,7 @@ package de.dhbw.karlsruhe.grammar.genertion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-
 import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarProbabilityGeneration extends GrammarGeneration {
@@ -40,13 +37,13 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		generatedProductions.add(generateStartProduction());
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
-			float probabiltyForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+			float probabilityForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
 			if (rand.nextFloat() <= probabilityForTerminal) {
 				StringBuilder rightSide = new StringBuilder(terminals.get(rand.nextInt(terminals.size())));
-				while (rand.nextFloat() <= probabiltyForMultipleRightSide) {
+				while (rand.nextFloat() <= probabilityForMultipleRightSide) {
 					expandRightSide(rightSide, probabilityForNewNonTerminal);
-					probabilityForNewNonTerminal = (float) (probabilityForNewNonTerminal - DECREASING_PROBABILITY_FACTOR);
-					probabiltyForMultipleRightSide = (float) (probabiltyForMultipleRightSide - DECREASING_PROBABILITY_FACTOR);
+					probabilityForNewNonTerminal = probabilityForNewNonTerminal - DECREASING_PROBABILITY_FACTOR;
+					probabilityForMultipleRightSide = probabilityForMultipleRightSide - DECREASING_PROBABILITY_FACTOR;
 				}
 				generatedProductions.add(buildProduction(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()), rightSide.toString()));
 			} else {
