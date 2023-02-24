@@ -1,11 +1,10 @@
 package de.dhbw.karlsruhe.grammar.genertion;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,9 +12,9 @@ import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarGeneration {
 
-	private final float PROBABILTY_FOR_NEW_NON_TERMINAL = 0.3f;
+	private final float PROBABILTY_FOR_NEW_NON_TERMINAL = 0.5f;
 	private final float PROBABILTY_FOR_TERMINAL = 0.4f;
-	private final float PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE = 0.3f;
+	private final float PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE = 0.6f;
 
 	Random rand = new Random();
 	private List<String> terminals = new ArrayList<>();
@@ -71,13 +70,13 @@ public class GrammarGeneration {
 					probabiltyForNewNonTerminal = (float) (probabiltyForNewNonTerminal - 0.1);
 					probabiltyForMultipleRightSide = (float) (probabiltyForMultipleRightSide - 0.1);
 				}
-				generatedProductions.add(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()) + "->" + rightSide);
+				generatedProductions.add(buildProduction(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()), rightSide.toString()));
 			} else {
 				generateNonTerminalProduction(generatedProductions);
 				probabiltyForTerminal += 0.1;
 			}
 		}
-		return cleanUpProductions(generatedProductions);
+		return cleanProductions(generatedProductions);
 	}
 
 	private void expandRightSide(StringBuilder rightSide, float probabiltyForNewNonTerminal) {
@@ -98,11 +97,8 @@ public class GrammarGeneration {
 		}
 	}
 
-	private List<String> cleanUpProductions(List<String> generatedProductions) {
-		Set<String> set = new HashSet<>(generatedProductions);
-		generatedProductions.clear();
-		generatedProductions.addAll(set);
-		return cleanedProductions(generatedProductions);
+	private List<String> cleanProductions(List<String> generatedProductions) {
+		return formatProductions(generatedProductions.stream().distinct().collect(Collectors.toList()));
 	}
 
 	private void generateNonTerminalProduction(List<String> generatedProductions) {
@@ -114,7 +110,7 @@ public class GrammarGeneration {
 		}
 
 		addToNeededNonTerminalsOnLeftSide(nonTerminalRight);
-		generatedProductions.add(nonTerminalLeft + "->" + nonTerminalRight);
+		generatedProductions.add(buildProduction(nonTerminalLeft, nonTerminalRight));
 	}
 
 	private void expandRightSideWithNonTerminal(StringBuilder rightSide) {
@@ -135,6 +131,7 @@ public class GrammarGeneration {
 	private String generateStartProduction() {
 		float probabilityForMultipleRightSide = PROBABILTY_FOR_MULTIPLE_RIGHT_SIDE;
 		String rightSide = "";
+		// TODO: Startnichtterminal Wahrscheinlichkeit anpassen
 		if (rand.nextFloat() <= 0.7) {
 			while (StringUtils.isBlank(rightSide) || startSymbol.equals(rightSide)) {
 				rightSide = nonTerminals.get(rand.nextInt(nonTerminals.size()));
@@ -156,14 +153,14 @@ public class GrammarGeneration {
 			}
 			probabilityForMultipleRightSide -= 0.1;
 		}
-		return startSymbol + "->" + rightSide;
+		return buildProduction(startSymbol, rightSide);
 	}
 
 	private void setStartSymbol(String startSymbol) {
 		this.startSymbol = startSymbol;
 	}
 
-	private List<String> cleanedProductions(List<String> generatedProductions) {
+	private List<String> formatProductions(List<String> generatedProductions) {
 		List<String> cleanedProductions = new ArrayList<>();
 
 		for (String currProduction : generatedProductions) {
@@ -221,6 +218,10 @@ public class GrammarGeneration {
 		return leftSide;
 	}
 
+	private String buildProduction(String leftSide, String rightSide) {
+		return leftSide + " -> " + rightSide;
+	}
+
 	private boolean isLoop(List<String> productions, String leftSide, char rightSide) {
 		List<String> productionsWithRightSideOnLeft = new ArrayList<>();
 		productions.forEach(production -> {
@@ -235,7 +236,7 @@ public class GrammarGeneration {
 			} else if (production.charAt(0) == startSymbol.charAt(0)) {
 				return true;
 			} else {
-				return isLoop(productionsWithRightSideOnLeft, String.valueOf(production.charAt(0)), rightSide);
+				return isLoop(productions, String.valueOf(production.charAt(0)), rightSide);
 			}
 		}
 		return false;
