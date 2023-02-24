@@ -13,7 +13,7 @@ public abstract class GrammarGeneration {
   String startSymbol;
 
   public abstract Grammar generateGrammar();
-  abstract List<String>  generateProductions();
+  protected abstract List<String>  generateProductions();
 
   List<String> cleanProductions(List<String> generatedProductions) {
     return formatProductions(generatedProductions.stream().distinct().collect(Collectors.toList()));

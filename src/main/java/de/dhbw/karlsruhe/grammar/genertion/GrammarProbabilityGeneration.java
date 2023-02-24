@@ -31,7 +31,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 				productions.toArray(new String[0]), startSymbol);
 	}
 
-	List<String> generateProductions() {
+	protected List<String> generateProductions() {
 		float probabilityForTerminal = PROBABILITY_FOR_TERMINAL;
 		float probabilityForNewNonTerminal = PROBABILITY_FOR_NEW_NON_TERMINAL;
 		List<String> generatedProductions = new ArrayList<>();
