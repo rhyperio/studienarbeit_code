@@ -20,9 +20,18 @@ public class ProductionSet {
     }
 
     public void addProductionInReverse(GrammarRule gr){
-        String nonTerminal = gr.getRightSideNonTerminal();
+        List<String> nonTerminals = gr.getRightSideNonTerminal();
 
-        if (nonTerminal!= null && isOnLeftSide(nonTerminal)){
+        boolean allPresent = true;
+        if (nonTerminals!= null) {
+            for (String nonTerminal : nonTerminals) {
+                if (!isOnLeftSide(nonTerminal)) {
+                    allPresent = false;
+                    break;
+                }
+            }
+        }
+        if (allPresent) {
             grammarRules.add(gr);
         }
     }

@@ -127,7 +127,7 @@ public class GrammarGeneration {
 		List<GrammarRule> completeProductions = new ArrayList<>(grammarRules);
 
 		if (endProductions.isEmpty()) {
-			GrammarRule tmpProduction = getEndProduction(grammarRules.get(rand.nextInt(grammarRules.size())));
+			GrammarRule tmpProduction = getEndProduction(grammarRules.get(rand.nextInt(grammarRules.size())).leftSide());
 			endProductions.add(tmpProduction);
 			completeProductions.add(tmpProduction);
 		}
@@ -156,8 +156,9 @@ public class GrammarGeneration {
 			}
 
 			if (!remainingProductions.isEmpty()) {
+				List<String> nonTerminals = new ArrayList<>(Objects.requireNonNull(remainingProductions.stream().findAny().get().getRightSideNonTerminal()));
 				GrammarRule newProduction = getEndProduction(
-						remainingProductions.stream().filter(pr -> (!Objects.equals(pr.leftSide(), this.startSymbol))).findAny().get());
+						nonTerminals.get(rand.nextInt(nonTerminals.size())));
 				completeProductions.add(newProduction);
 				endProductions.add(newProduction);
 			}
@@ -165,7 +166,7 @@ public class GrammarGeneration {
 		return completeProductions;
 	}
 
-	private GrammarRule getEndProduction(GrammarRule production) {
+	private GrammarRule getEndProduction(String leftSide) {
 		ProductionRightSide productionRightSide = ProductionRightSide.randomEndProduction();
 		String[] rightSideCompounds = productionRightSide.rightSide.split(" ");
 		for (int i = 0; i<rightSideCompounds.length; i++) {
@@ -176,7 +177,7 @@ public class GrammarGeneration {
 		}
 		String rightSide = String.join(" ",rightSideCompounds);
 
-		return new GrammarRule(production.getRightSideNonTerminal(), rightSide);
+		return new GrammarRule(leftSide, rightSide);
 	}
 
 	private GrammarRule generateSingleProduction(String leftSideNonTerminal, String rightSideNonTerminal){
