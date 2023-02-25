@@ -5,6 +5,7 @@ import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.derivation.tree.validation.DerivationTreeValidation;
 import de.dhbw.karlsruhe.derivation.tree.validation.SetupValidationTree;
 import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.util.Resource;
 
 
@@ -43,15 +44,15 @@ public class App {
     GrammarRule gRDouble = new GrammarRule("S", "S S");
 
     BottomUpAcceptor buAcceptor = new BottomUpAcceptor();
-    buAcceptor.addStep("*", ParserState.z0, "(())", null);
-    buAcceptor.addStep("*(", ParserState.z, "())", null);
-    buAcceptor.addStep("*((", ParserState.z, "))", null);
-    buAcceptor.addStep("*((S", ParserState.z, "))", gREpsilon);
-    buAcceptor.addStep("*((S)", ParserState.z, ")", null);
-    buAcceptor.addStep("*(S", ParserState.z, ")", gRBrackets);
-    buAcceptor.addStep("*(S)", ParserState.z, "", null);
-    buAcceptor.addStep("*S", ParserState.z, "", gRBrackets);
-    buAcceptor.addStep("*S", ParserState.zf, "", null);
+    buAcceptor.addStep("*", ParserState.Z0, "(())", null);
+    buAcceptor.addStep("*(", ParserState.Z, "())", null);
+    buAcceptor.addStep("*((", ParserState.Z, "))", null);
+    buAcceptor.addStep("*((S", ParserState.Z, "))", gREpsilon);
+    buAcceptor.addStep("*((S)", ParserState.Z, ")", null);
+    buAcceptor.addStep("*(S", ParserState.Z, ")", gRBrackets);
+    buAcceptor.addStep("*(S)", ParserState.Z, "", null);
+    buAcceptor.addStep("*S", ParserState.Z, "", gRBrackets);
+    buAcceptor.addStep("*S", ParserState.ZF, "", null);
 
     Gson gson = new Gson();
     String bUAcceptorJson = gson.toJson(buAcceptor);

@@ -2,44 +2,44 @@
 	"steps":[
 		{
 			"stack":"*",
-			"state":"z0",
+			"state":"Z0",
 			"remainingWord":"(())"
 		},
 		{
 			"stack":"*(",
-			"state":"z",
+			"state":"Z",
 			"remainingWord":"())"
 		},
 		{
 			"stack":"*((",
-			"state":"z",
+			"state":"Z",
 			"remainingWord":"))"
 		},
 		{
 			"stack":"*((S",
-			"state":"z",
+			"state":"Z",
 			"remainingWord":"))",
 			"production":{"leftSide":"S","rightSide":"epsilon"}
 		},
 		{
 			"stack":"*((S)",
-			"state":"z",
+			"state":"Z",
 			"remainingWord":")"
 		},
 		{
 			"stack":"*(S",
-			"state":"z",
+			"state":"Z",
 			"remainingWord":")",
 			"production":{"leftSide":"S","rightSide":"( S )"}
 		},
 		{
 			"stack":"*(S)",
-			"state":"z",
+			"state":"Z",
 			"remainingWord":""
 		},
 		{
 			"stack":"*S",
-			"state":"zf",
+			"state":"ZF",
 			"remainingWord":""
 		}
 	]
