@@ -2,68 +2,68 @@
 	"topDownSteps":[
 		{
 			"readInput":"",
-			"newState":"Z0",
-			"newStack":"*"
+			"state":"Z0",
+			"stack":"*"
 		},
 		{
 			"readInput":"",
-			"newState":"Z",
-			"newStack":"S*",
+			"state":"Z",
+			"stack":"S*",
 			"usedProduction":{"leftSide":"S","rightSide":"SS"}
 		},
 		{
 			"readInput":"",
-			"newState":"Z",
-			"newStack":"SS*",
+			"state":"Z",
+			"stack":"SS*",
 			"usedProduction":{"leftSide":"S","rightSide":"(S)"}
 		},
 		{
 			"readInput":"",
-			"newState":"Z",
-			"newStack":"(S)S*"
+			"state":"Z",
+			"stack":"(S)S*"
 		},
 		{
 			"readInput":"(",
-			"newState":"Z",
-			"newStack":"S)S*",
+			"state":"Z",
+			"stack":"S)S*",
 			"usedProduction":{"leftSide":"S","rightSide":"epsilon"}
 		},
 		{
 			"readInput":"(",
-			"newState":"Z",
-			"newStack":")S*"
+			"state":"Z",
+			"stack":")S*"
 		},
 		{
 			"readInput":"()",
-			"newState":"Z",
-			"newStack":"S*",
+			"state":"Z",
+			"stack":"S*",
 			"usedProduction":{"leftSide":"S","rightSide":"(S)"}
 		},
 		{
 			"readInput":"()",
-			"newState":"Z",
-			"newStack":"(S)*"
+			"state":"Z",
+			"stack":"(S)*"
 		},
 		{
 			"readInput":"()(",
-			"newState":"Z",
-			"newStack":"S)*",
+			"state":"Z",
+			"stack":"S)*",
 			"usedProduction":{"leftSide":"S","rightSide":"epsilon"}
 		},
 		{
 			"readInput":"()(",
-			"newState":"Z",
-			"newStack":")*"
+			"state":"Z",
+			"stack":")*"
 		},
 		{
 			"readInput":"()()",
-			"newState":"Z",
-			"newStack":"*"
+			"state":"Z",
+			"stack":"*"
 		},
 		{
 			"readInput":"()(",
-			"newState":"Z0",
-			"newStack":"*"
+			"state":"Z0",
+			"stack":"*"
 		}
 	]
 }

@@ -37,8 +37,8 @@ public class TopDownAcceptorValidation {
         boolean success = false;
 
         TopDownStep stepToCheck = this.tdAcceptor.getFirstStep();
-        ParserState currentState = stepToCheck.getNewState();
-        String stack = stepToCheck.getNewStack();
+        ParserState currentState = stepToCheck.getState();
+        String stack = stepToCheck.getStack();
         String input = stepToCheck.getReadInput();
         GrammarRule usedProduction = stepToCheck.getUsedProduction();
 
@@ -53,8 +53,8 @@ public class TopDownAcceptorValidation {
         boolean success = false;
 
         TopDownStep stepToCheck = this.tdAcceptor.getLastStep();
-        ParserState currentState = stepToCheck.getNewState();
-        String stack = stepToCheck.getNewStack();
+        ParserState currentState = stepToCheck.getState();
+        String stack = stepToCheck.getStack();
         String input = stepToCheck.getReadInput();
         GrammarRule usedProduction = stepToCheck.getUsedProduction();
 
@@ -79,7 +79,7 @@ public class TopDownAcceptorValidation {
             }
 
             nextStep = tdSteps.get(i+1);
-            String firstStackChar = String.valueOf(currStep.getNewStack().charAt(0));
+            String firstStackChar = String.valueOf(currStep.getStack().charAt(0));
 
             if (Arrays.stream(this.grammarService.getTerminals()).anyMatch(firstStackChar::equals)) {
                 success = this.validateReadStep(currStep, nextStep);
@@ -97,11 +97,11 @@ public class TopDownAcceptorValidation {
     private boolean validateReadStep(TopDownStep tdStep, TopDownStep nextStep) {
         boolean success = false;
 
-        String stackNextStep = nextStep.getNewStack();
-        String stackCurrStep = tdStep.getNewStack();
+        String stackNextStep = nextStep.getStack();
+        String stackCurrStep = tdStep.getStack();
         String inputNextStep = nextStep.getReadInput();
         GrammarRule productionCurrStep = tdStep.getUsedProduction();
-        ParserState stateCurrStep = tdStep.getNewState();
+        ParserState stateCurrStep = tdStep.getState();
 
         if (stackCurrStep == null || stateCurrStep != ParserState.Z) {
             return false;
@@ -141,12 +141,12 @@ public class TopDownAcceptorValidation {
     private boolean validateProductionStep(TopDownStep tdStep, TopDownStep nextStep) {
         boolean success = false;
 
-        String stackCurrStep = tdStep.getNewStack();
-        String stackNextStep = nextStep.getNewStack();
+        String stackCurrStep = tdStep.getStack();
+        String stackNextStep = nextStep.getStack();
         GrammarRule productionCurrStep = tdStep.getUsedProduction();
         String inputCurrStep = tdStep.getReadInput();
         String inputNextStep = nextStep.getReadInput();
-        ParserState stateCurrStep = tdStep.getNewState();
+        ParserState stateCurrStep = tdStep.getState();
 
         if (stackCurrStep == null || productionCurrStep == null || stateCurrStep != ParserState.Z) {
             return false;

@@ -5,14 +5,14 @@ import de.dhbw.karlsruhe.models.ParserState;
 
 public class TopDownStep {
     private String readInput;
-    private ParserState newState;
-    private String newStack;
+    private ParserState state;
+    private String stack;
     private GrammarRule usedProduction;
 
-    public TopDownStep(String readInput, ParserState newState, String newStack, GrammarRule usedProduction) {
+    public TopDownStep(String readInput, ParserState state, String stack, GrammarRule usedProduction) {
         this.setReadInput(readInput);
-        this.setNewState(newState);
-        this.setNewStack(newStack);
+        this.setState(state);
+        this.setStack(stack);
         this.setUsedProduction(usedProduction);
     }
 
@@ -20,8 +20,8 @@ public class TopDownStep {
     public String toString() {
         return "TopDownStep{" +
                 "readInput='" + readInput + '\'' +
-                ", newState=" + newState +
-                ", newStack='" + newStack + '\'' +
+                ", State=" + state +
+                ", Stack='" + stack + '\'' +
                 ", usedProduction=" + usedProduction +
                 '}';
     }
@@ -34,20 +34,20 @@ public class TopDownStep {
         this.readInput = readInput;
     }
 
-    public ParserState getNewState() {
-        return newState;
+    public ParserState getState() {
+        return state;
     }
 
-    public void setNewState(ParserState newState) {
-        this.newState = newState;
+    public void setState(ParserState state) {
+        this.state = state;
     }
 
-    public String getNewStack() {
-        return newStack;
+    public String getStack() {
+        return stack;
     }
 
-    public void setNewStack(String newStack) {
-        this.newStack = newStack;
+    public void setStack(String stack) {
+        this.stack = stack;
     }
 
     public GrammarRule getUsedProduction() {
