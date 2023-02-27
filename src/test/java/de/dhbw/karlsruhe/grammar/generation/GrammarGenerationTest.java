@@ -16,7 +16,7 @@ class GrammarGenerationTest {
 
 	@Test
 	 void checkEmptyIntersectionBetweenTerminalsAndNonTerminals() {
-		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		assertTrue(Arrays.stream(generatedGrammar.getTerminals()).distinct()
@@ -26,7 +26,7 @@ class GrammarGenerationTest {
 
 	@Test
 	 void checkThatGrammarParstAreNotEmpty() {
-		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		assertNotEquals(0, generatedGrammar.getTerminals().length);
@@ -37,7 +37,7 @@ class GrammarGenerationTest {
 
 	@Test
 	 void checkThatStartSymbolIsNonTerminal() {
-		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		assertTrue(
@@ -46,7 +46,7 @@ class GrammarGenerationTest {
 
 	@Test
 	void checkAllNonTerminalsOnLeftSide(){
-		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		for (String nonTerminal : generatedGrammar.getNonTerminals()) {
@@ -60,7 +60,7 @@ class GrammarGenerationTest {
 
 	@Test
 	void checkAllTerminalsUsed(){
-		GrammarGeneration grammarGeneration = new GrammarGeneration();
+		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		for (String terminal : generatedGrammar.getTerminals()) {
@@ -75,7 +75,7 @@ class GrammarGenerationTest {
 	@Test
 	void checkAtLeastOneEndproduction() {
 		for (int i =0; i<1000; i++) {
-			GrammarGeneration grammarGeneration = new GrammarGeneration();
+			GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 			Grammar generatedGrammar = grammarGeneration.generateGrammar();
 			boolean endProductionExists = false;
 			for (GrammarRule gr : generatedGrammar.getProductionsAsGrammarRule()) {
