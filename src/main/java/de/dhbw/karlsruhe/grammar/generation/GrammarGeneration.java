@@ -28,9 +28,6 @@ public class GrammarGeneration {
 		nonTerminals = generateNonTerminals(countNonTerminals);
 		productions = generateProductions();
 
-		System.out.println(startSymbol);
-		System.out.println(productions);
-
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
 				productions.toArray(new GrammarRule[0]), startSymbol);
 	}
