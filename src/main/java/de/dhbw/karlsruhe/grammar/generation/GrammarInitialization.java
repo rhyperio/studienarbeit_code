@@ -13,7 +13,7 @@ public class GrammarInitialization {
     private String[] nonTerminals;
     private String alphabetTerminals = "abcdefghijklmnopqrstuvwxyz0123456789";
     private String alphabetNonTerminals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private Random random;
+    private Random random = new Random();
 
     public void startGeneration () {
         int anzTerminals = this.random.nextInt(4) + 1;
@@ -22,8 +22,8 @@ public class GrammarInitialization {
         this.addTerminals(anzTerminals);
         this.addNonTerminals(anzNonTerminals);
 
-        System.out.println(terminals);
-        System.out.println(nonTerminals);
+        System.out.println("Terminals: " + terminals);
+        System.out.println("Non Terminals: " + nonTerminals);
     }
 
     private void addNonTerminals(int anzNonTerminals) {
@@ -31,11 +31,11 @@ public class GrammarInitialization {
         char nonTerminal;
 
         do {
-            nonTerminal = alphabetNonTerminals.charAt(random.nextInt());
+            nonTerminal = alphabetNonTerminals.charAt(random.nextInt(alphabetNonTerminals.length()));
             nonTerminalsSet.add(Character.toString(nonTerminal));
         } while(nonTerminalsSet.size() < anzNonTerminals);
 
-        this.terminals = nonTerminalsSet.toArray(String[]::new);
+        this.nonTerminals = nonTerminalsSet.toArray(String[]::new);
     }
 
     private void addTerminals(int anzTerminals) {
@@ -43,7 +43,7 @@ public class GrammarInitialization {
         char terminal;
 
         do {
-            terminal = alphabetTerminals.charAt(random.nextInt());
+            terminal = alphabetTerminals.charAt(random.nextInt(alphabetTerminals.length()));
             terminalsSet.add(Character.toString(terminal));
         } while(terminalsSet.size() < anzTerminals);
 
