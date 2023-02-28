@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.grammar.genertion;
+package de.dhbw.karlsruhe.grammar.generation;
 
 import de.dhbw.karlsruhe.models.Grammar;
 import java.util.ArrayList;

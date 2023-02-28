@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.grammar.genertion;
+package de.dhbw.karlsruhe.grammar.generation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,14 +87,14 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 
 	private void expandRightSide(StringBuilder rightSide, float probabilityForNewNonTerminal) {
 		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE) {
-			extendRightSideWithSeveralNonTerminals(rightSide, probabilityForNewNonTerminal);
+			extendRightSideWithNonTerminal(rightSide, probabilityForNewNonTerminal);
 		} else {
 			// Füge noch ein Terminal zur rechten Seite hinzu
 			rightSide.append(terminals.get(rand.nextInt(terminals.size())));
 		}
 	}
 
-	private void extendRightSideWithSeveralNonTerminals(StringBuilder rightSide, float probabilityForNewNonTerminal) {
+	private void extendRightSideWithNonTerminal(StringBuilder rightSide, float probabilityForNewNonTerminal) {
 		// Füge noch ein Nichtterminal zur rechten Seite hinzu
 		if (rand.nextFloat() <= probabilityForNewNonTerminal) {
 			expandRightSideWithNewNonTerminal(rightSide);

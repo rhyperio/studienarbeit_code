@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.dhbw.karlsruhe.grammar.genertion.GrammarGeneration;
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import de.dhbw.karlsruhe.grammar.genertion.GrammarProbabilityGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
 
 public class GrammarProbabilityGenerationTest {
