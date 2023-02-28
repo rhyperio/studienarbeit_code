@@ -14,7 +14,6 @@ public class GrammarService {
 
   public GrammarService(String json) {
     grammar = formatGrammar(json);
-
   }
 
   public List<GrammarRule> getGrammarRules() {
@@ -23,6 +22,14 @@ public class GrammarService {
 
   public String getStartSymbol() {
     return grammar.getStartSymbol();
+  }
+
+  public String[] getTerminals() {
+    return this.grammar.getTerminals();
+  }
+
+  public String[] getNonTerminals() {
+    return this.grammar.getNonTerminals();
   }
 
   public boolean checkStringOnlyContainsGrammarTerminals(String word){

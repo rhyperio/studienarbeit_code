@@ -1,6 +1,7 @@
 package de.dhbw.karlsruhe.bottom.up.models;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.ParserState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class BottomUpAcceptor {
         steps.add(step);
     }
 
-    public void addStep(String stack, BottomUpState state, String remainingWord, GrammarRule production){
+    public void addStep(String stack, ParserState state, String remainingWord, GrammarRule production){
         BottomUpStep step = new BottomUpStep(stack, state, remainingWord, production);
         steps.add(step);
     }
