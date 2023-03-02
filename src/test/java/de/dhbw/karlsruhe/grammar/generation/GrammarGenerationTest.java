@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GrammarGenerationTest {
     @Test
     public void correctGrammarGenerationTest() throws FileNotFoundException {
-        GrammarInitialization grammarInitialization = new GrammarInitialization();
-        grammarInitialization.startGeneration();
+        GrammarGeneration grammarGeneration = new GrammarGeneration();
+        grammarGeneration.startGeneration();
 
         assertTrue(true);
     }
