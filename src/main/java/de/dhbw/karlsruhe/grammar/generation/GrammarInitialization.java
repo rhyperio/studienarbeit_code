@@ -2,13 +2,10 @@ package de.dhbw.karlsruhe.grammar.generation;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class GrammarInitialization {
-    private List<GrammarRule> grammarRules;
+    private List<GrammarRule> grammarRules = new ArrayList<>();
     private String[] terminals;
     private String[] nonTerminals;
     private String alphabetTerminals = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -21,9 +18,26 @@ public class GrammarInitialization {
 
         this.addTerminals(anzTerminals);
         this.addNonTerminals(anzNonTerminals);
+        this.generateProductions();
 
-        System.out.println("Terminals: " + terminals);
-        System.out.println("Non Terminals: " + nonTerminals);
+        // Output for Test
+        System.out.println("Anz Terminals: " + this.terminals.length);
+        System.out.println("Anz NonTerminals: " + this.nonTerminals.length);
+
+        System.out.println("Terminals:");
+        for (String term : terminals) {
+            System.out.println(term);
+        }
+
+        System.out.println("Non Terminals:");
+        for (String term : nonTerminals) {
+            System.out.println(term);
+        }
+
+        System.out.println("GrammarRules:");
+        for (GrammarRule gr : grammarRules) {
+            System.out.println(gr.leftSide() + "->" + gr.rightSide());
+        }
     }
 
     private void addNonTerminals(int anzNonTerminals) {
@@ -48,5 +62,38 @@ public class GrammarInitialization {
         } while(terminalsSet.size() < anzTerminals);
 
         this.terminals = terminalsSet.toArray(String[]::new);
+    }
+
+    private void generateProductions() {
+        for (String nonTerminal : nonTerminals) {
+            int anzProductions = random.nextInt(4) +1 ;
+
+            for (int i = 0; i < anzProductions; i++) {
+                String rightSide = generaterightSide();
+                GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
+                this.grammarRules.add(gr);
+            }
+        }
+    }
+
+    private String generaterightSide() {
+        String rightSide = "";
+        int lengthOfRS = random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
+
+        for (int i = 0; i < lengthOfRS; i++) {
+            int terminalOrNonTemrinal = random.nextInt(2);
+
+            if (terminalOrNonTemrinal == 0) {
+                // add Terminal
+                String choosenTerminal = this.terminals[random.nextInt(this.terminals.length)];
+                rightSide += choosenTerminal;
+            } else {
+                // add non Terminal
+                String choosenNonTerminal = this.nonTerminals[random.nextInt(this.nonTerminals.length)];
+                rightSide += choosenNonTerminal;
+            }
+        }
+
+        return rightSide;
     }
 }
