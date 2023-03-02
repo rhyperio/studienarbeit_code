@@ -1,18 +1,28 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
+import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarRule;
 
 import java.util.*;
 
 public class GrammarGeneration {
     private List<GrammarRule> grammarRules = new ArrayList<>();
+    private Grammar grammar;
     private String[] terminals;
     private String[] nonTerminals;
     private String alphabetTerminals = "abcdefghijklmnopqrstuvwxyz0123456789";
     private String alphabetNonTerminals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random random = new Random();
 
-    public void startGeneration () {
+    public Grammar generateGrammar() {
+        this.startGeneration();
+
+        this.grammar = new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
+
+        return this.grammar;
+    }
+
+    private void startGeneration () {
         int anzTerminals = this.random.nextInt(4) + 1;
         int anzNonTerminals = this.random.nextInt(7) +1;
 
