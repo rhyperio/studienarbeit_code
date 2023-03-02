@@ -10,7 +10,10 @@ public class GrammarGenerationTest {
     @Test
     public void correctGrammarGenerationTest() throws FileNotFoundException {
         GrammarGeneration grammarGeneration = new GrammarGeneration();
-        Grammar createdGrammar = grammarGeneration.generateGrammar();
+        for (int i = 0; i < 10; i++) {
+            Grammar createdGrammar = grammarGeneration.generateGrammar();
+            System.out.println();
+        }
 
         assertTrue(true);
     }
