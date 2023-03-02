@@ -13,9 +13,14 @@ public class GrammarGeneration {
     private String alphabetTerminals = "abcdefghijklmnopqrstuvwxyz0123456789";
     private String alphabetNonTerminals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random random = new Random();
+    private GrammarVerification grammarVerification;
 
     public Grammar generateGrammar() {
-        this.startGeneration();
+        this.grammarVerification = new GrammarVerification();
+
+        do {
+            this.startGeneration();
+        } while (!this.grammarVerification.verifyProductions(this.grammarRules));
 
         this.grammar = new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
 
