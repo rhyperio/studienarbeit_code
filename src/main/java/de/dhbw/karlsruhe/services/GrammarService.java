@@ -28,6 +28,14 @@ public class GrammarService {
     return grammar.getStartSymbol();
   }
 
+  public String[] getTerminals() {
+    return this.grammar.getTerminals();
+  }
+
+  public String[] getNonTerminals() {
+    return this.grammar.getNonTerminals();
+  }
+
   public boolean checkStringOnlyContainsGrammarTerminals(String word){
     Stream<String> wordSplit = Arrays.stream(word.split("(?!^)"));
     String[] terminals = this.getSortedGrammarTerminals();
