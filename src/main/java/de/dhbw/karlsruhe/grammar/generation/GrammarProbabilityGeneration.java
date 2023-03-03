@@ -67,9 +67,8 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		StringBuilder rightSide = new StringBuilder();
 		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION) {
 			while (StringUtils.isBlank(rightSide.toString()) || startSymbol.equals(rightSide.toString())) {
-				String terminal = usableNonTerminals.get(rand.nextInt(usableNonTerminals.size()));
-				addToTerminals(terminal);
-				rightSide = new StringBuilder(terminal);
+				String nonTerminal = usableNonTerminals.get(rand.nextInt(usableNonTerminals.size()));
+				rightSide = new StringBuilder(nonTerminal);
 				if (!startSymbol.equals(rightSide.toString())) {
 					addToNeededNonTerminalsOnLeftSide(rightSide.toString());
 				}
