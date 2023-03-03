@@ -11,9 +11,9 @@ public class GrammarGenerationTest {
     @Test
     public void correctGrammarGenerationTest() throws FileNotFoundException {
         GrammarGeneration grammarGeneration = new GrammarGeneration();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             Grammar createdGrammar = grammarGeneration.generateGrammar();
-            System.out.println();
+            System.out.println("-----------------------------------");
             assertNotNull(createdGrammar);
         }
     }
