@@ -6,7 +6,7 @@ import de.dhbw.karlsruhe.models.GrammarRule;
 import java.util.*;
 
 public class GrammarGeneration {
-    private List<GrammarRule> grammarRules = new ArrayList<>();
+    private List<GrammarRule> grammarRules;
     private Grammar grammar;
     private String[] terminals;
     private String[] nonTerminals;
@@ -28,6 +28,7 @@ public class GrammarGeneration {
     }
 
     private void startGeneration () {
+        this.grammarRules = new ArrayList<>();
         int anzTerminals = this.random.nextInt(4) + 1;
         int anzNonTerminals = this.random.nextInt(7) +1;
 
