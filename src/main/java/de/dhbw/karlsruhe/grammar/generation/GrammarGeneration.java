@@ -3,6 +3,7 @@ package de.dhbw.karlsruhe.grammar.generation;
 import de.dhbw.karlsruhe.models.Grammar;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -10,6 +11,8 @@ public abstract class GrammarGeneration {
 
   List<String> terminals = new ArrayList<>();
   List<String> nonTerminals = new ArrayList<>();
+  List<String> usableTerminals = new ArrayList<>();
+  List<String> usableNonTerminals = new ArrayList<>();
   String startSymbol;
 
   public abstract Grammar generateGrammar();
@@ -45,10 +48,15 @@ public abstract class GrammarGeneration {
 
   List<String> generateTerminals() {
     List<String> terminals = new ArrayList<>();
+    Random rand = new Random();
     while (terminals.size() < 5) {
-      String terminal = RandomStringUtils.randomAlphabetic(1).toLowerCase();
-      if (!terminals.contains(terminal)) {
-        terminals.add(terminal);
+      if (rand.nextFloat() <= 0.1 || terminals.contains("ε")){
+        String terminal = RandomStringUtils.randomAlphabetic(1).toLowerCase();
+        if (!terminals.contains(terminal)) {
+          terminals.add(terminal);
+        }
+      } else {
+        terminals.add("ε");
       }
     }
     return terminals;
@@ -63,6 +71,18 @@ public abstract class GrammarGeneration {
       }
     }
     return generatedNonTerminals;
+  }
+
+  void addToTerminals(String terminal) {
+    if (!terminals.contains(terminal)) {
+      terminals.add(terminal);
+    }
+  }
+
+  void addNonTerminal(String nonTerminal) {
+    if (!nonTerminals.contains(nonTerminal)) {
+      nonTerminals.add(nonTerminal);
+    }
   }
 
   private List<String> formatProductions(List<String> generatedProductions) {
