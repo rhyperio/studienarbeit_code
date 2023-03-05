@@ -13,6 +13,18 @@ public class ProductionSet {
         productions.addAll(productionList);
     }
 
+    public void addAllReachableProductions(List<GrammarProduction> allProductions) {
+        int pSetsize = 0;
+        int tmpSize = -1;
+        while (pSetsize != tmpSize){
+            tmpSize = this.size();
+            for (GrammarProduction gr : allProductions) {
+                this.addProduction(gr);
+            }
+            pSetsize = this.size();
+        }
+    }
+
     public void addProduction(GrammarProduction production){
         if (isOnRightSide(production.leftSide()) || isOnLeftSide(production.leftSide())){
             productions.add(production);
@@ -62,7 +74,7 @@ public class ProductionSet {
 
     }
 
-    public boolean isOnRightSide(String nonTerminal){
+    private boolean isOnRightSide(String nonTerminal){
         for (GrammarProduction production : productions){
             if (production.rightSide().contains(nonTerminal)){
                 return true;

@@ -1,6 +1,8 @@
 package de.dhbw.karlsruhe.models;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Grammar {
 
