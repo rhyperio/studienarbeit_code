@@ -1,5 +1,7 @@
 package de.dhbw.karlsruhe.models;
 
+import java.util.Arrays;
+
 public class Grammar {
 
   private String[] terminals;
@@ -22,12 +24,8 @@ public class Grammar {
     return nonTerminals;
   }
 
-  public String[] getProductions() {
-    String[] strArray = new String[productions.length];
-    for (int i=0; i <strArray.length; i++){
-      strArray[i] = productions[i].toString();
-    }
-    return strArray;
+  public String[] getProductionsAsString() {
+    return Arrays.stream(productions).map(GrammarProduction::toString).toArray(String[]::new);
   }
 
   public GrammarProduction[] getProductionsAsGrammarProductions(){
