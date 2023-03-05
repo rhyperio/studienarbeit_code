@@ -25,6 +25,9 @@ public class ProductionSet {
         }
     }
 
+    /**
+     * Returns true if production is in the set after adding
+     */
     public boolean addProduction(GrammarProduction production){
         if (isOnRightSide(production.leftSide()) || isOnLeftSide(production.leftSide())){
             productions.add(production);
@@ -32,6 +35,9 @@ public class ProductionSet {
         return this.isRuleInSet(production);
     }
 
+    /**
+     * Returns true if production is in the set after adding
+     */
     public boolean addProductionInReverse(GrammarProduction production){
         List<String> nonTerminals = production.getRightSideNonTerminal();
 

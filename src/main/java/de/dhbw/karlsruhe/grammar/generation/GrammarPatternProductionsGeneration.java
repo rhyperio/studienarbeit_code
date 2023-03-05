@@ -104,9 +104,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 				if (pSet.isRuleInSet(grammarProductions.get(i)))
 					continue;
 
-				pSet.addProduction(grammarProductions.get(i));
-
-				if (! pSet.isRuleInSet(grammarProductions.get(i))){
+				if (!pSet.addProduction(grammarProductions.get(i))){
 					GrammarProduction tmpProduction = generateSingleProduction(pSet.getRandomRightSideNonTerminal(), grammarProductions.get(i).leftSide());
 					grammarProductions.add(tmpProduction);
 					pSet.addProduction(tmpProduction);
