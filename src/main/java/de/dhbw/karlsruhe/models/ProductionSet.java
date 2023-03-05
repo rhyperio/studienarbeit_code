@@ -3,7 +3,7 @@ package de.dhbw.karlsruhe.models;
 import java.util.*;
 
 public class ProductionSet {
-    Set<GrammarProduction> productions = new HashSet<>();
+    private Set<GrammarProduction> productions = new HashSet<>();
 
     public ProductionSet(GrammarProduction startRule){
         productions.add(startRule);
