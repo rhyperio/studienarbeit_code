@@ -9,7 +9,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.dhbw.karlsruhe.models.Grammar;
-import org.jetbrains.annotations.NotNull;
 
 public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 
@@ -56,8 +55,19 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 	}
 
 	protected List<GrammarProduction> generateProductions() {
-		List<GrammarProduction> generatedProductions = new ArrayList<>();
+		List<GrammarProduction> generatedProductions = generateProductionsForEachNonTerminal();
 
+		generatedProductions = connectProductions(generatedProductions);
+
+		generatedProductions = completeTerminalProductions(generatedProductions);
+
+		generatedProductions = completeEndProductions(generatedProductions);
+
+		return generatedProductions;
+	}
+
+	private List<GrammarProduction> generateProductionsForEachNonTerminal() {
+		List<GrammarProduction> generatedProductions = new ArrayList<>();
 		for ( String nonTerminal: nonTerminals) {
 			ProductionRightSide production = ProductionRightSide.randomProduction();
 			String[] rightSideCompounds = production.rightSide.split(" ");
@@ -73,22 +83,13 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 								!nonTerminal.equals(nonTerminals.get(index))) {
 							rightSideCompounds[i] = nonTerminals.get(index);
 						}else
-							rightSideCompounds[i] = nonTerminals.get((index+1) % terminals.size());
+							rightSideCompounds[i] = nonTerminals.get((index+1) % nonTerminals.size());
 					}
 			}
-
 			String rightSide = String.join(" ",rightSideCompounds);
 			generatedProductions.add(new GrammarProduction(nonTerminal, rightSide));
 		}
-		generatedProductions = generatedProductions.stream().distinct().toList();
-
-		generatedProductions = connectProductions(generatedProductions);
-
-		generatedProductions = completeTerminalProductions(generatedProductions);
-
-		generatedProductions = completeEndProductions(generatedProductions);
-
-		return generatedProductions;
+		return generatedProductions.stream().distinct().toList();
 	}
 
 	private List<GrammarProduction> connectProductions(List<GrammarProduction> generatedProductions) {
@@ -113,12 +114,11 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 			}
 			grammarProductions = new ArrayList<>(new HashSet<>(grammarProductions));
 		}
-
 		return grammarProductions;
 	}
 
-	private List<GrammarProduction> completeTerminalProductions(List<GrammarProduction> grammarRules){
-		List<GrammarProduction> resultProductions = new ArrayList<>(grammarRules);
+	private List<GrammarProduction> completeTerminalProductions(List<GrammarProduction> grammarProductions){
+		List<GrammarProduction> resultProductions = new ArrayList<>(grammarProductions);
 		List<String> tmpTerminals = new ArrayList<>(terminals);
 		for (String str: terminals) {
 			for (GrammarProduction gr : resultProductions) {
@@ -137,46 +137,43 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 
 	private List<GrammarProduction> completeEndProductions(List<GrammarProduction> grammarRules) {
 		List<GrammarProduction> endProductions = new ArrayList<>(grammarRules.stream().filter(GrammarProduction::isEndProduction).toList());
-		List<GrammarProduction> completeProductions = new ArrayList<>(grammarRules);
+		List<GrammarProduction> allProductions = new ArrayList<>(grammarRules);
 
 		if (endProductions.isEmpty()) {
 			GrammarProduction tmpProduction = getEndProduction(grammarRules.get(rand.nextInt(grammarRules.size())).leftSide());
 			endProductions.add(tmpProduction);
-			completeProductions.add(tmpProduction);
+			allProductions.add(tmpProduction);
 		}
 
 		int completeSize = -1;
 
-		while (completeSize != completeProductions.size()) {
-			completeSize = completeProductions.size();
-			ProductionSet tmpProductions = new ProductionSet(endProductions);
-			List<GrammarProduction> remainingProductions = new ArrayList<>(completeProductions);
-			remainingProductions.removeAll(endProductions);
+		while (completeSize != allProductions.size()) {
+			completeSize = allProductions.size();
+			ProductionSet fromEndProductionsReachableProductions = new ProductionSet(endProductions);
+			List<GrammarProduction> notFromEndProductionsReachableProductions = new ArrayList<>(allProductions);
+			notFromEndProductionsReachableProductions.removeAll(endProductions);
 
-			for (GrammarProduction pr : endProductions) {
-				tmpProductions.addProduction(pr);
-				int tmpSize;
-				do {
-					tmpSize = tmpProductions.size();
-					for (GrammarProduction remainingPR : completeProductions) {
-						int shortTmpSize = tmpProductions.size();
-						tmpProductions.addProductionInReverse(remainingPR);
-						if (shortTmpSize != tmpProductions.size()) {
-							remainingProductions.remove(remainingPR);
-						}
+			int tmpSize;
+			do {
+				tmpSize = fromEndProductionsReachableProductions.size();
+				for (GrammarProduction remainingPR : allProductions) {
+					if (fromEndProductionsReachableProductions.addProductionInReverse(remainingPR)) {
+						notFromEndProductionsReachableProductions.remove(remainingPR);
 					}
-				} while (tmpSize != tmpProductions.size());
-			}
+				}
+			} while (tmpSize != fromEndProductionsReachableProductions.size());
 
-			if (!remainingProductions.isEmpty()) {
-				List<String> remainingNonTerminals = new ArrayList<>(Objects.requireNonNull(remainingProductions.stream().findAny().get().getRightSideNonTerminal()));
+
+			if (!notFromEndProductionsReachableProductions.isEmpty()) {
+				List<String> remainingNonTerminals =
+						new ArrayList<>(Objects.requireNonNull(notFromEndProductionsReachableProductions.stream().findAny().get().getRightSideNonTerminal()));
 				GrammarProduction newProduction = getEndProduction(
 						remainingNonTerminals.get(rand.nextInt(remainingNonTerminals.size())));
-				completeProductions.add(newProduction);
+				allProductions.add(newProduction);
 				endProductions.add(newProduction);
 			}
 		}
-		return completeProductions;
+		return allProductions;
 	}
 
 	private GrammarProduction getEndProduction(String leftSide) {
@@ -203,10 +200,14 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 			}
 
 			if (StringUtils.equals(rightSideCompounds[i], "N")){
+				if (Arrays.stream(rightSideCompounds).noneMatch(s -> s.contains(rightSideNonTerminal.toUpperCase()))) {
 					rightSideCompounds[i] = rightSideNonTerminal.toUpperCase();
+				} else {
+					int index = rand.nextInt(nonTerminals.size());
+					rightSideCompounds[i] = nonTerminals.get(index);
+				}
 			}
 		}
-
 		String rightSide = String.join(" ",rightSideCompounds);
 
 		return new GrammarProduction(leftSideNonTerminal, rightSide);

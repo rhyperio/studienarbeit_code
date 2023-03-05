@@ -25,13 +25,14 @@ public class ProductionSet {
         }
     }
 
-    public void addProduction(GrammarProduction production){
+    public boolean addProduction(GrammarProduction production){
         if (isOnRightSide(production.leftSide()) || isOnLeftSide(production.leftSide())){
             productions.add(production);
         }
+        return this.isRuleInSet(production);
     }
 
-    public void addProductionInReverse(GrammarProduction production){
+    public boolean addProductionInReverse(GrammarProduction production){
         List<String> nonTerminals = production.getRightSideNonTerminal();
 
         boolean allPresent = true;
@@ -46,6 +47,8 @@ public class ProductionSet {
         if (allPresent) {
             productions.add(production);
         }
+
+        return this.isRuleInSet(production);
     }
 
     public boolean isRuleInSet(GrammarProduction production){
