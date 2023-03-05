@@ -3,24 +3,24 @@ package de.dhbw.karlsruhe.models;
 import java.util.*;
 
 public class ProductionSet {
-    Set<GrammarRule> grammarRules = new HashSet<>();
+    Set<GrammarProduction> productions = new HashSet<>();
 
-    public ProductionSet(GrammarRule startRule){
-        grammarRules.add(startRule);
+    public ProductionSet(GrammarProduction startRule){
+        productions.add(startRule);
     }
 
-    public ProductionSet(List<GrammarRule> grList){
-        grammarRules.addAll(grList);
+    public ProductionSet(List<GrammarProduction> productionList){
+        productions.addAll(productionList);
     }
 
-    public void addProduction(GrammarRule gr){
-        if (isOnRightSide(gr.leftSide()) || isOnLeftSide(gr.leftSide())){
-            grammarRules.add(gr);
+    public void addProduction(GrammarProduction production){
+        if (isOnRightSide(production.leftSide()) || isOnLeftSide(production.leftSide())){
+            productions.add(production);
         }
     }
 
-    public void addProductionInReverse(GrammarRule gr){
-        List<String> nonTerminals = gr.getRightSideNonTerminal();
+    public void addProductionInReverse(GrammarProduction production){
+        List<String> nonTerminals = production.getRightSideNonTerminal();
 
         boolean allPresent = true;
         if (nonTerminals!= null) {
@@ -32,29 +32,29 @@ public class ProductionSet {
             }
         }
         if (allPresent) {
-            grammarRules.add(gr);
+            productions.add(production);
         }
     }
 
-    public boolean isRuleInSet(GrammarRule gr){
-        return grammarRules.contains(gr);
+    public boolean isRuleInSet(GrammarProduction production){
+        return productions.contains(production);
     }
 
     public int size(){
-        return grammarRules.size();
+        return productions.size();
     }
 
     // In case no right side terminals exist, returns start nonterminal
     public String getRandomRightSideNonTerminal(){
 
         List<String> nonTerminal = new ArrayList<>();
-        for (GrammarRule gr: grammarRules){
-            nonTerminal.add(gr.rightSide().substring(gr.rightSide().length() - 1));
+        for (GrammarProduction production: productions){
+            nonTerminal.add(production.rightSide().substring(production.rightSide().length() - 1));
         }
         nonTerminal = nonTerminal.stream().filter(c -> Character.isUpperCase(c.charAt(0))).toList();
 
         if (nonTerminal.isEmpty()){
-            return grammarRules.stream().toList().get(0).leftSide();
+            return productions.stream().toList().get(0).leftSide();
         }
 
         Random rand = new Random();
@@ -63,8 +63,8 @@ public class ProductionSet {
     }
 
     public boolean isOnRightSide(String nonTerminal){
-        for (GrammarRule gr : grammarRules){
-            if (gr.rightSide().contains(nonTerminal)){
+        for (GrammarProduction production : productions){
+            if (production.rightSide().contains(nonTerminal)){
                 return true;
             }
         }
@@ -72,8 +72,8 @@ public class ProductionSet {
     }
 
     private boolean isOnLeftSide(String nonTerminal){
-        for (GrammarRule gr : grammarRules){
-            if (gr.leftSide().contains(nonTerminal)){
+        for (GrammarProduction production : productions){
+            if (production.leftSide().contains(nonTerminal)){
                 return true;
             }
         }

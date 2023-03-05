@@ -3,19 +3,20 @@ package de.dhbw.karlsruhe.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public record GrammarRule(String leftSide, String rightSide) {
+public record GrammarProduction(String leftSide, String rightSide) {
+    
     @Override
     public String toString() {
         return  leftSide + "->" + rightSide;
     }
 
     public boolean isEndProduction(){
-        boolean b = true;
+        boolean containsOnlyTerminals = true;
         for(Character c: rightSide.toCharArray()){
             if (Character.isUpperCase(c))
-                b = false;
+                containsOnlyTerminals = false;
         }
-        return b;
+        return containsOnlyTerminals;
     }
 
     public List<String> getRightSideNonTerminal(){

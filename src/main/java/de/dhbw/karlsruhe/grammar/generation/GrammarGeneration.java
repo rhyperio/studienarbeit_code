@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public abstract class GrammarGeneration {
@@ -15,7 +15,7 @@ public abstract class GrammarGeneration {
     String startSymbol;
 
     public abstract Grammar generateGrammar();
-    protected abstract List<GrammarRule>  generateProductions();
+    protected abstract List<GrammarProduction>  generateProductions();
 
     List<String> cleanProductions(List<String> generatedProductions) {
         return formatProductions(generatedProductions.stream().distinct().collect(Collectors.toList()));

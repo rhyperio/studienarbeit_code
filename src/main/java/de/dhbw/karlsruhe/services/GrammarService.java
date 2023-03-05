@@ -2,7 +2,7 @@ package de.dhbw.karlsruhe.services;
 
 import com.google.gson.Gson;
 import de.dhbw.karlsruhe.models.Grammar;
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +16,9 @@ public class GrammarService {
     grammar = formatGrammar(json);
   }
 
-  public List<GrammarRule> getGrammarRules() {
-    List<GrammarRule> splitGrammarRules = new ArrayList<>();
-    for (GrammarRule gr: grammar.getProductionsAsGrammarRule()){
+  public List<GrammarProduction> getGrammarRules() {
+    List<GrammarProduction> splitGrammarRules = new ArrayList<>();
+    for (GrammarProduction gr: grammar.getProductionsAsGrammarProductions()){
       splitGrammarRules.addAll(buildGrammarRules(gr.toString()));
     }
     return splitGrammarRules;
@@ -56,15 +56,15 @@ public class GrammarService {
     return gson.fromJson(json, Grammar.class);
   }
 
-  private List<GrammarRule> buildGrammarRules(String production) {
-    List<GrammarRule> grammarRules = new ArrayList<>();
+  private List<GrammarProduction> buildGrammarRules(String production) {
+    List<GrammarProduction> grammarRules = new ArrayList<>();
     String[] splitRule = production.split("->");
     String leftSide = splitRule[0];
     String completeRightSide = splitRule[1];
     String[] rightSides = completeRightSide.split("\\|");
 
     for (String rightSide : rightSides) {
-      grammarRules.add(new GrammarRule(leftSide, rightSide.trim()));
+      grammarRules.add(new GrammarProduction(leftSide, rightSide.trim()));
     }
     return grammarRules;
   }

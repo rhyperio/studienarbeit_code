@@ -4,10 +4,10 @@ public class Grammar {
 
   private String[] terminals;
   private String[] nonTerminals;
-  private GrammarRule[] productions;
+  private GrammarProduction[] productions;
   private String startSymbol;
 
-  public Grammar(String[] terminals, String[] nonTerminals, GrammarRule[] productions, String startSymbol) {
+  public Grammar(String[] terminals, String[] nonTerminals, GrammarProduction[] productions, String startSymbol) {
     this.terminals = terminals;
     this.nonTerminals = nonTerminals;
     this.productions = productions;
@@ -30,7 +30,7 @@ public class Grammar {
     return strArray;
   }
 
-  public GrammarRule[] getProductionsAsGrammarRule(){
+  public GrammarProduction[] getProductionsAsGrammarProductions(){
     return productions;
   }
 

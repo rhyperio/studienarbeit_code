@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +50,7 @@ class GrammarGenerationTest {
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		for (String nonTerminal : generatedGrammar.getNonTerminals()) {
-			List<GrammarRule> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarRule()).toList()));
+			List<GrammarProduction> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList()));
 			if (grList.stream().noneMatch(production -> StringUtils.startsWith(production.leftSide(), nonTerminal))) {
 				fail();
 			}
@@ -64,7 +64,7 @@ class GrammarGenerationTest {
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		for (String terminal : generatedGrammar.getTerminals()) {
-			List<GrammarRule> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarRule()).toList()));
+			List<GrammarProduction> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList()));
 			if (grList.stream().noneMatch(production -> StringUtils.contains(production.rightSide(), terminal) && !production.rightSide().equals("epsilon"))) {
 				fail();
 			}
@@ -78,7 +78,7 @@ class GrammarGenerationTest {
 			GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 			Grammar generatedGrammar = grammarGeneration.generateGrammar();
 			boolean endProductionExists = false;
-			for (GrammarRule gr : generatedGrammar.getProductionsAsGrammarRule()) {
+			for (GrammarProduction gr : generatedGrammar.getProductionsAsGrammarProductions()) {
 				if (gr.isEndProduction()) {
 					endProductionExists = true;
 				}
