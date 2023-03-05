@@ -25,7 +25,7 @@ class GrammarGenerationTest {
 	}
 
 	@Test
-	 void checkThatGrammarParstAreNotEmpty() {
+	 void checkThatGrammarParsedAreNotEmpty() {
 		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
@@ -49,13 +49,10 @@ class GrammarGenerationTest {
 		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
+		List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList());
 		for (String nonTerminal : generatedGrammar.getNonTerminals()) {
-			List<GrammarProduction> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList()));
-			if (grList.stream().noneMatch(production -> StringUtils.startsWith(production.leftSide(), nonTerminal))) {
-				fail();
-			}
+			assertTrue(grList.stream().anyMatch(production -> StringUtils.startsWith(production.leftSide(), nonTerminal)));
 		}
-		assertTrue(true);
 	}
 
 	@Test
@@ -63,13 +60,10 @@ class GrammarGenerationTest {
 		GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
+		List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList());
 		for (String terminal : generatedGrammar.getTerminals()) {
-			List<GrammarProduction> grList = new ArrayList<>((Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList()));
-			if (grList.stream().noneMatch(production -> StringUtils.contains(production.rightSide(), terminal) && !production.rightSide().equals("epsilon"))) {
-				fail();
-			}
+			assertTrue(grList.stream().anyMatch(production -> StringUtils.contains(production.rightSide(), terminal) || production.rightSide().equals("epsilon")));
 		}
-		assertTrue(true);
 	}
 
 	@Test
@@ -77,17 +71,9 @@ class GrammarGenerationTest {
 		for (int i =0; i<1000; i++) {
 			GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 			Grammar generatedGrammar = grammarGeneration.generateGrammar();
-			boolean endProductionExists = false;
-			for (GrammarProduction gr : generatedGrammar.getProductionsAsGrammarProductions()) {
-				if (gr.isEndProduction()) {
-					endProductionExists = true;
-				}
-			}
-			if (!endProductionExists){
-				fail();
-			}
+			List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductionsAsGrammarProductions()).toList());
+			assertTrue(grList.stream().anyMatch(GrammarProduction::isEndProduction));
 		}
-		assertTrue(true);
 	}
 
 }
