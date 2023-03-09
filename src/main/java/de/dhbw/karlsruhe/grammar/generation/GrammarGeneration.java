@@ -8,6 +8,7 @@ import java.util.*;
 
 public class GrammarGeneration {
     // ToDo: Verhindern von Grammatiken, wo nicht alle Terminale erreicht werden
+    // ToDo: Epsillon in Grammatik mitaufnehmen
     private Set<GrammarRule> grammarRulesSet;
     private List<GrammarRule> grammarRules;
     private String[] terminals;
@@ -83,7 +84,7 @@ public class GrammarGeneration {
 
         for (String nonTerminal : nonTerminals) {
             int anzProductions = this.random.nextInt(4) +1 ;
-
+            int setSizeBeforeCurrentGeneration = this.grammarRulesSet.size();
             do {
                 do {
                     rightSide = generateRightSide();
@@ -91,7 +92,7 @@ public class GrammarGeneration {
 
                 GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
                 this.grammarRulesSet.add(gr);
-            } while (this.grammarRulesSet.size() < anzProductions);
+            } while ((this.grammarRulesSet.size() - setSizeBeforeCurrentGeneration) < anzProductions);
         }
     }
 

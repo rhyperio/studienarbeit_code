@@ -7,7 +7,38 @@ import java.util.List;
 public class GrammarVerification {
 
     public boolean verifyProductions(List<GrammarRule> pGrammarRulesToCheck) {
-        return this.checkLoopInSingleTerminal(pGrammarRulesToCheck);
+        boolean valid = false;
+        valid = this.checkStartSymbolIsMappingToOtherNonTerminals(pGrammarRulesToCheck);
+
+        if (!valid) {
+            return false;
+        } else {
+            valid = this.checkLoopInSingleTerminal(pGrammarRulesToCheck);
+        }
+
+        if (!valid) {
+            return false;
+        } else {
+            valid = this.checkEveryNonTerminalIsReached(pGrammarRulesToCheck);
+        }
+
+        return valid;
+    }
+
+    private boolean checkStartSymbolIsMappingToOtherNonTerminals(List<GrammarRule> pGrammarRulesToCheck) {
+        boolean valid = false;
+
+        // check if Start Symbol refers to other non terminals if Grammar has more than one non terminal
+
+        return true;
+    }
+
+    private boolean checkEveryNonTerminalIsReached(List<GrammarRule> pGrammarRulesToCheck) {
+        boolean valid = false;
+
+        // check if every non terminal is reached at least ones
+
+        return true;
     }
 
     private boolean checkLoopInSingleTerminal(List<GrammarRule> pGrammarRulesToCheck) {
