@@ -7,41 +7,33 @@ import java.util.List;
 public class GrammarVerification {
 
     public boolean verifyProductions(List<GrammarRule> pGrammarRulesToCheck) {
-        boolean valid = true;
-
-        valid = this.checkLoopInSingleTerminal(pGrammarRulesToCheck);
-
-        return valid;
+        return this.checkLoopInSingleTerminal(pGrammarRulesToCheck);
     }
 
     private boolean checkLoopInSingleTerminal(List<GrammarRule> pGrammarRulesToCheck) {
         boolean valid = false;
-        String prevProductionTerminal = "";
-        String currProductionTerminal = "";
+        String prevProductionNonTerminal = "";
+        String currProductionNonTerminal = "";
 
         for (int i = 0; i < pGrammarRulesToCheck.size(); i++) {
             GrammarRule currGR = pGrammarRulesToCheck.get(i);
-            currProductionTerminal = currGR.leftSide();
+            currProductionNonTerminal = currGR.leftSide();
 
             if (i != 0 && !valid) {
                 continue;
             }
 
-            if (i == 0 || !prevProductionTerminal.equals(currProductionTerminal)) {
-                valid = this.checkEqualityOfLeftAndRight(currGR);
+            if (i == 0 || !prevProductionNonTerminal.equals(currProductionNonTerminal)) {
+                valid = this.checkLeftSideUnequalRightSide(currGR);
             }
 
-            prevProductionTerminal = currProductionTerminal;
+            prevProductionNonTerminal = currProductionNonTerminal;
         }
 
         return valid;
     }
 
-    private boolean checkEqualityOfLeftAndRight(GrammarRule pCurrGR) {
-        if (!pCurrGR.leftSide().equals(pCurrGR.rightSide())) {
-            return true;
-        }
-
-        return false;
+    private boolean checkLeftSideUnequalRightSide(GrammarRule pCurrGR) {
+        return !pCurrGR.leftSide().equals(pCurrGR.rightSide());
     }
 }

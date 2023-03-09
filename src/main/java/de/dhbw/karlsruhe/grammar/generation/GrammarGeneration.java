@@ -2,6 +2,8 @@ package de.dhbw.karlsruhe.grammar.generation;
 
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarRule;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -10,8 +12,6 @@ public class GrammarGeneration {
     private Grammar grammar;
     private String[] terminals;
     private String[] nonTerminals;
-    private String alphabetTerminals = "abcdefghijklmnopqrstuvwxyz0123456789";
-    private String alphabetNonTerminals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random random = new Random();
     private GrammarVerification grammarVerification;
 
@@ -56,26 +56,26 @@ public class GrammarGeneration {
         }
     }
 
-    private void addNonTerminals(int anzNonTerminals) {
+    private void addNonTerminals(int pAnzNonTerminals) {
         Set<String> nonTerminalsSet = new HashSet<>();
         char nonTerminal;
 
         do {
-            nonTerminal = alphabetNonTerminals.charAt(random.nextInt(alphabetNonTerminals.length()));
+            nonTerminal = RandomStringUtils.random(1, true, false).toUpperCase().charAt(0);
             nonTerminalsSet.add(Character.toString(nonTerminal));
-        } while(nonTerminalsSet.size() < anzNonTerminals);
+        } while(nonTerminalsSet.size() < pAnzNonTerminals);
 
         this.nonTerminals = nonTerminalsSet.toArray(String[]::new);
     }
 
-    private void addTerminals(int anzTerminals) {
+    private void addTerminals(int pAnzTerminals) {
         Set<String> terminalsSet = new HashSet<>();
         char terminal;
 
         do {
-            terminal = alphabetTerminals.charAt(random.nextInt(alphabetTerminals.length()));
+            terminal = RandomStringUtils.random(1, true, true).toLowerCase().charAt(0);
             terminalsSet.add(Character.toString(terminal));
-        } while(terminalsSet.size() < anzTerminals);
+        } while(terminalsSet.size() < pAnzTerminals);
 
         this.terminals = terminalsSet.toArray(String[]::new);
     }
@@ -85,21 +85,19 @@ public class GrammarGeneration {
             int anzProductions = random.nextInt(4) +1 ;
 
             for (int i = 0; i < anzProductions; i++) {
-                String rightSide = generaterightSide();
+                String rightSide = generateRightSide();
                 GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
                 this.grammarRules.add(gr);
             }
         }
     }
 
-    private String generaterightSide() {
+    private String generateRightSide() {
         String rightSide = "";
-        int lengthOfRS = random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
+        int lengthOfRightSide = random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
 
-        for (int i = 0; i < lengthOfRS; i++) {
-            int terminalOrNonTemrinal = random.nextInt(2);
-
-            if (terminalOrNonTemrinal == 0) {
+        for (int i = 0; i < lengthOfRightSide; i++) {
+            if (random.nextFloat() <= 0.5) {
                 // add Terminal
                 String choosenTerminal = this.terminals[random.nextInt(this.terminals.length)];
                 rightSide += choosenTerminal;
