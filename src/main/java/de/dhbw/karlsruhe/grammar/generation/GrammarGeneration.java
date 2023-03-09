@@ -79,11 +79,16 @@ public class GrammarGeneration {
     }
 
     private void generateProductions() {
+        String rightSide = "";
+
         for (String nonTerminal : nonTerminals) {
             int anzProductions = this.random.nextInt(4) +1 ;
 
             do {
-                String rightSide = generateRightSide();
+                do {
+                    rightSide = generateRightSide();
+                } while (rightSide.equalsIgnoreCase(nonTerminal));
+
                 GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
                 this.grammarRulesSet.add(gr);
             } while (this.grammarRulesSet.size() < anzProductions);
