@@ -3,13 +3,12 @@ package de.dhbw.karlsruhe.grammar.generation;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarRule;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 public class GrammarGeneration {
-    // ToDo: Verhindern von Produktionen wo das Terminal auf sich selber abbildet
     // ToDo: Verhindern von Grammatiken, wo nicht alle Terminale erreicht werden
+    private Set<GrammarRule> grammarRulesSet;
     private List<GrammarRule> grammarRules;
     private String[] terminals;
     private String[] nonTerminals;
@@ -26,13 +25,14 @@ public class GrammarGeneration {
     }
 
     private void startGeneration () {
-        this.grammarRules = new ArrayList<>();
+        this.grammarRulesSet = new HashSet<>();
         int anzTerminals = this.random.nextInt(4) + 1;
         int anzNonTerminals = this.random.nextInt(7) +1;
 
         this.addTerminals(anzTerminals);
         this.addNonTerminals(anzNonTerminals);
         this.generateProductions();
+        this.grammarRules = this.grammarRulesSet.stream().toList();
 
         // Output for Test
         System.out.println("Anz Terminals: " + this.terminals.length);
@@ -49,7 +49,7 @@ public class GrammarGeneration {
         }
 
         System.out.println("GrammarRules:");
-        for (GrammarRule gr : grammarRules) {
+        for (GrammarRule gr : grammarRulesSet) {
             System.out.println(gr.leftSide() + "->" + gr.rightSide());
         }
     }
@@ -82,11 +82,11 @@ public class GrammarGeneration {
         for (String nonTerminal : nonTerminals) {
             int anzProductions = this.random.nextInt(4) +1 ;
 
-            for (int i = 0; i < anzProductions; i++) {
+            do {
                 String rightSide = generateRightSide();
                 GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
-                this.grammarRules.add(gr);
-            }
+                this.grammarRulesSet.add(gr);
+            } while (this.grammarRulesSet.size() < anzProductions);
         }
     }
 
