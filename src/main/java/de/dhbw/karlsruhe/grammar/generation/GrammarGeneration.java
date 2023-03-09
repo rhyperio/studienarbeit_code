@@ -8,23 +8,21 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 public class GrammarGeneration {
+    // ToDo: Verhindern von Produktionen wo das Terminal auf sich selber abbildet
+    // ToDo: Verhindern von Grammatiken, wo nicht alle Terminale erreicht werden
     private List<GrammarRule> grammarRules;
-    private Grammar grammar;
     private String[] terminals;
     private String[] nonTerminals;
     private Random random = new Random();
-    private GrammarVerification grammarVerification;
 
     public Grammar generateGrammar() {
-        this.grammarVerification = new GrammarVerification();
+        GrammarVerification grammarVerification = new GrammarVerification();
 
         do {
             this.startGeneration();
-        } while (!this.grammarVerification.verifyProductions(this.grammarRules));
+        } while (!grammarVerification.verifyProductions(this.grammarRules));
 
-        this.grammar = new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
-
-        return this.grammar;
+        return new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
     }
 
     private void startGeneration () {
@@ -82,7 +80,7 @@ public class GrammarGeneration {
 
     private void generateProductions() {
         for (String nonTerminal : nonTerminals) {
-            int anzProductions = random.nextInt(4) +1 ;
+            int anzProductions = this.random.nextInt(4) +1 ;
 
             for (int i = 0; i < anzProductions; i++) {
                 String rightSide = generateRightSide();
@@ -94,16 +92,16 @@ public class GrammarGeneration {
 
     private String generateRightSide() {
         String rightSide = "";
-        int lengthOfRightSide = random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
+        int lengthOfRightSide = this.random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
 
         for (int i = 0; i < lengthOfRightSide; i++) {
-            if (random.nextFloat() <= 0.5) {
+            if (this.random.nextFloat() <= 0.5) {
                 // add Terminal
-                String choosenTerminal = this.terminals[random.nextInt(this.terminals.length)];
+                String choosenTerminal = this.terminals[this.random.nextInt(this.terminals.length)];
                 rightSide += choosenTerminal;
             } else {
                 // add non Terminal
-                String choosenNonTerminal = this.nonTerminals[random.nextInt(this.nonTerminals.length)];
+                String choosenNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
                 rightSide += choosenNonTerminal;
             }
         }
