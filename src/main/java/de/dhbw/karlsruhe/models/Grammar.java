@@ -7,8 +7,6 @@ public class Grammar {
   private String[] productions;
   private String startSymbol;
 
-  
-  
   public Grammar(String[] terminals, String[] nonTerminals, String[] productions, String startSymbol) {
 	this.terminals = terminals;
 	this.nonTerminals = nonTerminals;

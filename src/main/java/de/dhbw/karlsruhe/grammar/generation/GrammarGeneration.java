@@ -33,7 +33,7 @@ public abstract class GrammarGeneration {
     for (String production : productionsWithRightSideOnLeft) {
       if (production.charAt(0) == rightSide) {
         return true;
-      } else if (production.charAt(0) == startSymbol.charAt(0)) {
+      } else if (production.charAt(0) == startSymbol.charAt(0) || production.charAt(0) == leftSide.charAt(0)) {
         return true;
       } else {
         return isLoop(startSymbol, productions, String.valueOf(production.charAt(0)), rightSide);
