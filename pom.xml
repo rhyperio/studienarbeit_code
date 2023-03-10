@@ -29,54 +29,19 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                <sourceDir>${project.basedir}/src/main/java</sourceDir>
-              </sourceDirs>
-            </configuration>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <id>compile</id>
-          </execution>
-          <execution>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                <sourceDir>${project.basedir}/src/test/java</sourceDir>
-              </sourceDirs>
-            </configuration>
-            <goals>
-              <goal>test-compile</goal>
-            </goals>
-            <id>test-compile</id>
-          </execution>
-          <execution>
-            <configuration>
-              <annotationProcessorPaths>
-                <annotationProcessorPath>
-                  <artifactId>mapstruct-processor</artifactId>
-                  <groupId>org.mapstruct</groupId>
-                  <version>${mapstruct.version}</version>
-                </annotationProcessorPath>
-              </annotationProcessorPaths>
-              <sourceDirs>
-                <sourceDir>src/main/kotlin</sourceDir>
-                <sourceDir>src/main/java</sourceDir>
-              </sourceDirs>
-            </configuration>
-            <goals>
-              <goal>kapt</goal>
-            </goals>
-            <id>kapt</id>
-          </execution>
-        </executions>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <version>${kotlin.version}</version>
+        <!-- Build an executable JAR -->
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+<!--              <classpathPrefix>lib/</classpathPrefix>-->
+              <mainClass>de.dhbw.karlsruhe.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -123,11 +88,17 @@
   </build>
 
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
     <dependency>
-      <artifactId>kotlin-test-junit5</artifactId>
-      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <version>3.0.4</version>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
       <scope>test</scope>
-      <version>1.7.20</version>
+      <version>3.0.4</version>
     </dependency>
     <dependency>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -136,48 +107,55 @@
       <version>5.9.0</version>
     </dependency>
     <dependency>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <version>1.7.20</version>
-    </dependency>
-    <dependency>
       <artifactId>gson</artifactId>
       <groupId>com.google.code.gson</groupId>
       <version>2.10</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
-      <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
-      <version>5.9.0</version>
+      <groupId>org.junit.vintage</groupId>
       <scope>test</scope>
+      <version>5.9.0</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.9.0</version>
+      <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
+      <version>5.9.0</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <version>5.9.0</version>
+      <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
+      <version>5.9.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <version>3.0.4</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <version>2.0.6</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <groupId>org.apache.commons</groupId>
       <version>3.12.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
+      <groupId>org.apache.commons</groupId>
       <version>4.4</version>
     </dependency>
   </dependencies>
-
 
   <groupId>de.dhbw.karlsruhe</groupId>
   <modelVersion>4.0.0</modelVersion>
@@ -186,9 +164,6 @@
 
   <properties>
     <java.version>17</java.version>
-    <kotlin.code.style>official</kotlin.code.style>
-    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
-    <kotlin.version>1.7.10</kotlin.version>
     <mapstruct.version>1.5.2.Final</mapstruct.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
