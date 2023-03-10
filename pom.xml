@@ -94,6 +94,12 @@
       <groupId>org.springframework.boot</groupId>
       <version>3.0.4</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+    <dependency>
+      <artifactId>spring-security-config</artifactId>
+      <groupId>org.springframework.security</groupId>
+      <version>6.0.2</version>
+    </dependency>
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <groupId>org.springframework.boot</groupId>
