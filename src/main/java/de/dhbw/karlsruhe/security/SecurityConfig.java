@@ -39,7 +39,7 @@ public class SecurityConfig {
         .securityMatcher("/**").csrf().disable().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and().authorizeRequests()
-        .requestMatchers("/api/**")
+        .requestMatchers("/api/**", "/swagger-ui/**", "/v3/api-docs/**")
         .permitAll()
         .and().addFilter(filter).authorizeRequests().requestMatchers("/**").authenticated();
 
