@@ -16,6 +16,10 @@ public class GrammarService {
     grammar = formatGrammar(json);
   }
 
+  public GrammarService(Grammar grammar) {
+    this.grammar = grammar;
+  }
+
   public List<GrammarRule> getGrammarRules() {
     return createGrammarRules(grammar);
   }
