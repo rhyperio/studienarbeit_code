@@ -4,16 +4,17 @@ import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpStep;
 import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.services.GrammarService;
+import de.dhbw.karlsruhe.services.ProductionService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
 public class BottomUpAcceptorValidation {
-
     private final GrammarService grammarService;
-
+    private final ProductionService productionService;
     public BottomUpAcceptorValidation(String grammarAsJson) {
         this.grammarService = new GrammarService(grammarAsJson);
+        this.productionService = new ProductionService();
     }
 
     public boolean checkAcceptor(BottomUpAcceptor bUAcceptor, String word) {
@@ -65,7 +66,7 @@ public class BottomUpAcceptorValidation {
     }
 
     private boolean isValidReductionStep(BottomUpStep step, BottomUpStep priorStep) {
-        if (!this.grammarService.getGrammarRules().contains(step.getProduction()))
+        if (!this.grammarService.getGrammarRules().contains(productionService.removeSpaces(step.getProduction())))
             return false;
 
         return isLeftSideOfProductionExecuted(step)

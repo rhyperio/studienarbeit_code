@@ -26,4 +26,8 @@ public class ProductionService {
         }
         return allNonTerminals;
     }
+
+    public GrammarProduction removeSpaces(GrammarProduction production){
+        return new GrammarProduction(production.leftSide(),production.rightSide().replaceAll("\\s+",""));
+    }
 }
