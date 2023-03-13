@@ -35,25 +35,6 @@ public class GrammarGeneration {
         this.addNonTerminals(anzNonTerminals);
         this.generateProductions();
         this.grammarRules = this.grammarRulesSet.stream().toList();
-
-        // Output for Test
-        System.out.println("Anz Terminals: " + this.terminals.length);
-        System.out.println("Anz NonTerminals: " + this.nonTerminals.length);
-
-        System.out.println("Terminals:");
-        for (String term : terminals) {
-            System.out.println(term);
-        }
-
-        System.out.println("Non Terminals:");
-        for (String term : nonTerminals) {
-            System.out.println(term);
-        }
-
-        System.out.println("GrammarRules:");
-        for (GrammarRule gr : grammarRulesSet) {
-            System.out.println(gr.leftSide() + "->" + gr.rightSide());
-        }
     }
 
     private void addNonTerminals(int pAnzNonTerminals) {
@@ -97,7 +78,6 @@ public class GrammarGeneration {
         }
 
         Set<String> notTerminatingNonTerminals = this.grammarVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
-        int productionSizeBeforeAdaption = this.grammarRulesSet.size();
 
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
             String terminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
