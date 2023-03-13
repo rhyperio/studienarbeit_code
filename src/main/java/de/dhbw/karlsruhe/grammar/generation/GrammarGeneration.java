@@ -14,9 +14,10 @@ public class GrammarGeneration {
     private String[] terminals;
     private String[] nonTerminals;
     private Random random = new Random();
+    private GrammarVerification grammarVerification;
 
     public Grammar generateGrammar() {
-        GrammarVerification grammarVerification = new GrammarVerification();
+        grammarVerification = new GrammarVerification();
 
         do {
             this.startGeneration();
@@ -93,6 +94,15 @@ public class GrammarGeneration {
                 GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
                 this.grammarRulesSet.add(gr);
             } while ((this.grammarRulesSet.size() - setSizeBeforeCurrentGeneration) < anzProductions);
+        }
+
+        Set<String> notTerminatingNonTerminals = this.grammarVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
+        int productionSizeBeforeAdaption = this.grammarRulesSet.size();
+
+        for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
+            String terminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+            GrammarRule terminatingGr = new GrammarRule(notTerminatingNonTerminal, terminatingRightSide);
+            this.grammarRulesSet.add(terminatingGr);
         }
     }
 

@@ -26,7 +26,7 @@ public class GrammarVerification {
         return valid;
     }
 
-    public List<String> getNonTerminatingNonTerminals(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+    public Set<String> getNonTerminatingNonTerminals(Set<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
         Set<String> nonTerminatingNonTerminals = new HashSet<>();
         boolean loop;
 
@@ -38,9 +38,9 @@ public class GrammarVerification {
             }
         }
 
-        return nonTerminatingNonTerminals.stream().toList();
+        return nonTerminatingNonTerminals;
     }
-    private boolean checkIfNonTerminalLoopsItself(String pNonTerminal, List<GrammarRule> pGrammarRulesToCheck) {
+    private boolean checkIfNonTerminalLoopsItself(String pNonTerminal, Set<GrammarRule> pGrammarRulesToCheck) {
         List<String> leftSidesOfUsage = new ArrayList<>();
         String rightSidesOfNonTerminalToCheck = "";
 
