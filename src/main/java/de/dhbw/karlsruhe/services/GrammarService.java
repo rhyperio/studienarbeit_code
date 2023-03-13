@@ -14,6 +14,7 @@ public class GrammarService {
 
   public GrammarService(String json) {
     grammar = formatGrammar(json);
+    grammar.splitOrGrammarsIntoSingleRules();
   }
 
   public GrammarService(Grammar grammar) {
