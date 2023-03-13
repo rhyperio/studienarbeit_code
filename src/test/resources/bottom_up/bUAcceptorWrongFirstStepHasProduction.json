@@ -31,7 +31,7 @@
 			"stack":"*(S",
 			"state":"Z",
 			"remainingWord":")",
-			"production":{"leftSide":"S","rightSide":"( S )"}
+			"production":{"leftSide":"S","rightSide":"(S)"}
 		},
 		{
 			"stack":"*(S)",
@@ -42,7 +42,7 @@
 			"stack":"*S",
 			"state":"Z",
 			"remainingWord":"",
-			"production":{"leftSide":"S","rightSide":"( S )"}
+			"production":{"leftSide":"S","rightSide":"(S)"}
 		},
 		{
 			"stack":"*S",
