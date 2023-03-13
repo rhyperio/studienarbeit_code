@@ -162,6 +162,10 @@ public class TopDownAcceptorValidation {
     private boolean checkUsedProduction(String stackCurrStep, String stackNextStep, GrammarRule productionCurrStep) {
         boolean success = false;
 
+        if (!this.grammarService.getGrammarRules().contains(productionCurrStep)) {
+            return false;
+        }
+
         String leftSide = productionCurrStep.leftSide();
         String rightSide = productionCurrStep.rightSide();
 
