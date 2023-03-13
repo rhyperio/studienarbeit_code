@@ -3,10 +3,7 @@ package de.dhbw.karlsruhe.grammar.generation;
 import de.dhbw.karlsruhe.models.GrammarRule;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class GrammarVerification {
 
@@ -27,6 +24,51 @@ public class GrammarVerification {
         }
 
         return valid;
+    }
+
+    public List<String> getNonTerminatingNonTerminals(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+        Set<String> nonTerminatingNonTerminals = new HashSet<>();
+        boolean loop;
+
+        for (String currentNonTerminal : pNonTerminals) {
+            loop = this.checkIfNonTerminalLoopsItself(currentNonTerminal, pGrammarRulesToCheck);
+
+            if (loop) {
+                nonTerminatingNonTerminals.add(currentNonTerminal);
+            }
+        }
+
+        return nonTerminatingNonTerminals.stream().toList();
+    }
+    private boolean checkIfNonTerminalLoopsItself(String pNonTerminal, List<GrammarRule> pGrammarRulesToCheck) {
+        List<String> leftSidesOfUsage = new ArrayList<>();
+        String rightSidesOfNonTerminalToCheck = "";
+
+        for (GrammarRule gr : pGrammarRulesToCheck) {
+            if (gr.leftSide().equals(pNonTerminal)) {
+                rightSidesOfNonTerminalToCheck += gr.rightSide();
+            }
+
+            if (gr.rightSide().contains(pNonTerminal)) {
+                leftSidesOfUsage.add(gr.leftSide());
+            }
+        }
+
+        if (leftSidesOfUsage.contains(pNonTerminal) || this.checkIfRightSideContainsUsedNonTerminals(rightSidesOfNonTerminalToCheck, leftSidesOfUsage)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkIfRightSideContainsUsedNonTerminals(String rightSidesOfNonTerminalToCheck, List<String> leftSidesOfUsage) {
+        for (int i = 0; i < leftSidesOfUsage.size(); i++) {
+            if (rightSidesOfNonTerminalToCheck.contains(leftSidesOfUsage.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean checkStartSymbolIsMappingToOtherNonTerminals(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
