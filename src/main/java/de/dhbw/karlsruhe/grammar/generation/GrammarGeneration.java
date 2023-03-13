@@ -20,7 +20,7 @@ public class GrammarGeneration {
 
         do {
             this.startGeneration();
-        } while (!grammarVerification.verifyProductions(this.grammarRules));
+        } while (!grammarVerification.verifyProductions(this.grammarRules, this.nonTerminals));
 
         return new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
     }

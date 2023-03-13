@@ -1,14 +1,16 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
 import de.dhbw.karlsruhe.models.GrammarRule;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GrammarVerification {
 
-    public boolean verifyProductions(List<GrammarRule> pGrammarRulesToCheck) {
+    public boolean verifyProductions(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
         boolean valid = false;
-        valid = this.checkStartSymbolIsMappingToOtherNonTerminals(pGrammarRulesToCheck);
+        valid = this.checkStartSymbolIsMappingToOtherNonTerminals(pGrammarRulesToCheck, pNonTerminals);
 
         if (!valid) {
             return false;
@@ -25,18 +27,31 @@ public class GrammarVerification {
         return valid;
     }
 
-    private boolean checkStartSymbolIsMappingToOtherNonTerminals(List<GrammarRule> pGrammarRulesToCheck) {
+    private boolean checkStartSymbolIsMappingToOtherNonTerminals(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
         boolean valid = false;
 
-        // check if Start Symbol refers to other non terminals if Grammar has more than one non terminal
+        String prevProductionNonTerminal = "";
+        String currProductionNonTerminal = "";
 
-        return true;
+        String startSymbol = pGrammarRulesToCheck.get(0).leftSide();
+
+        for (GrammarRule gr : pGrammarRulesToCheck) {
+            if (gr.leftSide().equals(startSymbol)) {
+                for (int i = 0; i < gr.rightSide().length(); i++) {
+                    if (Arrays.stream(pNonTerminals).anyMatch(String.valueOf(gr.rightSide().charAt(i))::equals)) {
+                        valid = true;
+                    }
+                }
+            }
+        }
+
+        return valid;
     }
 
     private boolean checkEveryNonTerminalIsReached(List<GrammarRule> pGrammarRulesToCheck) {
         boolean valid = false;
 
-        // check if every non terminal is reached at least ones
+        // check if every non Terminal is reached at least ones
 
         return true;
     }
