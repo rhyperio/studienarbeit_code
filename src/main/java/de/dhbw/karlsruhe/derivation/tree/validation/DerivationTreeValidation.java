@@ -2,6 +2,7 @@ package de.dhbw.karlsruhe.derivation.tree.validation;
 
 import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
 import de.dhbw.karlsruhe.models.ElementClassification;
+import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarRule;
 import de.dhbw.karlsruhe.services.GrammarService;
 import java.util.ArrayList;
@@ -15,6 +16,10 @@ public class DerivationTreeValidation {
 
   public DerivationTreeValidation(String grammarAsJson) {
     this.grammarService = new GrammarService(grammarAsJson);
+  }
+
+  public DerivationTreeValidation(Grammar grammar) {
+    this.grammarService = new GrammarService(grammar);
   }
 
   public boolean checkTree(DerivationTree root, String word) {
