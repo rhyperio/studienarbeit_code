@@ -17,32 +17,32 @@ public abstract class GrammarGeneration {
     public abstract Grammar generateGrammar();
     protected abstract List<GrammarProduction>  generateProductions();
 
-    List<String> cleanProductions(List<String> generatedProductions) {
-        return formatProductions(generatedProductions.stream().distinct().collect(Collectors.toList()));
+    List<GrammarProduction> cleanProductions(List<GrammarProduction> generatedProductions) {
+        return generatedProductions.stream().distinct().collect(Collectors.toList());
     }
 
-    boolean isLoop(String startSymbol, List<String> productions, String leftSide, char rightSide) {
-        List<String> productionsWithRightSideOnLeft = new ArrayList<>();
+    boolean isLoop(String startSymbol, List<GrammarProduction> productions, String leftSide, char rightSide) {
+        List<GrammarProduction> productionsWithRightSideOnLeft = new ArrayList<>();
         productions.forEach(production -> {
-            if (production.substring(production.indexOf('>') + 1 ).contains(leftSide)) {
+            if (production.rightSide().contains(leftSide)) {
                 productionsWithRightSideOnLeft.add(production);
             }
         });
 
-        for (String production : productionsWithRightSideOnLeft) {
-            if (production.charAt(0) == rightSide) {
+        for (GrammarProduction production : productionsWithRightSideOnLeft) {
+            if (production.leftSide().charAt(0) == rightSide) {
                 return true;
-            } else if (production.charAt(0) == startSymbol.charAt(0)) {
+            } else if (production.leftSide().charAt(0) == startSymbol.charAt(0) || production.leftSide().charAt(0) == leftSide.charAt(0)) {
                 return true;
             } else {
-                return isLoop(startSymbol, productions, String.valueOf(production.charAt(0)), rightSide);
+                return isLoop(startSymbol, productions, String.valueOf(production.leftSide().charAt(0)), rightSide);
             }
         }
         return false;
     }
 
-    String buildProduction(String leftSide, String rightSide) {
-        return leftSide + " -> " + rightSide;
+    GrammarProduction buildProduction(String leftSide, String rightSide) {
+        return new GrammarProduction(leftSide, rightSide);
     }
 
     List<String> generateTerminals() {

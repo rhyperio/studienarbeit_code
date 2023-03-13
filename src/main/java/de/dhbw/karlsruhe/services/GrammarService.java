@@ -20,61 +20,52 @@ public class GrammarService {
     this.grammar = grammar;
   }
 
-  public List<GrammarProduction> getGrammarRules() {
-    List<GrammarProduction> splitGrammarRules = new ArrayList<>();
-    for (GrammarProduction gr: grammar.getProductionsAsGrammarProductions()){
-      splitGrammarRules.addAll(buildGrammarRules(gr.toString()));
+    public List<GrammarProduction> getGrammarRules () {
+      return Arrays.stream(grammar.getProductionsAsGrammarProductions()).toList();
     }
-    return splitGrammarRules;
 
-
-  public List<GrammarProduction> getGrammarRules() {
-    return createGrammarRules(grammar);
-  }
-
-  public String getStartSymbol() {
-    return grammar.getStartSymbol();
-  }
-
-  public String[] getTerminals() {
-    return this.grammar.getTerminals();
-  }
-
-  public String[] getNonTerminals() {
-    return this.grammar.getNonTerminals();
-  }
-
-  public boolean checkStringOnlyContainsGrammarTerminals(String word){
-    Stream<String> wordSplit = Arrays.stream(word.split("(?!^)"));
-    String[] terminals = this.getSortedGrammarTerminals();
-    for (String terminal: terminals) {
-      wordSplit = wordSplit.filter(s -> !s.equals(terminal));
+    public String getStartSymbol () {
+      return grammar.getStartSymbol();
     }
-    return wordSplit.toList().isEmpty();
-  }
 
-  private String[] getSortedGrammarTerminals() {
-    String[] tmp = grammar.getTerminals();
-    Arrays.sort(tmp);
-    return tmp;
-  }
-
-  private Grammar formatGrammar(String json) {
-    Gson gson = new Gson();
-    return gson.fromJson(json, Grammar.class);
-  }
-
-  private List<GrammarProduction> buildGrammarRules(String production) {
-    List<GrammarProduction> grammarRules = new ArrayList<>();
-    String[] splitRule = production.split("->");
-    String leftSide = splitRule[0];
-    String completeRightSide = splitRule[1];
-    String[] rightSides = completeRightSide.split("\\|");
-
-    for (String rightSide : rightSides) {
-      grammarRules.add(new GrammarProduction(leftSide, rightSide.trim()));
+    public String[] getTerminals () {
+      return this.grammar.getTerminals();
     }
-    return grammarRules;
-  }
 
+    public String[] getNonTerminals () {
+      return this.grammar.getNonTerminals();
+    }
+
+    public boolean checkStringOnlyContainsGrammarTerminals (String word){
+      Stream<String> wordSplit = Arrays.stream(word.split("(?!^)"));
+      String[] terminals = this.getSortedGrammarTerminals();
+      for (String terminal : terminals) {
+        wordSplit = wordSplit.filter(s -> !s.equals(terminal));
+      }
+      return wordSplit.toList().isEmpty();
+    }
+
+    private String[] getSortedGrammarTerminals () {
+      String[] tmp = grammar.getTerminals();
+      Arrays.sort(tmp);
+      return tmp;
+    }
+
+    private Grammar formatGrammar (String json){
+      Gson gson = new Gson();
+      return gson.fromJson(json, Grammar.class);
+    }
+
+    private List<GrammarProduction> buildGrammarRules (String production){
+      List<GrammarProduction> grammarRules = new ArrayList<>();
+      String[] splitRule = production.split("->");
+      String leftSide = splitRule[0];
+      String completeRightSide = splitRule[1];
+      String[] rightSides = completeRightSide.split("\\|");
+
+      for (String rightSide : rightSides) {
+        grammarRules.add(new GrammarProduction(leftSide, rightSide.trim()));
+      }
+      return grammarRules;
+    }
 }

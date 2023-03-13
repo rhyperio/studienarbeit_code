@@ -28,7 +28,7 @@ public class GrammarProbabilityGenerationTest {
 
 		assertNotEquals(0, generatedGrammar.getTerminals().length);
 		assertNotEquals(0, generatedGrammar.getNonTerminals().length);
-		assertNotEquals(0, generatedGrammar.getProductions().length);
+		assertNotEquals(0, generatedGrammar.getProductionsAsGrammarProductions().length);
 		assertFalse(generatedGrammar.getStartSymbol().isBlank());
 	}
 

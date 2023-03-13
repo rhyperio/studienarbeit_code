@@ -2,12 +2,8 @@ package de.dhbw.karlsruhe.derivation.tree.validation;
 
 import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
 import de.dhbw.karlsruhe.models.ElementClassification;
-<<<<<<< HEAD
 import de.dhbw.karlsruhe.models.GrammarProduction;
-=======
 import de.dhbw.karlsruhe.models.Grammar;
-import de.dhbw.karlsruhe.models.GrammarRule;
->>>>>>> main
 import de.dhbw.karlsruhe.services.GrammarService;
 import java.util.ArrayList;
 import java.util.List;
