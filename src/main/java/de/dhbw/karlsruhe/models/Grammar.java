@@ -46,7 +46,7 @@ public class Grammar {
       String[] rightSides = production.rightSide().split("\\|");
 
       for (String rightSide : rightSides) {
-        grammarRules.add(new GrammarProduction(production.leftSide(), rightSide.trim()));
+        grammarRules.add(new GrammarProduction(production.leftSide(), removeSpacesIn(rightSide.trim())));
       }
     });
     this.productions = grammarRules.toArray(new GrammarProduction[0]);
@@ -82,4 +82,9 @@ public class Grammar {
     }
     return true;
   }
+
+  private String removeSpacesIn(String value) {
+      return value.replaceAll(" ", "");
+  }
+
 }
