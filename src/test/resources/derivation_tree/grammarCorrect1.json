@@ -9,7 +9,7 @@
   "productions": [
       {
         "leftSide":"S",
-        "rightSide":"epsilon|( S )|S S"
+        "rightSide":"epsilon|(S)|SS"
       }
   ],
   "startSymbol": "S"

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.services.ProductionService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
@@ -68,11 +69,12 @@ class GrammarPatternProductionsGenerationTest {
 
 	@Test
 	void checkAtLeastOneEndproduction() {
+		ProductionService productionService = new ProductionService();
 		for (int i =0; i<1000; i++) {
 			GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
 			Grammar generatedGrammar = grammarGeneration.generateGrammar();
 			List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
-			assertTrue(grList.stream().anyMatch(GrammarProduction::isEndProduction));
+			assertTrue(grList.stream().anyMatch(productionService::isEndProduction));
 		}
 	}
 

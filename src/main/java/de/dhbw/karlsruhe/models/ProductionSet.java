@@ -1,5 +1,7 @@
 package de.dhbw.karlsruhe.models;
 
+import de.dhbw.karlsruhe.services.ProductionService;
+
 import java.util.*;
 
 public class ProductionSet {
@@ -39,7 +41,8 @@ public class ProductionSet {
      * Returns true if production is in the set after adding
      */
     public boolean addProductionInReverse(GrammarProduction production){
-        List<String> nonTerminals = production.getRightSideNonTerminal();
+        ProductionService productionService = new ProductionService();
+        List<String> nonTerminals = productionService.getRightSideNonTerminals(production);
 
         boolean allPresent = true;
         if (nonTerminals!= null) {

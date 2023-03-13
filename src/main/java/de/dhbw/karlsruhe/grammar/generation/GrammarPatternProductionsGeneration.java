@@ -5,6 +5,7 @@ import java.util.*;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.models.ProductionRightSide;
 import de.dhbw.karlsruhe.models.ProductionSet;
+import de.dhbw.karlsruhe.services.ProductionService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -134,7 +135,8 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 	}
 
 	private List<GrammarProduction> completeEndProductions(List<GrammarProduction> grammarRules) {
-		List<GrammarProduction> endProductions = new ArrayList<>(grammarRules.stream().filter(GrammarProduction::isEndProduction).toList());
+		ProductionService productionService = new ProductionService();
+		List<GrammarProduction> endProductions = new ArrayList<>(grammarRules.stream().filter(productionService::isEndProduction).toList());
 		List<GrammarProduction> allProductions = new ArrayList<>(grammarRules);
 
 		if (endProductions.isEmpty()) {
@@ -164,7 +166,8 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 
 			if (!notFromEndProductionsReachableProductions.isEmpty()) {
 				List<String> remainingNonTerminals =
-						new ArrayList<>(Objects.requireNonNull(notFromEndProductionsReachableProductions.stream().findAny().get().getRightSideNonTerminal()));
+						new ArrayList<>(productionService.getRightSideNonTerminals(
+								Objects.requireNonNull(notFromEndProductionsReachableProductions.stream().findAny().get())));
 				GrammarProduction newProduction = getEndProduction(
 						remainingNonTerminals.get(rand.nextInt(remainingNonTerminals.size())));
 				allProductions.add(newProduction);
