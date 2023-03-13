@@ -3,7 +3,9 @@ package de.dhbw.karlsruhe.grammar.generation;
 import de.dhbw.karlsruhe.models.GrammarRule;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class GrammarVerification {
@@ -21,7 +23,7 @@ public class GrammarVerification {
         if (!valid) {
             return false;
         } else {
-            valid = this.checkEveryNonTerminalIsReached(pGrammarRulesToCheck);
+            valid = this.checkEveryNonTerminalIsReached(pGrammarRulesToCheck, pNonTerminals);
         }
 
         return valid;
@@ -48,12 +50,19 @@ public class GrammarVerification {
         return valid;
     }
 
-    private boolean checkEveryNonTerminalIsReached(List<GrammarRule> pGrammarRulesToCheck) {
-        boolean valid = false;
+    private boolean checkEveryNonTerminalIsReached(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+        List<String> usedNonTerminals = new ArrayList<>();
 
         // check if every non Terminal is reached at least ones
+        for (GrammarRule gr : pGrammarRulesToCheck) {
+            for (int i = 0; i < gr.rightSide().length(); i++) {
+                if (Arrays.stream(pNonTerminals).anyMatch(String.valueOf(gr.rightSide().charAt(i))::equals)) {
+                    usedNonTerminals.add(String.valueOf(gr.rightSide().charAt(i)));
+                }
+            }
+        }
 
-        return true;
+        return new HashSet<>(Arrays.stream(pNonTerminals).toList()).equals(new HashSet<>(usedNonTerminals));
     }
 
     private boolean checkLoopInSingleTerminal(List<GrammarRule> pGrammarRulesToCheck) {
