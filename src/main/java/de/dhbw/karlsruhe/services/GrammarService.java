@@ -21,7 +21,7 @@ public class GrammarService {
   }
 
     public List<GrammarProduction> getGrammarRules () {
-      return Arrays.stream(grammar.getProductionsAsGrammarProductions()).toList();
+      return Arrays.stream(grammar.getProductions()).toList();
     }
 
     public String getStartSymbol () {

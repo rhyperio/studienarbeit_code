@@ -87,7 +87,7 @@ public class DerivationTreeValidation {
   private String buildChildConcatination(List<DerivationTree> children) {
     StringBuilder rightSide = new StringBuilder();
     for (DerivationTree child : children) {
-      rightSide.append(child.getContent()).append(" ");
+      rightSide.append(child.getContent());
     }
     return rightSide.toString().trim();
   }

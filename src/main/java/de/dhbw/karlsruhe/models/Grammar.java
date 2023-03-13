@@ -1,15 +1,15 @@
 package de.dhbw.karlsruhe.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class Grammar {
 
   private String[] terminals;
   private String[] nonTerminals;
   private GrammarProduction[] productions;
   private String startSymbol;
+
+  // Default constructor for JSON deserialization
+  public Grammar() {
+  }
 
   public Grammar(String[] terminals, String[] nonTerminals, GrammarProduction[] productions, String startSymbol) {
     this.terminals = terminals;
@@ -26,11 +26,7 @@ public class Grammar {
     return nonTerminals;
   }
 
-  public String[] getProductionsAsString() {
-    return Arrays.stream(productions).map(GrammarProduction::toString).toArray(String[]::new);
-  }
-
-  public GrammarProduction[] getProductionsAsGrammarProductions(){
+  public GrammarProduction[] getProductions(){
     return productions;
   }
 
