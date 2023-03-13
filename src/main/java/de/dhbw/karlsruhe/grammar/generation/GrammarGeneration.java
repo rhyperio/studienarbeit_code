@@ -67,34 +67,4 @@ public abstract class GrammarGeneration {
         return generatedNonTerminals;
     }
 
-    private List<String> formatProductions(List<String> generatedProductions) {
-        List<String> cleanedProductions = new ArrayList<>();
-
-        for (String currProduction : generatedProductions) {
-            char first = currProduction.charAt(0);
-            if (isNotAlreadyInList(cleanedProductions, first)) {
-                StringBuilder currProductionBuilder = new StringBuilder(currProduction);
-                for (String production: generatedProductions) {
-                    if (currProduction.equals(production)) {
-                        continue;
-                    }
-                    char second = production.charAt(0);
-                    if (first == second) {
-                        currProductionBuilder.append(" | ").append(production.substring(production.indexOf('>') + 1));
-                    }
-                }
-                cleanedProductions.add(currProductionBuilder.toString());
-            }
-        }
-        return cleanedProductions;
-    }
-
-    private boolean isNotAlreadyInList(List<String> productions, char leftSide) {
-        for (String currProd: productions) {
-            if (currProd.charAt(0) == leftSide) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

@@ -56,16 +56,4 @@ public class GrammarService {
       return gson.fromJson(json, Grammar.class);
     }
 
-    private List<GrammarProduction> buildGrammarRules (String production){
-      List<GrammarProduction> grammarRules = new ArrayList<>();
-      String[] splitRule = production.split("->");
-      String leftSide = splitRule[0];
-      String completeRightSide = splitRule[1];
-      String[] rightSides = completeRightSide.split("\\|");
-
-      for (String rightSide : rightSides) {
-        grammarRules.add(new GrammarProduction(leftSide, rightSide.trim()));
-      }
-      return grammarRules;
-    }
 }
