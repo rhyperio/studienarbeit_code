@@ -16,12 +16,20 @@ public class GrammarService {
     grammar = formatGrammar(json);
   }
 
+  public GrammarService(Grammar grammar) {
+    this.grammar = grammar;
+  }
+
   public List<GrammarProduction> getGrammarRules() {
     List<GrammarProduction> splitGrammarRules = new ArrayList<>();
     for (GrammarProduction gr: grammar.getProductionsAsGrammarProductions()){
       splitGrammarRules.addAll(buildGrammarRules(gr.toString()));
     }
     return splitGrammarRules;
+
+
+  public List<GrammarProduction> getGrammarRules() {
+    return createGrammarRules(grammar);
   }
 
   public String getStartSymbol() {

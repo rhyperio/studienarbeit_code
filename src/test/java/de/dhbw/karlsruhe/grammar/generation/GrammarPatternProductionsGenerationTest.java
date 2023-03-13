@@ -12,7 +12,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GrammarGenerationTest {
+class GrammarPatternProductionsGenerationTest {
 
 	@Test
 	 void checkEmptyIntersectionBetweenTerminalsAndNonTerminals() {

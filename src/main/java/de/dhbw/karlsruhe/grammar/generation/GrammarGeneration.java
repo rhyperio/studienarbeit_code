@@ -97,5 +97,4 @@ public abstract class GrammarGeneration {
         }
         return true;
     }
-
 }
