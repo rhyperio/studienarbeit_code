@@ -1,11 +1,8 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import org.apache.commons.lang3.StringUtils;
 import de.dhbw.karlsruhe.models.Grammar;
@@ -146,7 +143,8 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 
 	private boolean notNeedAnotherProductionForLeftSide(List<GrammarProduction> productions, char leftSide) {
 		for (GrammarProduction currProd : productions) {
-			if (currProd.leftSide().charAt(0) == leftSide && !currProd.rightSide().contains(String.valueOf(currProd.leftSide().charAt(0)))) {
+			if (currProd.leftSide().charAt(0) == leftSide &&
+					!currProd.rightSide().contains(String.valueOf(currProd.leftSide().charAt(0)))) {
 				return true;
 			}
 		}
@@ -155,9 +153,17 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 
 	private String getNonTerminalForLeftSide(List<GrammarProduction> generatedProductions, String rightSide) {
 		String leftSide = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
-		if (rightSide != null && rightSide.contains(leftSide) && notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
+		if (rightSide != null &&
+				rightSide.contains(leftSide) &&
+				notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
+			for (char element : rightSide.toCharArray()) {
+				if (Character.isUpperCase(element) && isLoop(startSymbol, generatedProductions, leftSide, element)) {
+					addNonTerminal(leftSide);
+					return leftSide;
+				}
+			}
 			neededNonTerminalsOnLeftSide.remove(leftSide);
-		} else if (rightSide != null){
+		} else if (rightSide != null) {
 			if (rightSide.contains(leftSide) && !notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
 				addNonTerminal(leftSide);
 				return leftSide;
