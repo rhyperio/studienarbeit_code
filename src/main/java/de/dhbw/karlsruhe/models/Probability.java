@@ -7,7 +7,11 @@ public class Probability {
     private float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
     private float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
     private float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
-    private final float DECREASING_PROBABILITY_FACTOR;
+    private float DECREASING_PROBABILITY_FACTOR;
+
+    //Default constructor for json deserialization
+    public Probability() {
+    }
 
     public Probability(float PROBABILITY_FOR_NEW_NON_TERMINAL,
                        float PROBABILITY_FOR_TERMINAL,
@@ -43,6 +47,9 @@ public class Probability {
         return PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
     }
 
+    public float getDECREASING_PROBABILITY_FACTOR() {
+        return DECREASING_PROBABILITY_FACTOR;
+    }
 
     public void decrease_PROBABILITY_FOR_NEW_NON_TERMINAL() {
         this.PROBABILITY_FOR_NEW_NON_TERMINAL -= DECREASING_PROBABILITY_FACTOR;
@@ -62,6 +69,10 @@ public class Probability {
 
     public void decrease_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION() {
         this.PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION -= DECREASING_PROBABILITY_FACTOR;
+    }
+
+    public void increase_PROBABILITY_FOR_TERMINAL() {
+        this.PROBABILITY_FOR_TERMINAL += DECREASING_PROBABILITY_FACTOR;
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.models.Probability;
 import org.apache.commons.lang3.StringUtils;
 import de.dhbw.karlsruhe.models.Grammar;
 
@@ -12,16 +13,22 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	/*
 	 * Probabilities which are used during grammar production generation
 	 */
-	private final float PROBABILITY_FOR_NEW_NON_TERMINAL = 0.5f;
-	private final float PROBABILITY_FOR_TERMINAL = 0.4f;
-	private final float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = 0.6f;
-	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = 0.5f;
-	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = 0.8f;
-	private final float DECREASING_PROBABILITY_FACTOR = 0.1f;
+	private final float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
+	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
+	private final Probability probability;
 	private final Random rand = new Random();
 	private final List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
 	private List<String> usableTerminals;
 	private List<String> usableNonTerminals;
+
+	public GrammarProbabilityGeneration(Probability probability) {
+		this.probability = probability;
+		PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = probability.getPROBABILITY_FOR_MULTIPLE_RIGHT_SIDE();
+		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = probability.getPROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE();
+		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = probability.getPROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION();
+
+	}
 
 	public Grammar generateGrammar() {
 		usableTerminals = generateTerminals();
@@ -32,27 +39,24 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	}
 
 	protected List<GrammarProduction> generateProductions() {
-		float probabilityForTerminal = PROBABILITY_FOR_TERMINAL;
-		float probabilityForNewNonTerminal = PROBABILITY_FOR_NEW_NON_TERMINAL;
 		List<GrammarProduction> generatedProductions = new ArrayList<>();
 		String generatedStartSymbol = usableNonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
 		generatedProductions.add(generateStartProduction());
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
-			float probabilityForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
-			if (rand.nextFloat() <= probabilityForTerminal) {
+			if (rand.nextFloat() <= probability.getPROBABILITY_FOR_TERMINAL()) {
 				StringBuilder rightSide = new StringBuilder(usableTerminals.get(rand.nextInt(usableTerminals.size())));
 				addToTerminals(rightSide.toString());
-				while (rand.nextFloat() <= probabilityForMultipleRightSide) {
-					expandRightSide(rightSide, probabilityForNewNonTerminal);
-					probabilityForNewNonTerminal = probabilityForNewNonTerminal - DECREASING_PROBABILITY_FACTOR;
-					probabilityForMultipleRightSide = probabilityForMultipleRightSide - DECREASING_PROBABILITY_FACTOR;
+				while (rand.nextFloat() <= probability.getPROBABILITY_FOR_MULTIPLE_RIGHT_SIDE()) {
+					expandRightSide(rightSide, probability.getPROBABILITY_FOR_NEW_NON_TERMINAL());
+					probability.decrease_PROBABILITY_FOR_NEW_NON_TERMINAL();
+					probability.decrease_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE();
 				}
 				generatedProductions.add(buildProduction(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()), rightSide.toString()));
 			} else {
 				generateNonTerminalProduction(generatedProductions);
-				probabilityForTerminal += DECREASING_PROBABILITY_FACTOR;
+				probability.increase_PROBABILITY_FOR_TERMINAL();
 			}
 		}
 		return cleanProductions(generatedProductions);
@@ -90,7 +94,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 				rightSide.append(terminal);
 				addToTerminals(terminal);
 			}
-			probabilityForMultipleRightSide -= DECREASING_PROBABILITY_FACTOR;
+			probabilityForMultipleRightSide -= probability.getDECREASING_PROBABILITY_FACTOR();
 		}
 		return buildProduction(startSymbol, rightSide.toString());
 	}
