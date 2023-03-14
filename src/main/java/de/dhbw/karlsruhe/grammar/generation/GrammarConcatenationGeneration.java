@@ -7,7 +7,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.*;
 
 public class GrammarConcatenationGeneration extends GrammarGeneration{
-    // ToDo: Epsillon in Grammatik mitaufnehmen
     private Set<GrammarProduction> grammarRulesSet;
     private List<GrammarProduction> grammarRules;
     private String[] terminals;
@@ -77,8 +76,13 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
 
         Set<String> notTerminatingNonTerminals = this.grammarConcatenationVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
 
+        List<String> temp = new ArrayList<>(Arrays.stream(this.terminals).toList());
+        temp.add("epsilon");
+        String[] terminalsAndEpsilon = temp.toArray(new String[0]);
+
+
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
-            String terminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+            String terminatingRightSide = terminalsAndEpsilon[this.random.nextInt(terminalsAndEpsilon.length)];
             GrammarProduction terminatingGr = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
             this.grammarRulesSet.add(terminatingGr);
         }
