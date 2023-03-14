@@ -9,9 +9,9 @@ public class Probability {
     private float probabilityFavourNonTerminalForTerminalInStartProduction;
     private float decreasingProbabilityFactor;
 
-    //Default constructor for json deserialization
-    public Probability() {
-    }
+    private final float START_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+    private final float START_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
+    private final float START_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
 
     public Probability(float probabilityForNewNonTerminal,
                        float probabilityForTerminal,
@@ -25,6 +25,10 @@ public class Probability {
         this.probabilityFavourNonTerminalForTerminalOnRightSide = probabilityFavourNonTerminalForTerminalOnRightSide;
         this.probabilityFavourNonTerminalForTerminalInStartProduction = probabilityFavourNonTerminalForTerminalInStartProduction;
         this.decreasingProbabilityFactor = decreasingProbabilityFactor;
+
+        this.START_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = probabilityFavourNonTerminalForTerminalInStartProduction;
+        this.START_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = probabilityFavourNonTerminalForTerminalOnRightSide;
+        this.START_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = probabilityForMultipleRightSide;
     }
 
     public float getProbabilityForNewNonTerminal() {
@@ -49,6 +53,18 @@ public class Probability {
 
     public float getDecreasingProbabilityFactor() {
         return decreasingProbabilityFactor;
+    }
+
+    public float getSTART_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE() {
+        return START_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+    }
+
+    public float getSTART_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE() {
+        return START_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
+    }
+
+    public float getSTART_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION() {
+        return START_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
     }
 
     public void decreaseProbabilityForNewNonTerminal() {

@@ -13,9 +13,6 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	/*
 	 * Probabilities which are used during grammar production generation
 	 */
-	private final float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
-	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
-	private final float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
 	private final Probability probability;
 	private final Random rand = new Random();
 	private final List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
@@ -24,10 +21,6 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 
 	public GrammarProbabilityGeneration(Probability probability) {
 		this.probability = probability;
-		PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = probability.getProbabilityForMultipleRightSide();
-		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = probability.getProbabilityFavourNonTerminalForTerminalOnRightSide();
-		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = probability.getProbabilityFavourNonTerminalForTerminalInStartProduction();
-
 	}
 
 	public Grammar generateGrammar() {
@@ -68,9 +61,9 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	}
 
 	private GrammarProduction generateStartProduction() {
-		float probabilityForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+		float probabilityForMultipleRightSide = probability.getSTART_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE();
 		StringBuilder rightSide = new StringBuilder();
-		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION) {
+		if (rand.nextFloat() <= probability.getSTART_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION()) {
 			while (StringUtils.isBlank(rightSide.toString()) || startSymbol.equals(rightSide.toString())) {
 				String nonTerminal = usableNonTerminals.get(rand.nextInt(usableNonTerminals.size()));
 				rightSide = new StringBuilder(nonTerminal);
@@ -85,7 +78,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		}
 
 		while (rand.nextFloat() <= probabilityForMultipleRightSide) {
-			if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE) {
+			if (rand.nextFloat() <= probability.getSTART_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE()) {
 				String nonTerminal = usableNonTerminals.get(rand.nextInt(usableNonTerminals.size()));
 				rightSide.append(nonTerminal);
 				addToNeededNonTerminalsOnLeftSide(nonTerminal);
@@ -100,7 +93,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	}
 
 	private void expandRightSide(StringBuilder rightSide, float probabilityForNewNonTerminal) {
-		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE) {
+		if (rand.nextFloat() <= probability.getSTART_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE()) {
 			extendRightSideWithNonTerminal(rightSide, probabilityForNewNonTerminal);
 		} else {
 			// Füge noch ein Terminal zur rechten Seite hinzu
