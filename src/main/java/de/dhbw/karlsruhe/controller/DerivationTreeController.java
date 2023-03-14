@@ -12,6 +12,7 @@ public class DerivationTreeController {
 
   @PostMapping("/api/validate/tree")
   ResponseEntity<Boolean> validationTree(@RequestBody ValidationTreeParamModel validationTreeParamModel) {
+    validationTreeParamModel.getGrammar().splitOrGrammarsIntoSingleRules();
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(validationTreeParamModel.getGrammar());
 
     boolean accepted = derivationTreeValidation.checkTree(validationTreeParamModel.getDerivationTree(), validationTreeParamModel.getWord());

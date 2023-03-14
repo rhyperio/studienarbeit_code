@@ -1,10 +1,9 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import org.apache.commons.lang3.StringUtils;
 import de.dhbw.karlsruhe.models.Grammar;
 
@@ -21,19 +20,21 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	private final float DECREASING_PROBABILITY_FACTOR = 0.1f;
 	private final Random rand = new Random();
 	private final List<String> neededNonTerminalsOnLeftSide = new ArrayList<>();
+	private List<String> usableTerminals;
+	private List<String> usableNonTerminals;
 
 	public Grammar generateGrammar() {
 		usableTerminals = generateTerminals();
 		usableNonTerminals = generateNonTerminals();
-		List<String> productions = generateProductions();
+		List<GrammarProduction> productions = generateProductions();
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
-				productions.toArray(new String[0]), startSymbol);
+				productions.toArray(new GrammarProduction[0]), startSymbol);
 	}
 
-	protected List<String> generateProductions() {
+	protected List<GrammarProduction> generateProductions() {
 		float probabilityForTerminal = PROBABILITY_FOR_TERMINAL;
 		float probabilityForNewNonTerminal = PROBABILITY_FOR_NEW_NON_TERMINAL;
-		List<String> generatedProductions = new ArrayList<>();
+		List<GrammarProduction> generatedProductions = new ArrayList<>();
 		String generatedStartSymbol = usableNonTerminals.iterator().next();
 		setStartSymbol(generatedStartSymbol);
 		generatedProductions.add(generateStartProduction());
@@ -62,7 +63,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		this.startSymbol = startSymbol;
 	}
 
-	private String generateStartProduction() {
+	private GrammarProduction generateStartProduction() {
 		float probabilityForMultipleRightSide = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
 		StringBuilder rightSide = new StringBuilder();
 		if (rand.nextFloat() <= PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION) {
@@ -112,7 +113,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		}
 	}
 
-	private void generateNonTerminalProduction(List<String> generatedProductions) {
+	private void generateNonTerminalProduction(List<GrammarProduction> generatedProductions) {
 		String nonTerminalLeft = getNonTerminalForLeftSide(generatedProductions, null);
 		String nonTerminalRight = usableNonTerminals.get(rand.nextInt(usableNonTerminals.size()));
 
@@ -140,20 +141,29 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		}
 	}
 
-	private boolean notNeedAnotherProductionForLeftSide(List<String> productions, char leftSide) {
-		for (String currProd : productions) {
-			if (currProd.charAt(0) == leftSide && !currProd.substring(1).contains(String.valueOf(currProd.charAt(0)))) {
+	private boolean notNeedAnotherProductionForLeftSide(List<GrammarProduction> productions, char leftSide) {
+		for (GrammarProduction currProd : productions) {
+			if (currProd.leftSide().charAt(0) == leftSide &&
+					!currProd.rightSide().contains(String.valueOf(currProd.leftSide().charAt(0)))) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private String getNonTerminalForLeftSide(List<String> generatedProductions, String rightSide) {
+	private String getNonTerminalForLeftSide(List<GrammarProduction> generatedProductions, String rightSide) {
 		String leftSide = neededNonTerminalsOnLeftSide.get(rand.nextInt(neededNonTerminalsOnLeftSide.size()));
-		if (rightSide != null && rightSide.contains(leftSide) && notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
+		if (rightSide != null &&
+				rightSide.contains(leftSide) &&
+				notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
+			for (char element : rightSide.toCharArray()) {
+				if (Character.isUpperCase(element) && isLoop(startSymbol, generatedProductions, leftSide, element)) {
+					addNonTerminal(leftSide);
+					return leftSide;
+				}
+			}
 			neededNonTerminalsOnLeftSide.remove(leftSide);
-		} else if (rightSide != null){
+		} else if (rightSide != null) {
 			if (rightSide.contains(leftSide) && !notNeedAnotherProductionForLeftSide(generatedProductions, leftSide.charAt(0))) {
 				addNonTerminal(leftSide);
 				return leftSide;
@@ -173,6 +183,18 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 	private void addToNeededNonTerminalsOnLeftSide(String nonTerminal) {
 		if (!neededNonTerminalsOnLeftSide.contains(nonTerminal)) {
 			neededNonTerminalsOnLeftSide.add(nonTerminal);
+		}
+	}
+
+	private void addToTerminals(String terminal) {
+		if (!terminals.contains(terminal)) {
+			terminals.add(terminal);
+		}
+	}
+
+	private void addNonTerminal(String nonTerminal) {
+		if (!nonTerminals.contains(nonTerminal)) {
+			nonTerminals.add(nonTerminal);
 		}
 	}
 }

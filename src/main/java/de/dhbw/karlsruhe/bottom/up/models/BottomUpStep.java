@@ -1,6 +1,6 @@
 package de.dhbw.karlsruhe.bottom.up.models;
 
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.models.ParserState;
 
 public class BottomUpStep {
@@ -8,9 +8,9 @@ public class BottomUpStep {
     private String stack;
     private ParserState state;
     private String remainingWord;
-    private GrammarRule production;
+    private GrammarProduction production;
 
-    public BottomUpStep(String stack, ParserState state, String remainingWord, GrammarRule production) {
+    public BottomUpStep(String stack, ParserState state, String remainingWord, GrammarProduction production) {
         this.stack = stack;
         this.state = state;
         this.remainingWord = remainingWord;
@@ -39,7 +39,7 @@ public class BottomUpStep {
                 '}';
     }
 
-    public GrammarRule getProduction() {
+    public GrammarProduction getProduction() {
         return production;
     }
 

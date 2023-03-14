@@ -19,11 +19,26 @@
     "ZIFFER"
   ],
   "productions": [
-    "GZAHL->GZ|NNZ ZAHL GZ",
-    "ZAHL->ZAHL ZIFFER|epsilon",
-    "ZIFFER->0|NNZ",
-    "NNZ->1|2|3|4|5|6|7|8|9",
-    "GZ->0|2|4|6|8"
+    {
+      "leftSide":"GZAHL",
+      "rightSide":"GZ|NNZ ZAHL GZ"
+    },
+    {
+      "leftSide": "ZAHL",
+      "rightSide": "ZAHL ZIFFER|epsilon"
+    },
+    {
+      "leftSide": "ZIFFER",
+      "rightSide": "0|NNZ"
+    },
+    {
+      "leftSide":"NNZ",
+      "rightSide": "1|2|3|4|5|6|7|8|9"
+    },
+    {
+      "leftSide": "GZ",
+      "rightSide": "0|2|4|6|8"
+    }
   ],
   "startSymbol": "GZAHL"
 }
