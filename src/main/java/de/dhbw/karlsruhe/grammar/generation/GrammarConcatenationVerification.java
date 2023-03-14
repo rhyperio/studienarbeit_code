@@ -4,7 +4,7 @@ import de.dhbw.karlsruhe.models.GrammarProduction;
 
 import java.util.*;
 
-public class GrammarVerification {
+public class GrammarConcatenationVerification {
 
     public boolean verifyProductions(List<GrammarProduction> pGrammarRulesToCheck, String[] pNonTerminals) {
         boolean valid = false;

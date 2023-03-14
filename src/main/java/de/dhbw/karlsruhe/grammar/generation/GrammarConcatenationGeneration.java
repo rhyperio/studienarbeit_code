@@ -6,21 +6,21 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
 
-public class GrammarConcatenationGeneration {
+public class GrammarConcatenationGeneration extends GrammarGeneration{
     // ToDo: Epsillon in Grammatik mitaufnehmen
     private Set<GrammarProduction> grammarRulesSet;
     private List<GrammarProduction> grammarRules;
     private String[] terminals;
     private String[] nonTerminals;
     private Random random = new Random();
-    private GrammarVerification grammarVerification;
+    private GrammarConcatenationVerification grammarConcatenationVerification;
 
     public Grammar generateGrammar() {
-        grammarVerification = new GrammarVerification();
+        grammarConcatenationVerification = new GrammarConcatenationVerification();
 
         do {
             this.startGeneration();
-        } while (!grammarVerification.verifyProductions(this.grammarRules, this.nonTerminals));
+        } while (!grammarConcatenationVerification.verifyProductions(this.grammarRules, this.nonTerminals));
 
         return new Grammar(this.terminals, this.nonTerminals, this.grammarRules.toArray(GrammarProduction[]::new), this.nonTerminals[0]);
     }
@@ -32,8 +32,7 @@ public class GrammarConcatenationGeneration {
 
         this.addTerminals(anzTerminals);
         this.addNonTerminals(anzNonTerminals);
-        this.generateProductions();
-        this.grammarRules = this.grammarRulesSet.stream().toList();
+        this.grammarRules = this.generateProductions();
     }
 
     private void addNonTerminals(int pAnzNonTerminals) {
@@ -60,7 +59,7 @@ public class GrammarConcatenationGeneration {
         this.terminals = terminalsSet.toArray(String[]::new);
     }
 
-    private void generateProductions() {
+    protected List<GrammarProduction> generateProductions() {
         String rightSide = "";
 
         for (String nonTerminal : nonTerminals) {
@@ -76,13 +75,15 @@ public class GrammarConcatenationGeneration {
             } while ((this.grammarRulesSet.size() - setSizeBeforeCurrentGeneration) < anzProductions);
         }
 
-        Set<String> notTerminatingNonTerminals = this.grammarVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
+        Set<String> notTerminatingNonTerminals = this.grammarConcatenationVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
 
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
             String terminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
             GrammarProduction terminatingGr = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
             this.grammarRulesSet.add(terminatingGr);
         }
+
+        return this.grammarRulesSet.stream().toList();
     }
 
     private String generateRightSide() {
