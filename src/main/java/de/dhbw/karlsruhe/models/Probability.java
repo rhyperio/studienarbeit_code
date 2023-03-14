@@ -2,77 +2,77 @@ package de.dhbw.karlsruhe.models;
 
 public class Probability {
 
-    private float PROBABILITY_FOR_NEW_NON_TERMINAL;
-    private float PROBABILITY_FOR_TERMINAL;
-    private float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
-    private float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
-    private float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
-    private float DECREASING_PROBABILITY_FACTOR;
+    private float probabilityForNewNonTerminal;
+    private float probabilityForTerminal;
+    private float probabilityForMultipleRightSide;
+    private float probabilityFavourNonTerminalForTerminalOnRightSide;
+    private float probabilityFavourNonTerminalForTerminalInStartProduction;
+    private float decreasingProbabilityFactor;
 
     //Default constructor for json deserialization
     public Probability() {
     }
 
-    public Probability(float PROBABILITY_FOR_NEW_NON_TERMINAL,
-                       float PROBABILITY_FOR_TERMINAL,
-                       float PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE,
-                       float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE,
-                       float PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION,
-                       float DECREASING_PROBABILITY_FACTOR) {
-        this.PROBABILITY_FOR_NEW_NON_TERMINAL = PROBABILITY_FOR_NEW_NON_TERMINAL;
-        this.PROBABILITY_FOR_TERMINAL = PROBABILITY_FOR_TERMINAL;
-        this.PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
-        this.PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
-        this.PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
-        this.DECREASING_PROBABILITY_FACTOR = DECREASING_PROBABILITY_FACTOR;
+    public Probability(float probabilityForNewNonTerminal,
+                       float probabilityForTerminal,
+                       float probabilityForMultipleRightSide,
+                       float probabilityFavourNonTerminalForTerminalOnRightSide,
+                       float probabilityFavourNonTerminalForTerminalInStartProduction,
+                       float decreasingProbabilityFactor) {
+        this.probabilityForNewNonTerminal = probabilityForNewNonTerminal;
+        this.probabilityForTerminal = probabilityForTerminal;
+        this.probabilityForMultipleRightSide = probabilityForMultipleRightSide;
+        this.probabilityFavourNonTerminalForTerminalOnRightSide = probabilityFavourNonTerminalForTerminalOnRightSide;
+        this.probabilityFavourNonTerminalForTerminalInStartProduction = probabilityFavourNonTerminalForTerminalInStartProduction;
+        this.decreasingProbabilityFactor = decreasingProbabilityFactor;
     }
 
-    public float getPROBABILITY_FOR_NEW_NON_TERMINAL() {
-        return PROBABILITY_FOR_NEW_NON_TERMINAL;
+    public float getProbabilityForNewNonTerminal() {
+        return probabilityForNewNonTerminal;
     }
 
-    public float getPROBABILITY_FOR_TERMINAL() {
-        return PROBABILITY_FOR_TERMINAL;
+    public float getProbabilityForTerminal() {
+        return probabilityForTerminal;
     }
 
-    public float getPROBABILITY_FOR_MULTIPLE_RIGHT_SIDE() {
-        return PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE;
+    public float getProbabilityForMultipleRightSide() {
+        return probabilityForMultipleRightSide;
     }
 
-    public float getPROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE() {
-        return PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE;
+    public float getProbabilityFavourNonTerminalForTerminalOnRightSide() {
+        return probabilityFavourNonTerminalForTerminalOnRightSide;
     }
 
-    public float getPROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION() {
-        return PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION;
+    public float getProbabilityFavourNonTerminalForTerminalInStartProduction() {
+        return probabilityFavourNonTerminalForTerminalInStartProduction;
     }
 
-    public float getDECREASING_PROBABILITY_FACTOR() {
-        return DECREASING_PROBABILITY_FACTOR;
+    public float getDecreasingProbabilityFactor() {
+        return decreasingProbabilityFactor;
     }
 
-    public void decrease_PROBABILITY_FOR_NEW_NON_TERMINAL() {
-        this.PROBABILITY_FOR_NEW_NON_TERMINAL -= DECREASING_PROBABILITY_FACTOR;
+    public void decreaseProbabilityForNewNonTerminal() {
+        this.probabilityForNewNonTerminal -= decreasingProbabilityFactor;
     }
 
-    public void decrease_PPROBABILITY_FOR_TERMINAL() {
-        this.PROBABILITY_FOR_TERMINAL -= DECREASING_PROBABILITY_FACTOR;
+    public void decreaseProbabilityForTerminal() {
+        this.probabilityForTerminal -= decreasingProbabilityFactor;
     }
 
-    public void decrease_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE() {
-        this.PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE -= DECREASING_PROBABILITY_FACTOR;
+    public void decreaseProbabilityForMultipleRightSide() {
+        this.probabilityForMultipleRightSide -= decreasingProbabilityFactor;
     }
 
-    public void decrease_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE() {
-        this.PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE -= DECREASING_PROBABILITY_FACTOR;
+    public void decreaseProbabilityFavourNonTerminalForTerminalOnRightSide() {
+        this.probabilityFavourNonTerminalForTerminalOnRightSide -= decreasingProbabilityFactor;
     }
 
-    public void decrease_PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION() {
-        this.PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION -= DECREASING_PROBABILITY_FACTOR;
+    public void decreaseProbabilityFavourNonTerminalForTerminalInStartProduction() {
+        this.probabilityFavourNonTerminalForTerminalInStartProduction -= decreasingProbabilityFactor;
     }
 
-    public void increase_PROBABILITY_FOR_TERMINAL() {
-        this.PROBABILITY_FOR_TERMINAL += DECREASING_PROBABILITY_FACTOR;
+    public void increaseProbabilityForTerminal() {
+        this.probabilityForTerminal += decreasingProbabilityFactor;
     }
 
 }

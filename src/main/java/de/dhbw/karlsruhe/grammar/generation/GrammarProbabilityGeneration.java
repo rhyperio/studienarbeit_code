@@ -24,9 +24,9 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 
 	public GrammarProbabilityGeneration(Probability probability) {
 		this.probability = probability;
-		PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = probability.getPROBABILITY_FOR_MULTIPLE_RIGHT_SIDE();
-		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = probability.getPROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE();
-		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = probability.getPROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION();
+		PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE = probability.getProbabilityForMultipleRightSide();
+		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_ON_RIGHT_SIDE = probability.getProbabilityFavourNonTerminalForTerminalOnRightSide();
+		PROBABILITY_FAVOUR_NON_TERMINAL_FOR_TERMINAL_IN_START_PRODUCTION = probability.getProbabilityFavourNonTerminalForTerminalInStartProduction();
 
 	}
 
@@ -45,18 +45,18 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 		generatedProductions.add(generateStartProduction());
 
 		while (!neededNonTerminalsOnLeftSide.isEmpty()) {
-			if (rand.nextFloat() <= probability.getPROBABILITY_FOR_TERMINAL()) {
+			if (rand.nextFloat() <= probability.getProbabilityForTerminal()) {
 				StringBuilder rightSide = new StringBuilder(usableTerminals.get(rand.nextInt(usableTerminals.size())));
 				addToTerminals(rightSide.toString());
-				while (rand.nextFloat() <= probability.getPROBABILITY_FOR_MULTIPLE_RIGHT_SIDE()) {
-					expandRightSide(rightSide, probability.getPROBABILITY_FOR_NEW_NON_TERMINAL());
-					probability.decrease_PROBABILITY_FOR_NEW_NON_TERMINAL();
-					probability.decrease_PROBABILITY_FOR_MULTIPLE_RIGHT_SIDE();
+				while (rand.nextFloat() <= probability.getProbabilityForMultipleRightSide()) {
+					expandRightSide(rightSide, probability.getProbabilityForNewNonTerminal());
+					probability.decreaseProbabilityForNewNonTerminal();
+					probability.decreaseProbabilityForMultipleRightSide();
 				}
 				generatedProductions.add(buildProduction(getNonTerminalForLeftSide(generatedProductions, rightSide.toString()), rightSide.toString()));
 			} else {
 				generateNonTerminalProduction(generatedProductions);
-				probability.increase_PROBABILITY_FOR_TERMINAL();
+				probability.increaseProbabilityForTerminal();
 			}
 		}
 		return cleanProductions(generatedProductions);
@@ -94,7 +94,7 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 				rightSide.append(terminal);
 				addToTerminals(terminal);
 			}
-			probabilityForMultipleRightSide -= probability.getDECREASING_PROBABILITY_FACTOR();
+			probabilityForMultipleRightSide -= probability.getDecreasingProbabilityFactor();
 		}
 		return buildProduction(startSymbol, rightSide.toString());
 	}

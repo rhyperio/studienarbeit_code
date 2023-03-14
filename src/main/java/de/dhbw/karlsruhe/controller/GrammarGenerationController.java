@@ -1,5 +1,6 @@
 package de.dhbw.karlsruhe.controller;
 
+import de.dhbw.karlsruhe.controller.dto.ProbabilityDto;
 import de.dhbw.karlsruhe.grammar.generation.GrammarGeneration;
 import de.dhbw.karlsruhe.grammar.generation.GrammarPatternProductionsGeneration;
 import de.dhbw.karlsruhe.grammar.generation.GrammarProbabilityGeneration;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class GrammarGenerationController {
 
     @PostMapping("/api/get/grammar/probability")
-    ResponseEntity<Grammar> getProbabilityGeneratedGrammar(@RequestBody Probability probability) {
-        GrammarGeneration grammarGeneration = new GrammarProbabilityGeneration(probability);
+    ResponseEntity<Grammar> getProbabilityGeneratedGrammar(@RequestBody ProbabilityDto probabilityDto) {
+        GrammarGeneration grammarGeneration = new GrammarProbabilityGeneration(probabilityDto.fromDto());
         Grammar generatedGrammar = grammarGeneration.generateGrammar();
         generatedGrammar.mergeOrGrammarsIntoSingleRules();
         return new ResponseEntity<>(generatedGrammar, HttpStatus.OK);
