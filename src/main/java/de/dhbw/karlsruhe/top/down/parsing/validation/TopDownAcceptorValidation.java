@@ -1,6 +1,6 @@
 package de.dhbw.karlsruhe.top.down.parsing.validation;
 
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.GrammarService;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
 import de.dhbw.karlsruhe.models.ParserState;
@@ -40,7 +40,7 @@ public class TopDownAcceptorValidation {
         ParserState currentState = stepToCheck.getState();
         String stack = stepToCheck.getStack();
         String input = stepToCheck.getReadInput();
-        GrammarRule usedProduction = stepToCheck.getUsedProduction();
+        GrammarProduction usedProduction = stepToCheck.getUsedProduction();
 
         if (currentState == ParserState.Z0 && stack.equals("*") && input.equals("") && usedProduction == null) {
             success = true;
@@ -56,7 +56,7 @@ public class TopDownAcceptorValidation {
         ParserState currentState = stepToCheck.getState();
         String stack = stepToCheck.getStack();
         String input = stepToCheck.getReadInput();
-        GrammarRule usedProduction = stepToCheck.getUsedProduction();
+        GrammarProduction usedProduction = stepToCheck.getUsedProduction();
 
         if (currentState == ParserState.ZF && stack.equals("*") && input.equals(this.wordToPars) && usedProduction == null) {
             success = true;
@@ -100,7 +100,7 @@ public class TopDownAcceptorValidation {
         String stackNextStep = nextStep.getStack();
         String stackCurrStep = tdStep.getStack();
         String inputNextStep = nextStep.getReadInput();
-        GrammarRule productionCurrStep = tdStep.getUsedProduction();
+        GrammarProduction productionCurrStep = tdStep.getUsedProduction();
         ParserState stateCurrStep = tdStep.getState();
 
         if (stackCurrStep == null || stateCurrStep != ParserState.Z) {
@@ -125,7 +125,7 @@ public class TopDownAcceptorValidation {
         return false;
     }
 
-    private boolean checkSideConditionsRead(String stackCurrStep, String stackNextStep, GrammarRule productionCurrStep) {
+    private boolean checkSideConditionsRead(String stackCurrStep, String stackNextStep, GrammarProduction productionCurrStep) {
         // validate correct procedure of removing read character and display of stack in next step as well as current production
 
         char secondCharStackCurrStep = stackCurrStep.charAt(1);
@@ -143,7 +143,7 @@ public class TopDownAcceptorValidation {
 
         String stackCurrStep = tdStep.getStack();
         String stackNextStep = nextStep.getStack();
-        GrammarRule productionCurrStep = tdStep.getUsedProduction();
+        GrammarProduction productionCurrStep = tdStep.getUsedProduction();
         String inputCurrStep = tdStep.getReadInput();
         String inputNextStep = nextStep.getReadInput();
         ParserState stateCurrStep = tdStep.getState();
@@ -159,7 +159,7 @@ public class TopDownAcceptorValidation {
         return success;
     }
 
-    private boolean checkUsedProduction(String stackCurrStep, String stackNextStep, GrammarRule productionCurrStep) {
+    private boolean checkUsedProduction(String stackCurrStep, String stackNextStep, GrammarProduction productionCurrStep) {
         boolean success = false;
 
         if (!this.grammarService.getGrammarRules().contains(productionCurrStep)) {

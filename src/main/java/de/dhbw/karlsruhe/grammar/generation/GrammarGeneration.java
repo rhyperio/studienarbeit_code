@@ -1,127 +1,70 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
 import de.dhbw.karlsruhe.models.Grammar;
-import de.dhbw.karlsruhe.models.GrammarRule;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.*;
+public abstract class GrammarGeneration {
 
-public class GrammarGeneration {
-    // ToDo: Verhindern von Grammatiken, wo nicht alle Terminale erreicht werden
-    // ToDo: Epsillon in Grammatik mitaufnehmen
-    private Set<GrammarRule> grammarRulesSet;
-    private List<GrammarRule> grammarRules;
-    private String[] terminals;
-    private String[] nonTerminals;
-    private Random random = new Random();
-    private GrammarVerification grammarVerification;
+    List<String> terminals = new ArrayList<>();
+    List<String> nonTerminals = new ArrayList<>();
+    String startSymbol;
 
-    public Grammar generateGrammar() {
-        grammarVerification = new GrammarVerification();
+    public abstract Grammar generateGrammar();
+    protected abstract List<GrammarProduction>  generateProductions();
 
-        do {
-            this.startGeneration();
-        } while (!grammarVerification.verifyProductions(this.grammarRules, this.nonTerminals));
-
-        return new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
+    List<GrammarProduction> cleanProductions(List<GrammarProduction> generatedProductions) {
+        return generatedProductions.stream().distinct().collect(Collectors.toList());
     }
 
-    private void startGeneration () {
-        this.grammarRulesSet = new HashSet<>();
-        int anzTerminals = this.random.nextInt(4) + 1;
-        int anzNonTerminals = this.random.nextInt(7) +1;
+    boolean isLoop(String startSymbol, List<GrammarProduction> productions, String leftSide, char rightSide) {
+        List<GrammarProduction> productionsWithRightSideOnLeft = new ArrayList<>();
+        productions.forEach(production -> {
+            if (production.rightSide().contains(leftSide)) {
+                productionsWithRightSideOnLeft.add(production);
+            }
+        });
 
-        this.addTerminals(anzTerminals);
-        this.addNonTerminals(anzNonTerminals);
-        this.generateProductions();
-        this.grammarRules = this.grammarRulesSet.stream().toList();
-
-        // Output for Test
-        System.out.println("Anz Terminals: " + this.terminals.length);
-        System.out.println("Anz NonTerminals: " + this.nonTerminals.length);
-
-        System.out.println("Terminals:");
-        for (String term : terminals) {
-            System.out.println(term);
-        }
-
-        System.out.println("Non Terminals:");
-        for (String term : nonTerminals) {
-            System.out.println(term);
-        }
-
-        System.out.println("GrammarRules:");
-        for (GrammarRule gr : grammarRulesSet) {
-            System.out.println(gr.leftSide() + "->" + gr.rightSide());
-        }
-    }
-
-    private void addNonTerminals(int pAnzNonTerminals) {
-        Set<String> nonTerminalsSet = new HashSet<>();
-        char nonTerminal;
-
-        do {
-            nonTerminal = RandomStringUtils.random(1, true, false).toUpperCase().charAt(0);
-            nonTerminalsSet.add(Character.toString(nonTerminal));
-        } while(nonTerminalsSet.size() < pAnzNonTerminals);
-
-        this.nonTerminals = nonTerminalsSet.toArray(String[]::new);
-    }
-
-    private void addTerminals(int pAnzTerminals) {
-        Set<String> terminalsSet = new HashSet<>();
-        char terminal;
-
-        do {
-            terminal = RandomStringUtils.random(1, true, true).toLowerCase().charAt(0);
-            terminalsSet.add(Character.toString(terminal));
-        } while(terminalsSet.size() < pAnzTerminals);
-
-        this.terminals = terminalsSet.toArray(String[]::new);
-    }
-
-    private void generateProductions() {
-        String rightSide = "";
-
-        for (String nonTerminal : nonTerminals) {
-            int anzProductions = this.random.nextInt(4) +1 ;
-            int setSizeBeforeCurrentGeneration = this.grammarRulesSet.size();
-            do {
-                do {
-                    rightSide = generateRightSide();
-                } while (rightSide.equalsIgnoreCase(nonTerminal));
-
-                GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
-                this.grammarRulesSet.add(gr);
-            } while ((this.grammarRulesSet.size() - setSizeBeforeCurrentGeneration) < anzProductions);
-        }
-
-        Set<String> notTerminatingNonTerminals = this.grammarVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
-        int productionSizeBeforeAdaption = this.grammarRulesSet.size();
-
-        for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
-            String terminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
-            GrammarRule terminatingGr = new GrammarRule(notTerminatingNonTerminal, terminatingRightSide);
-            this.grammarRulesSet.add(terminatingGr);
-        }
-    }
-
-    private String generateRightSide() {
-        String rightSide = "";
-        int lengthOfRightSide = this.random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
-
-        for (int i = 0; i < lengthOfRightSide; i++) {
-            if (this.random.nextFloat() <= 0.5) {
-                // add Terminal
-                String choosenTerminal = this.terminals[this.random.nextInt(this.terminals.length)];
-                rightSide += choosenTerminal;
+        for (GrammarProduction production : productionsWithRightSideOnLeft) {
+            if (production.leftSide().charAt(0) == rightSide) {
+                return true;
+            } else if (production.leftSide().charAt(0) == startSymbol.charAt(0) || production.leftSide().charAt(0) == leftSide.charAt(0)) {
+                return true;
             } else {
-                // add non Terminal
-                String choosenNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
-                rightSide += choosenNonTerminal;
+                return isLoop(startSymbol, productions, String.valueOf(production.leftSide().charAt(0)), rightSide);
             }
         }
-
-        return rightSide;
+        return false;
     }
+
+    GrammarProduction buildProduction(String leftSide, String rightSide) {
+        return new GrammarProduction(leftSide, rightSide);
+    }
+
+    List<String> generateTerminals() {
+        List<String> terminals = new ArrayList<>();
+        while (terminals.size() < 5) {
+            String terminal = RandomStringUtils.randomAlphabetic(1).toLowerCase();
+            if (!terminals.contains(terminal)) {
+                terminals.add(terminal);
+            }
+        }
+        return terminals;
+    }
+
+    List<String> generateNonTerminals() {
+        List<String> generatedNonTerminals = new ArrayList<>();
+        while (generatedNonTerminals.size() < 5) {
+            String nonTerminal = RandomStringUtils.randomAlphabetic(1).toUpperCase();
+            if (!generatedNonTerminals.contains(nonTerminal)) {
+                generatedNonTerminals.add(nonTerminal);
+            }
+        }
+        return generatedNonTerminals;
+    }
+
 }

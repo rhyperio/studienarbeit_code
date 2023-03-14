@@ -2,7 +2,8 @@ package de.dhbw.karlsruhe.derivation.tree.validation;
 
 import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
 import de.dhbw.karlsruhe.models.ElementClassification;
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.services.GrammarService;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +12,14 @@ public class DerivationTreeValidation {
 
   private final GrammarService grammarService;
   private final List<Boolean> correctDerivations = new ArrayList<>();
-  private List<GrammarRule> grammarRules;
+  private List<GrammarProduction> grammarRules;
 
   public DerivationTreeValidation(String grammarAsJson) {
     this.grammarService = new GrammarService(grammarAsJson);
+  }
+
+  public DerivationTreeValidation(Grammar grammar) {
+    this.grammarService = new GrammarService(grammar);
   }
 
   public boolean checkTree(DerivationTree root, String word) {
@@ -70,7 +75,7 @@ public class DerivationTreeValidation {
 
   private boolean leftSideExists(String content) {
     boolean leftSideExists = false;
-    for (GrammarRule grammarRule : grammarRules) {
+    for (GrammarProduction grammarRule : grammarRules) {
       if (grammarRule.leftSide().equals(content)) {
         leftSideExists = true;
         break;
@@ -82,7 +87,7 @@ public class DerivationTreeValidation {
   private String buildChildConcatination(List<DerivationTree> children) {
     StringBuilder rightSide = new StringBuilder();
     for (DerivationTree child : children) {
-      rightSide.append(child.getContent()).append(" ");
+      rightSide.append(child.getContent());
     }
     return rightSide.toString().trim();
   }
@@ -98,7 +103,7 @@ public class DerivationTreeValidation {
   private boolean isRuleInGrammar(String leftGrammarSide, String rightGrammarSide) {
     boolean correctGrammarRule = false;
 
-    for (GrammarRule grammarRule : grammarRules) {
+    for (GrammarProduction grammarRule : grammarRules) {
       if (grammarRule.leftSide().equals(leftGrammarSide) && grammarRule.rightSide()
           .equals(rightGrammarSide)) {
         correctGrammarRule = true;

@@ -4,16 +4,19 @@ import com.google.gson.Gson;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.derivation.tree.validation.DerivationTreeValidation;
 import de.dhbw.karlsruhe.derivation.tree.validation.SetupValidationTree;
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.util.Resource;
 
-
 import java.io.IOException;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class App {
 
   public static void main(String[] args) {
+    SpringApplication.run(App.class, args);
 
     Resource resource = new Resource();
     String grammarAsJson = "";
@@ -31,7 +34,7 @@ public class App {
       SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
       DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
           grammarAsJson);
-      System.out.println(derivationTreeValidation.checkTree(setupValidationTree.root(), ""));
+      System.out.println(derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"));
     } else {
       System.out.println("Json could not be read.");
     }
@@ -39,9 +42,9 @@ public class App {
 
     // Test for BUAcceptor Creation
 
-    GrammarRule gREpsilon = new GrammarRule("S", "epsilon");
-    GrammarRule gRBrackets = new GrammarRule("S", "( S )");
-    GrammarRule gRDouble = new GrammarRule("S", "S S");
+    GrammarProduction gREpsilon = new GrammarProduction("S", "epsilon");
+    GrammarProduction gRBrackets = new GrammarProduction("S", "( S )");
+    GrammarProduction gRDouble = new GrammarProduction("S", "S S");
 
     BottomUpAcceptor buAcceptor = new BottomUpAcceptor();
     buAcceptor.addStep("*", ParserState.Z0, "(())", null);
