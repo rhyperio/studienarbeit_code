@@ -86,7 +86,9 @@ public class GrammarProbabilityGeneration extends GrammarGeneration {
 				rightSide.append(nonTerminal);
 				addToNeededNonTerminalsOnLeftSide(nonTerminal);
 			} else {
-				rightSide.append(usableTerminals.get(rand.nextInt(usableTerminals.size())));
+				String terminal = usableTerminals.get(rand.nextInt(usableTerminals.size()));
+				rightSide.append(terminal);
+				addToTerminals(terminal);
 			}
 			probabilityForMultipleRightSide -= DECREASING_PROBABILITY_FACTOR;
 		}
