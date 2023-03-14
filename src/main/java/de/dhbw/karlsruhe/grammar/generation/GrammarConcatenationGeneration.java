@@ -6,8 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
 
-public class GrammarGeneration {
-    // ToDo: Verhindern von Grammatiken, wo nicht alle Terminale erreicht werden
+public class GrammarConcatenationGeneration {
     // ToDo: Epsillon in Grammatik mitaufnehmen
     private Set<GrammarRule> grammarRulesSet;
     private List<GrammarRule> grammarRules;
