@@ -11,13 +11,6 @@ public class Grammar {
   private GrammarProduction[] productions;
   private String startSymbol;
 
-  public Grammar(String[] pTerminals, String[] pNonTerminals, List<GrammarRule> pGrammarRules, String pStartSymbol) {
-    this.terminals = pTerminals;
-    this.nonTerminals = pNonTerminals;
-    this.productions = this.parseGrammarRulesToStringArray(pGrammarRules);
-    this.startSymbol = pStartSymbol;
-  }
-
   // Default constructor for JSON deserialization
   public Grammar() {
   }
@@ -92,18 +85,6 @@ public class Grammar {
 
   private String removeSpacesIn(String value) {
       return value.replaceAll(" ", "");
-  }
-
-  private String[] parseGrammarRulesToStringArray(List<GrammarRule> pGrammarRules) {
-    List<String> parsedProductions = new ArrayList<>();
-    String tempProduction;
-
-    for (GrammarRule gr : pGrammarRules) {
-      tempProduction = gr.leftSide() + "->" + gr.rightSide();
-      parsedProductions.add(tempProduction);
-    }
-
-    return parsedProductions.toArray(new String[0]);
   }
 
   @Override

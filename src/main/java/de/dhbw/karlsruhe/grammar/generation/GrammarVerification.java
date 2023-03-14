@@ -1,13 +1,12 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
-import de.dhbw.karlsruhe.models.GrammarRule;
-import org.apache.commons.lang3.StringUtils;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 
 import java.util.*;
 
 public class GrammarVerification {
 
-    public boolean verifyProductions(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+    public boolean verifyProductions(List<GrammarProduction> pGrammarRulesToCheck, String[] pNonTerminals) {
         boolean valid = false;
         valid = this.checkStartSymbolIsMappingToOtherNonTerminals(pGrammarRulesToCheck, pNonTerminals);
 
@@ -26,7 +25,7 @@ public class GrammarVerification {
         return valid;
     }
 
-    public Set<String> getNonTerminatingNonTerminals(Set<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+    public Set<String> getNonTerminatingNonTerminals(Set<GrammarProduction> pGrammarRulesToCheck, String[] pNonTerminals) {
         Set<String> nonTerminatingNonTerminals = new HashSet<>();
         boolean loop;
 
@@ -40,11 +39,11 @@ public class GrammarVerification {
 
         return nonTerminatingNonTerminals;
     }
-    private boolean checkIfNonTerminalLoopsItself(String pNonTerminal, Set<GrammarRule> pGrammarRulesToCheck) {
+    private boolean checkIfNonTerminalLoopsItself(String pNonTerminal, Set<GrammarProduction> pGrammarRulesToCheck) {
         List<String> leftSidesOfUsage = new ArrayList<>();
         String rightSidesOfNonTerminalToCheck = "";
 
-        for (GrammarRule gr : pGrammarRulesToCheck) {
+        for (GrammarProduction gr : pGrammarRulesToCheck) {
             if (gr.leftSide().equals(pNonTerminal)) {
                 rightSidesOfNonTerminalToCheck += gr.rightSide();
             }
@@ -71,7 +70,7 @@ public class GrammarVerification {
         return false;
     }
 
-    private boolean checkStartSymbolIsMappingToOtherNonTerminals(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+    private boolean checkStartSymbolIsMappingToOtherNonTerminals(List<GrammarProduction> pGrammarRulesToCheck, String[] pNonTerminals) {
         boolean valid = false;
 
         String prevProductionNonTerminal = "";
@@ -79,7 +78,7 @@ public class GrammarVerification {
 
         String startSymbol = pGrammarRulesToCheck.get(0).leftSide();
 
-        for (GrammarRule gr : pGrammarRulesToCheck) {
+        for (GrammarProduction gr : pGrammarRulesToCheck) {
             if (gr.leftSide().equals(startSymbol)) {
                 for (int i = 0; i < gr.rightSide().length(); i++) {
                     if (Arrays.stream(pNonTerminals).anyMatch(String.valueOf(gr.rightSide().charAt(i))::equals)) {
@@ -92,11 +91,11 @@ public class GrammarVerification {
         return valid;
     }
 
-    private boolean checkEveryNonTerminalIsReached(List<GrammarRule> pGrammarRulesToCheck, String[] pNonTerminals) {
+    private boolean checkEveryNonTerminalIsReached(List<GrammarProduction> pGrammarRulesToCheck, String[] pNonTerminals) {
         List<String> usedNonTerminals = new ArrayList<>();
 
         // check if every non Terminal is reached at least ones
-        for (GrammarRule gr : pGrammarRulesToCheck) {
+        for (GrammarProduction gr : pGrammarRulesToCheck) {
             for (int i = 0; i < gr.rightSide().length(); i++) {
                 if (Arrays.stream(pNonTerminals).anyMatch(String.valueOf(gr.rightSide().charAt(i))::equals)) {
                     usedNonTerminals.add(String.valueOf(gr.rightSide().charAt(i)));
@@ -107,13 +106,13 @@ public class GrammarVerification {
         return new HashSet<>(Arrays.stream(pNonTerminals).toList()).equals(new HashSet<>(usedNonTerminals));
     }
 
-    private boolean checkLoopInSingleTerminal(List<GrammarRule> pGrammarRulesToCheck) {
+    private boolean checkLoopInSingleTerminal(List<GrammarProduction> pGrammarRulesToCheck) {
         boolean valid = false;
         String prevProductionNonTerminal = "";
         String currProductionNonTerminal = "";
 
         for (int i = 0; i < pGrammarRulesToCheck.size(); i++) {
-            GrammarRule currGR = pGrammarRulesToCheck.get(i);
+            GrammarProduction currGR = pGrammarRulesToCheck.get(i);
             currProductionNonTerminal = currGR.leftSide();
 
             if (i != 0 && !valid) {
@@ -130,7 +129,7 @@ public class GrammarVerification {
         return valid;
     }
 
-    private boolean checkLeftSideUnequalRightSide(GrammarRule pCurrGR) {
+    private boolean checkLeftSideUnequalRightSide(GrammarProduction pCurrGR) {
         return !pCurrGR.leftSide().equals(pCurrGR.rightSide());
     }
 }

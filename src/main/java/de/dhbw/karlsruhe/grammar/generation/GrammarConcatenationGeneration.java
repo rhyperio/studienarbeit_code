@@ -1,15 +1,15 @@
 package de.dhbw.karlsruhe.grammar.generation;
 
 import de.dhbw.karlsruhe.models.Grammar;
-import de.dhbw.karlsruhe.models.GrammarRule;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
 
 public class GrammarConcatenationGeneration {
     // ToDo: Epsillon in Grammatik mitaufnehmen
-    private Set<GrammarRule> grammarRulesSet;
-    private List<GrammarRule> grammarRules;
+    private Set<GrammarProduction> grammarRulesSet;
+    private List<GrammarProduction> grammarRules;
     private String[] terminals;
     private String[] nonTerminals;
     private Random random = new Random();
@@ -22,7 +22,7 @@ public class GrammarConcatenationGeneration {
             this.startGeneration();
         } while (!grammarVerification.verifyProductions(this.grammarRules, this.nonTerminals));
 
-        return new Grammar(this.terminals, this.nonTerminals, this.grammarRules, this.nonTerminals[0]);
+        return new Grammar(this.terminals, this.nonTerminals, this.grammarRules.toArray(GrammarProduction[]::new), this.nonTerminals[0]);
     }
 
     private void startGeneration () {
@@ -71,7 +71,7 @@ public class GrammarConcatenationGeneration {
                     rightSide = generateRightSide();
                 } while (rightSide.equalsIgnoreCase(nonTerminal));
 
-                GrammarRule gr = new GrammarRule(nonTerminal, rightSide);
+                GrammarProduction gr = new GrammarProduction(nonTerminal, rightSide);
                 this.grammarRulesSet.add(gr);
             } while ((this.grammarRulesSet.size() - setSizeBeforeCurrentGeneration) < anzProductions);
         }
@@ -80,7 +80,7 @@ public class GrammarConcatenationGeneration {
 
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
             String terminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
-            GrammarRule terminatingGr = new GrammarRule(notTerminatingNonTerminal, terminatingRightSide);
+            GrammarProduction terminatingGr = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
             this.grammarRulesSet.add(terminatingGr);
         }
     }

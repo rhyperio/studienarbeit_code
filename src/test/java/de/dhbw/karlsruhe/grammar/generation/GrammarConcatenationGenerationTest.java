@@ -13,7 +13,6 @@ public class GrammarConcatenationGenerationTest {
         GrammarConcatenationGeneration grammarConcatenationGeneration = new GrammarConcatenationGeneration();
         for (int i = 0; i < 100; i++) {
             Grammar createdGrammar = grammarConcatenationGeneration.generateGrammar();
-            System.out.println("-----------------------------------");
             assertNotNull(createdGrammar);
         }
     }
