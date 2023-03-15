@@ -98,4 +98,19 @@ public class TopDownAcceptorValidationTest {
     private String getGrammarAsJson(String path) throws FileNotFoundException {
         return new Scanner(new File(path)).useDelimiter("\\Z").next();
     }
+
+    @Test
+    public void wrongGrammarUsageTest() throws FileNotFoundException {
+        String grammarAsJson = getGrammarAsJson("src/test/resources/derivation_tree/grammarCorrect1.json");
+        Gson gson = new Gson();
+
+        try (Reader reader = new FileReader("src/test/resources/top_down_parsing/TopDownWrongGrammarUsage.json")) {
+            TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
+            TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
+            String word = "()()";
+            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
