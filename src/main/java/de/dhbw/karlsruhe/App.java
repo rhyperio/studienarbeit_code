@@ -17,50 +17,6 @@ public class App {
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
-
-    Resource resource = new Resource();
-    String grammarAsJson = "";
-    String treeAsJson = "";
-
-    try {
-      grammarAsJson = resource.getResourceAsString("examples/derivation_tree/exampleGrammar.json");
-      treeAsJson = resource.getResourceAsString(
-          "examples/derivation_tree/exampleDerivationTree.json");
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-
-    if (!grammarAsJson.isBlank() && !treeAsJson.isBlank()) {
-      SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
-      DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
-          grammarAsJson);
-      System.out.println(derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"));
-    } else {
-      System.out.println("Json could not be read.");
-    }
-
-
-    // Test for BUAcceptor Creation
-
-    GrammarProduction gREpsilon = new GrammarProduction("S", "epsilon");
-    GrammarProduction gRBrackets = new GrammarProduction("S", "( S )");
-    GrammarProduction gRDouble = new GrammarProduction("S", "S S");
-
-    BottomUpAcceptor buAcceptor = new BottomUpAcceptor();
-    buAcceptor.addStep("*", ParserState.Z0, "(())", null);
-    buAcceptor.addStep("*(", ParserState.Z, "())", null);
-    buAcceptor.addStep("*((", ParserState.Z, "))", null);
-    buAcceptor.addStep("*((S", ParserState.Z, "))", gREpsilon);
-    buAcceptor.addStep("*((S)", ParserState.Z, ")", null);
-    buAcceptor.addStep("*(S", ParserState.Z, ")", gRBrackets);
-    buAcceptor.addStep("*(S)", ParserState.Z, "", null);
-    buAcceptor.addStep("*S", ParserState.Z, "", gRBrackets);
-    buAcceptor.addStep("*S", ParserState.ZF, "", null);
-
-    Gson gson = new Gson();
-    String bUAcceptorJson = gson.toJson(buAcceptor);
-    System.out.print(bUAcceptorJson);
-
   }
 
 }
