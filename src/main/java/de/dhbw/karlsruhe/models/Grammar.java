@@ -86,10 +86,4 @@ public class Grammar {
   private String removeSpacesIn(String value) {
       return value.replaceAll(" ", "");
   }
-
-  @Override
-  public String toString() {
-    // ToDo: Adapt to String Method
-    return super.toString();
-  }
 }

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GrammarConcatenationGenerationTest {
     @Test
-    public void correctGrammarGenerationTest() throws FileNotFoundException {
+    public void correctGrammarGenerationTest() {
         GrammarConcatenationGeneration grammarConcatenationGeneration = new GrammarConcatenationGeneration();
         for (int i = 0; i < 100; i++) {
             Grammar createdGrammar = grammarConcatenationGeneration.generateGrammar();
