@@ -1,5 +1,6 @@
 package de.dhbw.karlsruhe.controller;
 
+import de.dhbw.karlsruhe.grammar.generation.GrammarConcatenationGeneration;
 import de.dhbw.karlsruhe.grammar.generation.GrammarGeneration;
 import de.dhbw.karlsruhe.grammar.generation.GrammarPatternProductionsGeneration;
 import de.dhbw.karlsruhe.grammar.generation.GrammarProbabilityGeneration;
@@ -24,6 +25,14 @@ public class GrammarGenerationController {
     @GetMapping("/api/get/grammar/pattern")
     ResponseEntity<Grammar> getPatternGeneratedGrammar() {
         GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
+        Grammar generatedGrammar = grammarGeneration.generateGrammar();
+        generatedGrammar.mergeOrGrammarsIntoSingleRules();
+        return new ResponseEntity<>(generatedGrammar, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/get/grammar/concatenation")
+    ResponseEntity<Grammar> getConcatenationGeneratedGrammar() {
+        GrammarGeneration grammarGeneration = new GrammarConcatenationGeneration();
         Grammar generatedGrammar = grammarGeneration.generateGrammar();
         generatedGrammar.mergeOrGrammarsIntoSingleRules();
         return new ResponseEntity<>(generatedGrammar, HttpStatus.OK);
