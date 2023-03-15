@@ -78,6 +78,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.5.1</version>
       </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+        <version>2.22.0</version>
+      </plugin>
     </plugins>
     <resources>
       <resource>
@@ -117,12 +123,11 @@
       <groupId>com.google.code.gson</groupId>
       <version>2.10</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/junit/junit -->
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
     <dependency>
-      <artifactId>junit-vintage-engine</artifactId>
-      <groupId>org.junit.vintage</groupId>
-      <scope>test</scope>
-      <version>5.9.0</version>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <groupId>org.apache.maven.plugins</groupId>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <artifactId>junit-jupiter-api</artifactId>
@@ -167,8 +172,8 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 	<dependency>
-    	<groupId>org.apache.commons</groupId>
     	<artifactId>commons-lang3</artifactId>
+    	<groupId>org.apache.commons</groupId>
     	<version>3.12.0</version>
 	</dependency>
   </dependencies>
@@ -185,7 +190,5 @@
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
-  <version>0.0.1-Snapshot</version>
-
+  <version>0.0.1-SNAPSHOT</version>
 </project>
