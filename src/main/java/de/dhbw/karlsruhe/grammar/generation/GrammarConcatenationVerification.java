@@ -32,7 +32,6 @@ public class GrammarConcatenationVerification {
 
     public Set<String> getNonTerminatingNonTerminals(Set<GrammarProduction> grammarRulesToCheck, String[] nonTerminals) {
         Set<String> nonTerminatingNonTerminals = new HashSet<>();
-        boolean loop;
 
         for (String currentNonTerminal : nonTerminals) {
             if (this.checkIfNonTerminalLoopsItself(currentNonTerminal, grammarRulesToCheck)) {
@@ -51,7 +50,7 @@ public class GrammarConcatenationVerification {
                 rightSidesOfNonTerminalToCheck.append(gr.rightSide());
             }
 
-            if (gr.rightSide().contains(nonTerminal)) {
+            if (gr.rightSide().contains(nonTerminal) || this.checkIfRightSideContainsUsedNonTerminals(gr.rightSide(), leftSidesOfUsage)) {
                 leftSidesOfUsage.add(gr.leftSide());
             }
         }

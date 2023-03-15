@@ -82,8 +82,13 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
 
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
             String terminatingRightSide = terminalsAndEpsilon[this.random.nextInt(terminalsAndEpsilon.length)];
-            GrammarProduction terminatingGr = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
-            this.grammarRulesSet.add(terminatingGr);
+            GrammarProduction terminatingGp = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
+            this.grammarRulesSet.add(terminatingGp);
+            if (terminatingRightSide.equals("epsilon")) {
+                String safeTerminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+                GrammarProduction safeTerminatingGr = new GrammarProduction(notTerminatingNonTerminal, safeTerminatingRightSide);
+                this.grammarRulesSet.add(safeTerminatingGr);
+            }
         }
 
         return this.grammarRulesSet.stream().toList();
