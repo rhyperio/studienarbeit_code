@@ -19,7 +19,7 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
 
         do {
             this.startGeneration();
-        } while (!grammarConcatenationVerification.verifyProductions(this.grammarRules, this.nonTerminals));
+        } while (!grammarConcatenationVerification.verifyProductions(this.grammarRules, this.nonTerminals, this.terminals));
 
         return new Grammar(this.terminals, this.nonTerminals, this.grammarRules.toArray(GrammarProduction[]::new), this.nonTerminals[0]);
     }
@@ -34,26 +34,26 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
         this.grammarRules = this.generateProductions();
     }
 
-    private void addNonTerminals(int pAnzNonTerminals) {
+    private void addNonTerminals(int anzNonTerminals) {
         Set<String> nonTerminalsSet = new HashSet<>();
         char nonTerminal;
 
         do {
             nonTerminal = RandomStringUtils.random(1, true, false).toUpperCase().charAt(0);
             nonTerminalsSet.add(Character.toString(nonTerminal));
-        } while(nonTerminalsSet.size() < pAnzNonTerminals);
+        } while(nonTerminalsSet.size() < anzNonTerminals);
 
         this.nonTerminals = nonTerminalsSet.toArray(String[]::new);
     }
 
-    private void addTerminals(int pAnzTerminals) {
+    private void addTerminals(int anzTerminals) {
         Set<String> terminalsSet = new HashSet<>();
         char terminal;
 
         do {
             terminal = RandomStringUtils.random(1, true, true).toLowerCase().charAt(0);
             terminalsSet.add(Character.toString(terminal));
-        } while(terminalsSet.size() < pAnzTerminals);
+        } while(terminalsSet.size() < anzTerminals);
 
         this.terminals = terminalsSet.toArray(String[]::new);
     }
@@ -76,36 +76,40 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
 
         Set<String> notTerminatingNonTerminals = this.grammarConcatenationVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
 
-        List<String> temp = new ArrayList<>(Arrays.stream(this.terminals).toList());
-        temp.add("epsilon");
-        String[] terminalsAndEpsilon = temp.toArray(new String[0]);
+        String[] terminalsAndEpsilon = Arrays.copyOf(this.terminals, this.terminals.length + 1);
+        terminalsAndEpsilon[terminalsAndEpsilon.length - 1] = "epsilon";
 
 
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
             String terminatingRightSide = terminalsAndEpsilon[this.random.nextInt(terminalsAndEpsilon.length)];
-            GrammarProduction terminatingGr = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
-            this.grammarRulesSet.add(terminatingGr);
+            GrammarProduction terminatingGp = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
+            this.grammarRulesSet.add(terminatingGp);
+            if (terminatingRightSide.equals("epsilon")) {
+                String safeTerminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+                GrammarProduction safeTerminatingGr = new GrammarProduction(notTerminatingNonTerminal, safeTerminatingRightSide);
+                this.grammarRulesSet.add(safeTerminatingGr);
+            }
         }
 
         return this.grammarRulesSet.stream().toList();
     }
 
     private String generateRightSide() {
-        String rightSide = "";
+        StringBuilder rightSide = new StringBuilder();
         int lengthOfRightSide = this.random.nextInt(this.terminals.length + this.nonTerminals.length) + 1;
 
         for (int i = 0; i < lengthOfRightSide; i++) {
             if (this.random.nextFloat() <= 0.5) {
                 // add Terminal
                 String choosenTerminal = this.terminals[this.random.nextInt(this.terminals.length)];
-                rightSide += choosenTerminal;
+                rightSide.append(choosenTerminal);
             } else {
                 // add non Terminal
                 String choosenNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
-                rightSide += choosenNonTerminal;
+                rightSide.append(choosenNonTerminal);
             }
         }
 
-        return rightSide;
+        return rightSide.toString();
     }
 }
