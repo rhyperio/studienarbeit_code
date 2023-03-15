@@ -6,19 +6,25 @@ import java.util.*;
 
 public class GrammarConcatenationVerification {
 
-    public boolean verifyProductions(List<GrammarProduction> grammarRulesToCheck, String[] nonTerminals) {
+    public boolean verifyProductions(List<GrammarProduction> grammarRulesToCheck, String[] nonTerminals, String[] terminals) {
         boolean valid = this.checkStartSymbolIsMappingToOtherNonTerminals(grammarRulesToCheck, nonTerminals);
 
         if (!valid) {
             return false;
         } else {
-            valid = this.checkLoopInSingleNonTerminal(grammarRulesToCheck);
+            valid = this.checkLoopInNonTerminal(grammarRulesToCheck, terminals);
         }
 
         if (!valid) {
             return false;
         } else {
             valid = this.checkEveryNonTerminalIsReached(grammarRulesToCheck, nonTerminals);
+        }
+
+        if (!valid) {
+            return false;
+        } else {
+            valid = this.checkEveryTerminalIsReached(grammarRulesToCheck, terminals);
         }
 
         return valid;
@@ -71,7 +77,7 @@ public class GrammarConcatenationVerification {
         boolean valid = false;
 
         String startSymbol = nonTerminals[0];
-        List<String> nonTerminalsToCheck = Arrays.stream(nonTerminals).toList();
+        List<String> nonTerminalsToCheck = new ArrayList<>(Arrays.stream(nonTerminals).toList());
         nonTerminalsToCheck.remove(0);
 
         for (GrammarProduction gr : grammarRulesToCheck) {
@@ -102,7 +108,7 @@ public class GrammarConcatenationVerification {
         return Arrays.stream(nonTerminals).distinct().toList().equals(usedNonTerminals);
     }
 
-    private boolean checkLoopInSingleNonTerminal(List<GrammarProduction> grammarRulesToCheck) {
+    private boolean checkLoopInNonTerminal(List<GrammarProduction> grammarRulesToCheck, String[] terminals) {
         boolean valid = false;
         String prevProductionNonTerminal = "";
         String currProductionNonTerminal = "";
@@ -116,7 +122,7 @@ public class GrammarConcatenationVerification {
             }
 
             if (i == 0 || !prevProductionNonTerminal.equals(currProductionNonTerminal)) {
-                valid = this.checkLeftSideUnequalRightSide(currGR);
+                valid = this.checkLeftSideUnequalRightSide(currGR, grammarRulesToCheck, terminals);
             }
 
             prevProductionNonTerminal = currProductionNonTerminal;
@@ -125,7 +131,44 @@ public class GrammarConcatenationVerification {
         return valid;
     }
 
-    private boolean checkLeftSideUnequalRightSide(GrammarProduction currGR) {
-        return !currGR.leftSide().equals(currGR.rightSide());
+    private boolean checkLeftSideUnequalRightSide(GrammarProduction currGR, List<GrammarProduction> grammarRulesToCheck, String[] terminals) {
+        if (currGR.leftSide().equals(currGR.rightSide())) {
+            return false;
+        } else if (currGR.rightSide().contains(currGR.leftSide())) {
+            return leftSideProducesTerminalOnly(currGR.leftSide(), grammarRulesToCheck, terminals);
+        }
+
+        return true;
+    }
+
+    private boolean leftSideProducesTerminalOnly(String leftSide, List<GrammarProduction> grammarRulesToCheck, String[] terminals) {
+        for (GrammarProduction gr : grammarRulesToCheck) {
+            if (gr.leftSide().equals(leftSide)) {
+                if (Arrays.asList(terminals).contains(gr.rightSide())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkEveryTerminalIsReached(List<GrammarProduction> grammarRulesToCheck, String[] terminals) {
+        boolean reached;
+
+        for (String terminal : terminals) {
+            reached = false;
+            for (GrammarProduction gr : grammarRulesToCheck) {
+                if (gr.rightSide().contains(terminal)) {
+                    reached = true;
+                    break;
+                }
+            }
+            if (!reached) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -19,7 +19,7 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
 
         do {
             this.startGeneration();
-        } while (!grammarConcatenationVerification.verifyProductions(this.grammarRules, this.nonTerminals));
+        } while (!grammarConcatenationVerification.verifyProductions(this.grammarRules, this.nonTerminals, this.terminals));
 
         return new Grammar(this.terminals, this.nonTerminals, this.grammarRules.toArray(GrammarProduction[]::new), this.nonTerminals[0]);
     }
