@@ -10,16 +10,16 @@ import java.util.List;
 
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.models.Probability;
 import de.dhbw.karlsruhe.services.ProductionService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.parameters.P;
 
 public class GrammarProbabilityGenerationTest {
 
 	@Test
 	public void checkEmptyIntersectionBetweenTerminalsAndNonTerminals() {
-		GrammarGeneration grammarProbabilityGeneration = new GrammarProbabilityGeneration();
+		GrammarGeneration grammarProbabilityGeneration = buildGrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarProbabilityGeneration.generateGrammar();
 
 		assertTrue(Arrays.stream(generatedGrammar.getTerminals()).distinct()
@@ -29,7 +29,7 @@ public class GrammarProbabilityGenerationTest {
 
 	@Test
 	public void checkThatGrammarGenerationsAreNotEmpty() {
-		GrammarGeneration grammarProbabilityGeneration = new GrammarProbabilityGeneration();
+		GrammarGeneration grammarProbabilityGeneration = buildGrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarProbabilityGeneration.generateGrammar();
 
 		assertNotEquals(0, generatedGrammar.getTerminals().length);
@@ -40,7 +40,7 @@ public class GrammarProbabilityGenerationTest {
 
 	@Test
 	public void checkThatStartSymbolIsNonTerminal() {
-		GrammarGeneration grammarProbabilityGeneration = new GrammarProbabilityGeneration();
+		GrammarGeneration grammarProbabilityGeneration = buildGrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarProbabilityGeneration.generateGrammar();
 
 		assertTrue(
@@ -49,7 +49,7 @@ public class GrammarProbabilityGenerationTest {
 
 	@Test
 	void checkAllNonTerminalsOnLeftSide(){
-		GrammarGeneration grammarGeneration = new GrammarProbabilityGeneration();
+		GrammarGeneration grammarGeneration = buildGrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
@@ -60,7 +60,7 @@ public class GrammarProbabilityGenerationTest {
 
 	@Test
 	void checkAllTerminalsUsed(){
-		GrammarGeneration grammarGeneration = new GrammarProbabilityGeneration();
+		GrammarGeneration grammarGeneration = buildGrammarProbabilityGeneration();
 		Grammar generatedGrammar = grammarGeneration.generateGrammar();
 
 		List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
@@ -73,11 +73,20 @@ public class GrammarProbabilityGenerationTest {
 	void checkAtLeastOneEndproduction() {
 		ProductionService productionService = new ProductionService();
 		for (int i =0; i<1000; i++) {
-			GrammarGeneration grammarGeneration = new GrammarProbabilityGeneration();
+			GrammarGeneration grammarGeneration = buildGrammarProbabilityGeneration();
 			Grammar generatedGrammar = grammarGeneration.generateGrammar();
 			List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
 			assertTrue(grList.stream().anyMatch(productionService::isEndProduction));
 		}
 	}
 
+	private GrammarGeneration buildGrammarProbabilityGeneration() {
+		return  new GrammarProbabilityGeneration(new Probability(
+				0.5f,
+				0.4f,
+				0.6f,
+				0.5f,
+				0.8f,
+				0.1f));
+	}
 }
