@@ -9,6 +9,9 @@ public class TopDownStep {
     private String stack;
     private GrammarProduction usedProduction;
 
+    public TopDownStep() {
+    }
+
     public TopDownStep(String readInput, ParserState state, String stack, GrammarProduction usedProduction) {
         this.setReadInput(readInput);
         this.setState(state);
