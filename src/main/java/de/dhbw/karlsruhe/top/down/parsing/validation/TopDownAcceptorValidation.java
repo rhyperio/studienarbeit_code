@@ -1,5 +1,6 @@
 package de.dhbw.karlsruhe.top.down.parsing.validation;
 
+import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.GrammarService;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
@@ -17,6 +18,9 @@ public class TopDownAcceptorValidation {
 
     public TopDownAcceptorValidation(String grammarAsJson) {
         this.grammarService = new GrammarService(grammarAsJson);
+    }
+    public TopDownAcceptorValidation(Grammar grammar) {
+        this.grammarService = new GrammarService(grammar);
     }
 
     public boolean validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
