@@ -89,7 +89,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 							rightSideCompounds[i] = nonTerminals.get((index+1) % nonTerminals.size());
 					}
 			}
-			String rightSide = String.join(" ",rightSideCompounds);
+			String rightSide = String.join("",rightSideCompounds);
 			generatedProductions.add(new GrammarProduction(nonTerminal, rightSide));
 		}
 		return generatedProductions.stream().distinct().toList();
@@ -188,7 +188,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 				rightSideCompounds[i] = terminals.get(index);
 			}
 		}
-		String rightSide = String.join(" ",rightSideCompounds);
+		String rightSide = String.join("",rightSideCompounds);
 
 		return new GrammarProduction(leftSide, rightSide);
 	}
@@ -211,7 +211,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 				}
 			}
 		}
-		String rightSide = String.join(" ",rightSideCompounds);
+		String rightSide = String.join("",rightSideCompounds);
 
 		return new GrammarProduction(leftSideNonTerminal, rightSide);
 	}
