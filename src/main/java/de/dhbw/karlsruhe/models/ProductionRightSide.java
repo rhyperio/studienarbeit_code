@@ -9,7 +9,7 @@ public enum ProductionRightSide {
     p2("N", false),
     p3("t N", false),
     p4("t t N", false),
-    p5("epsilon", true),
+    p5("ε", true),
     p6("N t", false),
     p7("N t t", false),
     p8("t N t", false),
