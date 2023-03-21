@@ -73,13 +73,20 @@ public class DerivationTreeValidation {
         }
         return new DetailResult(true);
       } else {
-        return new DetailResult(false, new GrammarProduction(element.getContent(), rightGrammarSide), "");
+        GrammarProduction wrongProduction = new GrammarProduction(element.getContent(), rightGrammarSide);
+        return new DetailResult(false,
+            wrongProduction, String.format("Die Produktion %s existiert nicht in der Grammatik.", wrongProduction));
       }
     }
-    if (isTerminal(element) && element.getChildren().isEmpty()) {
+    if (isTerminal(element)) {
+      if (!element.getChildren().isEmpty()) {
+        return new DetailResult(false, new GrammarProduction(element.getContent(), buildChildConcatination(element.getChildren())),
+            String.format("Das Terminal %s darf keine Kinder haben.", element.getContent()));
+      }
       return new DetailResult(true);
     } else {
-      return new DetailResult(false, new GrammarProduction(element.getContent(), buildChildConcatination(element.getChildren())),"");
+      return new DetailResult(false, new GrammarProduction(element.getContent(), buildChildConcatination(element.getChildren())),
+          String.format("Bei dem Element %s muss entweder ein Terminal oder Nichtterminal sein.", element.getContent()));
     }
   }
 

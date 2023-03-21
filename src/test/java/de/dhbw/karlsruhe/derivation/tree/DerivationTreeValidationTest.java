@@ -24,7 +24,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-   assertEquals(derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"), new DetailResult(true));
+   assertEquals( new DetailResult(true),
+       derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"));
   }
 
   @Test
@@ -37,8 +38,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-   assertEquals(derivationTreeValidation.checkTree(setupValidationTree.root(), null),
-       new DetailResult(false, "Das abzuleitende Wort ist leer."));
+   assertEquals(new DetailResult(false, "Das abzuleitende Wort ist leer."),
+       derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -51,7 +52,10 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertEquals(new DetailResult(false, new GrammarProduction("S", "(S)"),""),
+   GrammarProduction production = new GrammarProduction("S", "(S)");
+
+   assertEquals(new DetailResult(false, production,
+            String.format("Die Produktion %s existiert nicht in der Grammatik.", production)),
         derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
@@ -92,7 +96,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertEquals(new DetailResult(false, new GrammarProduction("3", "NNZ"), ""), derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+    assertEquals(new DetailResult(false, new GrammarProduction("3", "NNZ"), "Das Terminal 3 darf keine Kinder haben."),
+        derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
