@@ -30,6 +30,8 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 		startSymbol = nonTerminals.iterator().next();
 		productions = generateProductions();
 
+		addEpsilonToTerminals();
+
 		return new Grammar(terminals.toArray(new String[0]), nonTerminals.toArray(new String[0]),
 				productions.toArray(new GrammarProduction[0]), startSymbol);
 	}
@@ -87,7 +89,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 							rightSideCompounds[i] = nonTerminals.get((index+1) % nonTerminals.size());
 					}
 			}
-			String rightSide = String.join(" ",rightSideCompounds);
+			String rightSide = String.join("",rightSideCompounds);
 			generatedProductions.add(new GrammarProduction(nonTerminal, rightSide));
 		}
 		return generatedProductions.stream().distinct().toList();
@@ -121,7 +123,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 		List<String> tmpTerminals = new ArrayList<>(terminals);
 		for (String str: terminals) {
 			for (GrammarProduction gr : resultProductions) {
-				if (!gr.rightSide().contains("epsilon") && gr.rightSide().contains(str)){
+				if (!gr.rightSide().contains("ε") && gr.rightSide().contains(str)){
 					tmpTerminals.remove(str);
 				}
 			}
@@ -186,7 +188,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 				rightSideCompounds[i] = terminals.get(index);
 			}
 		}
-		String rightSide = String.join(" ",rightSideCompounds);
+		String rightSide = String.join("",rightSideCompounds);
 
 		return new GrammarProduction(leftSide, rightSide);
 	}
@@ -209,9 +211,15 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 				}
 			}
 		}
-		String rightSide = String.join(" ",rightSideCompounds);
+		String rightSide = String.join("",rightSideCompounds);
 
 		return new GrammarProduction(leftSideNonTerminal, rightSide);
+	}
+
+	private void addEpsilonToTerminals(){
+		if (productions.stream().anyMatch(p -> p.rightSide().contains("ε"))){
+			terminals.add("ε");
+		}
 	}
 
 }
