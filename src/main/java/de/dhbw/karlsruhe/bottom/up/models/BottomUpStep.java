@@ -10,6 +10,9 @@ public class BottomUpStep {
     private String remainingWord;
     private GrammarProduction production;
 
+    public BottomUpStep(){
+    }
+
     public BottomUpStep(String stack, ParserState state, String remainingWord, GrammarProduction production) {
         this.stack = stack;
         this.state = state;
