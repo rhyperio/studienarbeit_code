@@ -34,4 +34,8 @@ public class TopDownAcceptor {
     public TopDownStep getLastStep() {
         return this.topDownSteps.get(this.topDownSteps.size()-1);
     }
+
+    public TopDownStep getSecondLastStep() {
+        return this.topDownSteps.get(this.topDownSteps.size()-2);
+    }
 }

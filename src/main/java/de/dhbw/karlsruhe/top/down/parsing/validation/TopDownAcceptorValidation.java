@@ -62,8 +62,16 @@ public class TopDownAcceptorValidation {
         String input = stepToCheck.getReadInput();
         GrammarProduction usedProduction = stepToCheck.getUsedProduction();
 
+        TopDownStep prevLastStep = this.tdAcceptor.getSecondLastStep();
+        ParserState prevState = prevLastStep.getState();
+        String prevStack = prevLastStep.getStack();
+        String prevInput = prevLastStep.getReadInput();
+        GrammarProduction prevUsedProduction = prevLastStep.getUsedProduction();
+
         if (currentState == ParserState.ZF && stack.equals("*") && input.equals(this.wordToPars) && usedProduction == null) {
-            success = true;
+            if (prevState == ParserState.Z && prevStack.equals(stack) && prevInput.equals(input) && prevUsedProduction == null) {
+                success = true;
+            }
         }
 
         return success;

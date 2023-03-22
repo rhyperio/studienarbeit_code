@@ -113,4 +113,19 @@ public class TopDownAcceptorValidationTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void wrongPrevLastStep() throws FileNotFoundException {
+        String grammarAsJson = getGrammarAsJson("src/test/resources/derivation_tree/grammarCorrect1.json");
+        Gson gson = new Gson();
+
+        try (Reader reader = new FileReader("src/test/resources/top_down_parsing/TopDownWrongPrevLastStep.json")) {
+            TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
+            TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
+            String word = "()()";
+            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
