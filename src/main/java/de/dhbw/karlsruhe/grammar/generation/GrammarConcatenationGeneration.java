@@ -77,14 +77,14 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
         Set<String> notTerminatingNonTerminals = this.grammarConcatenationVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
 
         String[] terminalsAndEpsilon = Arrays.copyOf(this.terminals, this.terminals.length + 1);
-        terminalsAndEpsilon[terminalsAndEpsilon.length - 1] = "epsilon";
+        terminalsAndEpsilon[terminalsAndEpsilon.length - 1] = "ε";
 
 
         for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
             String terminatingRightSide = terminalsAndEpsilon[this.random.nextInt(terminalsAndEpsilon.length)];
             GrammarProduction terminatingGp = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
             this.grammarRulesSet.add(terminatingGp);
-            if (terminatingRightSide.equals("epsilon")) {
+            if (terminatingRightSide.equals("ε")) {
                 this.terminals = terminalsAndEpsilon;
                 String safeTerminatingRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
                 GrammarProduction safeTerminatingGr = new GrammarProduction(notTerminatingNonTerminal, safeTerminatingRightSide);
