@@ -1,14 +1,15 @@
 package de.dhbw.karlsruhe.derivation.tree;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.dhbw.karlsruhe.derivation.tree.models.DetailResult;
 import de.dhbw.karlsruhe.derivation.tree.validation.DerivationTreeValidation;
 import de.dhbw.karlsruhe.derivation.tree.validation.SetupValidationTree;
+import de.dhbw.karlsruhe.models.GrammarProduction;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
  class DerivationTreeValidationTest {
@@ -23,7 +24,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertTrue(derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"));
+   assertEquals( new DetailResult(true),
+       derivationTreeValidation.checkTree(setupValidationTree.root(), "(())"));
   }
 
   @Test
@@ -31,12 +33,13 @@ import org.junit.jupiter.api.Test;
     String grammarAsJson = getGrammarAsJson(
         "src/test/resources/derivation_tree/grammarCorrect1.json");
     String treeAsJson = getTreeAsJson(
-        "src/test/resources/derivation_tree/treeWithWrongTerminal1.json");
+        "src/test/resources/derivation_tree/tree1.json");
     SetupValidationTree setupValidationTree = new SetupValidationTree(treeAsJson);
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+   assertEquals(new DetailResult(false, "Das abzuleitende Wort ist leer."),
+       derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -49,7 +52,11 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+   GrammarProduction production = new GrammarProduction("S", "(S)");
+
+   assertEquals(new DetailResult(false, production,
+            String.format("Die Produktion %s existiert nicht in der Grammatik.", production)),
+        derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -62,7 +69,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+    assertEquals(new DetailResult(false, "NNZ ist nicht das Startsymbol der Grammatik."),
+        derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -75,7 +83,7 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+    assertEquals(new DetailResult(false, "3 ist nicht das Startsymbol der Grammatik."), derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -88,7 +96,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), null));
+    assertEquals(new DetailResult(false, new GrammarProduction("3", "NNZ"), "Das Terminal 3 darf keine Kinder haben."),
+        derivationTreeValidation.checkTree(setupValidationTree.root(), null));
   }
 
   @Test
@@ -101,7 +110,8 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), "((])"));
+    assertEquals(new DetailResult(false, "Das abgeleitete Wort (()) entspricht nicht dem Ausgangswort ((])"),
+        derivationTreeValidation.checkTree(setupValidationTree.root(), "((])"));
   }
 
   @Test
@@ -114,7 +124,7 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    assertTrue(derivationTreeValidation.checkTree(setupValidationTree.root(), "302"));
+    assertEquals(new DetailResult(true), derivationTreeValidation.checkTree(setupValidationTree.root(), "302"));
   }
 
   @Test
@@ -127,7 +137,7 @@ import org.junit.jupiter.api.Test;
     DerivationTreeValidation derivationTreeValidation = new DerivationTreeValidation(
         grammarAsJson);
 
-    Assertions.assertFalse(derivationTreeValidation.checkTree(setupValidationTree.root(), "145"));
+    assertEquals(new DetailResult(false, "Das abgeleitete Wort 302 entspricht nicht dem Ausgangswort 145"), derivationTreeValidation.checkTree(setupValidationTree.root(), "145"));
   }
 
   private String getGrammarAsJson(String path) throws FileNotFoundException {

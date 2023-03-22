@@ -1,6 +1,7 @@
 package de.dhbw.karlsruhe.derivation.tree.validation;
 
 import de.dhbw.karlsruhe.derivation.tree.models.DerivationTree;
+import de.dhbw.karlsruhe.derivation.tree.models.DetailResult;
 import de.dhbw.karlsruhe.models.ElementClassification;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.models.Grammar;
@@ -22,24 +23,31 @@ public class DerivationTreeValidation {
     this.grammarService = new GrammarService(grammar);
   }
 
-  public boolean checkTree(DerivationTree root, String word) {
+  public DetailResult checkTree(DerivationTree root, String word) {
     if (isStartSymbol(root)) {
       grammarRules = grammarService.getGrammarRules();
-      checkDerivationTreeForCorrectSubstitutions(root);
-      return !correctDerivations.contains(false) && derivedCorrectWord(root, word);
+      DetailResult detailResult = checkDerivationTreeForCorrectSubstitutions(root);
+      if (!detailResult.isCorrect()){
+        return detailResult;
+      }
+      return derivedCorrectWord(root, word);
     } else {
-      return false;
+      return new DetailResult(false, String.format("%s ist nicht das Startsymbol der Grammatik.", root.getContent()));
     }
   }
 
-  private boolean derivedCorrectWord(DerivationTree root, String word) {
+  private DetailResult derivedCorrectWord(DerivationTree root, String word) {
     StringBuilder derivedWord = new StringBuilder();
 
     root.getLeafNodes().forEach(leaf -> {
       derivedWord.append(leaf.getContent());
     });
-
-    return removeEpsilons(derivedWord.toString()).equals(word) && !word.isBlank();
+    if (word == null || word.isBlank()) {
+      return new DetailResult(false, "Das abzuleitende Wort ist leer.");
+    } else if (!removeEpsilons(derivedWord.toString()).equals(word)) {
+      return new DetailResult(false, String.format("Das abgeleitete Wort %s entspricht nicht dem Ausgangswort %s", removeEpsilons(derivedWord.toString()), word));
+    }
+    return new DetailResult(true);
   }
 
   private String removeEpsilons(String word) {
@@ -50,27 +58,36 @@ public class DerivationTreeValidation {
     return root.getContent().equals(grammarService.getStartSymbol());
   }
 
-  private boolean checkDerivationTreeForCorrectSubstitutions(DerivationTree element) {
+  private DetailResult checkDerivationTreeForCorrectSubstitutions(DerivationTree element) {
     if (isNotTerminal(element)) {
       String rightGrammarSide =
           leftSideExists(element.getContent()) ? buildChildConcatination(element.getChildren())
               : "";
 
       if (isRuleInGrammar(element.getContent(), rightGrammarSide)) {
-        boolean correctDerivation = false;
         for (DerivationTree child : element.getChildren()) {
-          correctDerivation = checkDerivationTreeForCorrectSubstitutions(child);
+          DetailResult detailResult = checkDerivationTreeForCorrectSubstitutions(child);
+          if (!detailResult.isCorrect()) {
+            return detailResult;
+          }
         }
-        correctDerivations.add(correctDerivation);
-        return correctDerivation;
+        return new DetailResult(true);
       } else {
-        correctDerivations.add(false);
-        return false;
+        GrammarProduction wrongProduction = new GrammarProduction(element.getContent(), rightGrammarSide);
+        return new DetailResult(false,
+            wrongProduction, String.format("Die Produktion %s existiert nicht in der Grammatik.", wrongProduction));
       }
     }
-    boolean correctEnd = isTerminal(element) && element.getChildren().isEmpty();
-    correctDerivations.add(correctEnd);
-    return correctEnd;
+    if (isTerminal(element)) {
+      if (!element.getChildren().isEmpty()) {
+        return new DetailResult(false, new GrammarProduction(element.getContent(), buildChildConcatination(element.getChildren())),
+            String.format("Das Terminal %s darf keine Kinder haben.", element.getContent()));
+      }
+      return new DetailResult(true);
+    } else {
+      return new DetailResult(false, new GrammarProduction(element.getContent(), buildChildConcatination(element.getChildren())),
+          String.format("Bei dem Element %s muss entweder ein Terminal oder Nichtterminal sein.", element.getContent()));
+    }
   }
 
   private boolean leftSideExists(String content) {
