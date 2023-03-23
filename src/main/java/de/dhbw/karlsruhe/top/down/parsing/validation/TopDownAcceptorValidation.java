@@ -3,6 +3,7 @@ package de.dhbw.karlsruhe.top.down.parsing.validation;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.GrammarService;
+import de.dhbw.karlsruhe.top.down.parsing.models.AcceptorDetailResult;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
 import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownStep;
@@ -15,6 +16,7 @@ public class TopDownAcceptorValidation {
     private GrammarService grammarService;
     private TopDownAcceptor tdAcceptor;
     private String wordToPars;
+    private AcceptorDetailResult acceptorDetailResult = new AcceptorDetailResult(false);
 
     public TopDownAcceptorValidation(String grammarAsJson) {
         this.grammarService = new GrammarService(grammarAsJson);
@@ -23,18 +25,18 @@ public class TopDownAcceptorValidation {
         this.grammarService = new GrammarService(grammar);
     }
 
-    public boolean validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
+    public AcceptorDetailResult validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
         if (pTDAcceptor == null || pWord == null) {
-            return false;
+            return new AcceptorDetailResult(false, "Es sind nicht alle Parameter angegeben!");
         }
 
         this.tdAcceptor = pTDAcceptor;
         this.wordToPars = pWord;
 
         if (!this.validateFirstStep() || !this.validateLastStep() || !this.validateSteps()) {
-            return false;
+            return acceptorDetailResult;
         }
-        return true;
+        return new AcceptorDetailResult(true);
     }
 
     private boolean validateFirstStep() {
@@ -48,6 +50,17 @@ public class TopDownAcceptorValidation {
 
         if (currentState == ParserState.Z0 && stack.equals("*") && input.equals("") && usedProduction == null) {
             success = true;
+        } else {
+            this.acceptorDetailResult.setWrongStep(stepToCheck);
+            if (currentState != ParserState.Z0) {
+                this.acceptorDetailResult.setMessage("Der Zustand im ersten Schritt muss z0 sein!");
+            } else if (!stack.equals("*")) {
+                this.acceptorDetailResult.setMessage("Der Kellerinhalt muss bei dem ersten Schritt leer sein!");
+            } else if (!input.equals("")) {
+                this.acceptorDetailResult.setMessage("Die gelesene Eingabe muss bei dem ersten Schritt leer sein!");
+            } else if (usedProduction != null) {
+                this.acceptorDetailResult.setMessage("Es darf keine Produktion bei dem ersten Schritt angewendet werden!");
+            }
         }
 
         return success;
