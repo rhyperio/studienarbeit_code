@@ -86,7 +86,7 @@ public class TopDownAcceptorValidation {
         for (int i=0; i < tdSteps.size(); i++) {
             currStep = tdSteps.get(i);
 
-            if (currStep.equals(this.tdAcceptor.getFirstStep()) || currStep.equals(this.tdAcceptor.getLastStep())) {
+            if (currStep.equals(this.tdAcceptor.getFirstStep()) || currStep.equals(this.tdAcceptor.getLastStep()) || currStep.equals(this.tdAcceptor.getSecondLastStep())) {
                 continue;
             }
 
