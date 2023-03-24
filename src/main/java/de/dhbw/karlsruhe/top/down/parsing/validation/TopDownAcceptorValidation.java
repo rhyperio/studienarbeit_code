@@ -84,6 +84,28 @@ public class TopDownAcceptorValidation {
         if (currentState == ParserState.ZF && stack.equals("*") && input.equals(this.wordToPars) && usedProduction == null) {
             if (prevState == ParserState.Z && prevStack.equals(stack) && prevInput.equals(input) && prevUsedProduction == null) {
                 success = true;
+            } else {
+                this.acceptorDetailResult.setWrongStep(prevLastStep);
+                if (prevState != ParserState.Z) {
+                    this.acceptorDetailResult.setMessage("Der Zustand ist falsch!");
+                } else if (!prevStack.equals(stack)) {
+                    this.acceptorDetailResult.setMessage("Der Keller stimmt nicht mit dem letzten Schritt überein!");
+                } else if (!prevInput.equals(input)) {
+                    this.acceptorDetailResult.setMessage("Die gelesene Eingabe stimmt nicht mit dem letzten Schritt überein!");
+                } else if (prevUsedProduction != null) {
+                    this.acceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
+                }
+            }
+        } else {
+            this.acceptorDetailResult.setWrongStep(stepToCheck);
+            if (currentState != ParserState.ZF) {
+                this.acceptorDetailResult.setMessage("Der Zustand ist falsch!");
+            } else if (!stack.equals("*")) {
+                this.acceptorDetailResult.setMessage("Der Keller ist nicht leer!");
+            } else if (!input.equals(this.wordToPars)) {
+                this.acceptorDetailResult.setMessage("Die gelesene Eingabe stimmt nicht mit dem abzuleitenden Wort überein!");
+            } else if (usedProduction != null) {
+                this.acceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
             }
         }
 
