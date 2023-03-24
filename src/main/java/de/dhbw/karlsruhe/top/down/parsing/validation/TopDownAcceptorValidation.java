@@ -27,7 +27,8 @@ public class TopDownAcceptorValidation {
 
     public AcceptorDetailResult validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
         if (pTDAcceptor == null || pWord == null) {
-            return new AcceptorDetailResult(false, "Es sind nicht alle Parameter angegeben!");
+            this.acceptorDetailResult.setMessage("Es sind nicht alle Parameter angegeben!");
+            return this.acceptorDetailResult;
         }
 
         this.tdAcceptor = pTDAcceptor;

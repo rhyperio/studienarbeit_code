@@ -17,7 +17,7 @@ public class TopDownAcceptorController {
         validationTopDownParamModel.getGrammar().splitOrGrammarsIntoSingleRules();
         TopDownAcceptorValidation topDownAcceptorValidation = new TopDownAcceptorValidation(validationTopDownParamModel.getGrammar());
 
-        boolean accepted = topDownAcceptorValidation.validateTopDownAcceptor(validationTopDownParamModel.getTopDownAcceptor(), validationTopDownParamModel.getWord());
+        boolean accepted = topDownAcceptorValidation.validateTopDownAcceptor(validationTopDownParamModel.getTopDownAcceptor(), validationTopDownParamModel.getWord()).isCorrect();
 
         return new ResponseEntity<>(accepted, HttpStatus.OK);
     }
