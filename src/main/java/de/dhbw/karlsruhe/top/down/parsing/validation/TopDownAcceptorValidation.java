@@ -151,7 +151,11 @@ public class TopDownAcceptorValidation {
         GrammarProduction productionCurrStep = tdStep.getUsedProduction();
         ParserState stateCurrStep = tdStep.getState();
 
-        if (stackCurrStep == null || stateCurrStep != ParserState.Z) {
+        if (stackCurrStep == null) {
+            this.acceptorDetailResult.setMessage("Fehler im Keller!");
+            return false;
+        } else if (stateCurrStep != ParserState.Z) {
+            this.acceptorDetailResult.setMessage("Der angegebene Zustand ist falsch!");
             return false;
         }
 
@@ -170,6 +174,7 @@ public class TopDownAcceptorValidation {
             return true;
         }
 
+        this.acceptorDetailResult.setMessage("Der Leseschritt wurde nicht richtig durchgeführt!");
         return false;
     }
 
@@ -179,8 +184,16 @@ public class TopDownAcceptorValidation {
         char secondCharStackCurrStep = stackCurrStep.charAt(1);
         char firstCharStackNextStep = stackNextStep.charAt(0);
 
-        if (productionCurrStep == null && (secondCharStackCurrStep == firstCharStackNextStep)) {
+        if (productionCurrStep == null) {
             return true;
+        } else {
+            this.acceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
+        }
+
+        if (secondCharStackCurrStep == firstCharStackNextStep) {
+            return true;
+        } else {
+            this.acceptorDetailResult.setMessage("Das gelesene Terminal wurde nicht korrekt gelesen!");
         }
 
         return false;
@@ -196,7 +209,14 @@ public class TopDownAcceptorValidation {
         String inputNextStep = nextStep.getReadInput();
         ParserState stateCurrStep = tdStep.getState();
 
-        if (stackCurrStep == null || productionCurrStep == null || stateCurrStep != ParserState.Z) {
+        if (stackCurrStep == null) {
+            this.acceptorDetailResult.setMessage("Der Keller darf nicht leer sein!");
+            return false;
+        } else if (productionCurrStep == null) {
+            this.acceptorDetailResult.setMessage("Es ist keine Produktion angegeben!");
+            return false;
+        } else if (stateCurrStep != ParserState.Z) {
+            this.acceptorDetailResult.setMessage("Der Zutand ist falsch!");
             return false;
         }
 
@@ -211,6 +231,7 @@ public class TopDownAcceptorValidation {
         boolean success = false;
 
         if (!this.grammarService.getGrammarRules().contains(productionCurrStep)) {
+            this.acceptorDetailResult.setMessage("Die angegebene Produktion ist nicht in der Grammatik enthalten!");
             return false;
         }
 
@@ -232,6 +253,10 @@ public class TopDownAcceptorValidation {
             }
         }
 
+        if (!success) {
+            this.acceptorDetailResult.setMessage("Fehler bei dem Produktionsschritt!");
+        }
+
         return success;
     }
 
@@ -240,6 +265,7 @@ public class TopDownAcceptorValidation {
             return true;
         }
 
+        this.acceptorDetailResult.setMessage("Der Kellerinhalt darf sich beim Produktionsschritt nicht ändern!");
         return false;
     }
 }
