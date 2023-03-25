@@ -1,8 +1,11 @@
 package de.dhbw.karlsruhe.top.down.parsing;
 
 import com.google.gson.Gson;
+import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.top.down.parsing.models.TDAcceptorDetailResult;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
+import de.dhbw.karlsruhe.top.down.parsing.models.TopDownStep;
 import de.dhbw.karlsruhe.top.down.parsing.validation.TopDownAcceptorValidation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -110,7 +113,8 @@ public class TopDownAcceptorValidationTest {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
             String word = "()()";
-            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word).isCorrect());
+            assertEquals(new TDAcceptorDetailResult(false, new TopDownStep("", ParserState.Z, "SS*", new GrammarProduction("S", ")S(")),
+                    "Die angegebene Produktion ist nicht in der Grammatik enthalten!"), tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
         } catch (IOException e) {
             e.printStackTrace();
         }
