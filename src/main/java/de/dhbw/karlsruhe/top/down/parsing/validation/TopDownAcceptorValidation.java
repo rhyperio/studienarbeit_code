@@ -93,7 +93,7 @@ public class TopDownAcceptorValidation {
                     this.acceptorDetailResult.setMessage("Der Keller stimmt nicht mit dem letzten Schritt überein!");
                 } else if (!prevInput.equals(input)) {
                     this.acceptorDetailResult.setMessage("Die gelesene Eingabe stimmt nicht mit dem letzten Schritt überein!");
-                } else if (prevUsedProduction != null) {
+                } else {
                     this.acceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
                 }
             }
@@ -135,6 +135,7 @@ public class TopDownAcceptorValidation {
                 success = this.validateProductionStep(currStep, nextStep);
             }
             if (!success) {
+                this.acceptorDetailResult.setWrongStep(currStep);
                 return false;
             }
         }

@@ -40,6 +40,14 @@ public class AcceptorDetailResult {
         this.message = message;
     }
 
+    public TopDownStep getWrongStep() {
+        return wrongStep;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

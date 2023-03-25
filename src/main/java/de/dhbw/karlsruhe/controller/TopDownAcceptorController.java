@@ -1,6 +1,7 @@
 package de.dhbw.karlsruhe.controller;
 
 import de.dhbw.karlsruhe.controller.dto.ValidationTopDownParamModel;
+import de.dhbw.karlsruhe.top.down.parsing.models.AcceptorDetailResult;
 import de.dhbw.karlsruhe.top.down.parsing.validation.TopDownAcceptorValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class TopDownAcceptorController {
         TopDownAcceptorValidation topDownAcceptorValidation = new TopDownAcceptorValidation(validationTopDownParamModel.getGrammar());
 
         boolean accepted = topDownAcceptorValidation.validateTopDownAcceptor(validationTopDownParamModel.getTopDownAcceptor(), validationTopDownParamModel.getWord()).isCorrect();
+        AcceptorDetailResult acceptorDetailResult = topDownAcceptorValidation.validateTopDownAcceptor(validationTopDownParamModel.getTopDownAcceptor(), validationTopDownParamModel.getWord());
 
         return new ResponseEntity<>(accepted, HttpStatus.OK);
     }
