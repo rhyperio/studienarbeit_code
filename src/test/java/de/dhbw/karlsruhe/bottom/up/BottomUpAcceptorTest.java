@@ -3,7 +3,10 @@ package de.dhbw.karlsruhe.bottom.up;
 import com.google.gson.Gson;
 import de.dhbw.karlsruhe.bottom.up.models.AcceptorDetailResult;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
+import de.dhbw.karlsruhe.bottom.up.models.BottomUpStep;
 import de.dhbw.karlsruhe.bottom.up.validation.BottomUpAcceptorValidation;
+import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.models.ParserState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -82,6 +85,23 @@ class BottomUpAcceptorTest {
          BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
          String word = "(())";
          assertFalse(bUAcceptorValidation.checkAcceptor(buAcceptor, word).isCorrect());
+     }
+
+     @Test
+     void checkWrongProductionTest() throws  FileNotFoundException{
+         String grammarAsJson = getGrammarAsJson(
+                 "src/test/resources/derivation_tree/grammarCorrect1.json");
+         String bottomUpAcceptorAsJson = getBottomUpAcceptorAsJson(
+                 "src/test/resources/bottom_up/bUAcceptorWrongProduction1.json");
+         Gson gson = new Gson();
+
+         BottomUpAcceptor buAcceptor = gson.fromJson(bottomUpAcceptorAsJson, BottomUpAcceptor.class);
+         BottomUpAcceptorValidation bUAcceptorValidation = new BottomUpAcceptorValidation(grammarAsJson);
+         String word = "(())";
+         assertEquals(new AcceptorDetailResult(false,new BottomUpStep("*((S", ParserState.Z,"))",
+                         new GrammarProduction("S","(S)")),
+                         "Die Reduktion wurde nicht richtig durchgeführt."),
+                 bUAcceptorValidation.checkAcceptor(buAcceptor, word));
      }
 
      @ParameterizedTest
