@@ -32,6 +32,14 @@ public class AcceptorDetailResult {
         return correct;
     }
 
+    public BottomUpStep getWrongStep() {
+        return wrongStep;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
