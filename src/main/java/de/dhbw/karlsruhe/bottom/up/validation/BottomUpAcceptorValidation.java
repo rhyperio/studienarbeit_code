@@ -1,5 +1,6 @@
 package de.dhbw.karlsruhe.bottom.up.validation;
 
+import de.dhbw.karlsruhe.bottom.up.models.AcceptorDetailResult;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpStep;
 import de.dhbw.karlsruhe.models.Grammar;
@@ -23,60 +24,68 @@ public class BottomUpAcceptorValidation {
         this.productionService = new ProductionService();
     }
 
-    public boolean checkAcceptor(BottomUpAcceptor bUAcceptor, String word) {
+    public AcceptorDetailResult checkAcceptor(BottomUpAcceptor bUAcceptor, String word) {
         if (word == null || bUAcceptor == null)
-            return false;
+            return new AcceptorDetailResult(false,"Es sind nicht alle Parameter gegeben.");
 
         if (!this.grammarService.checkStringOnlyContainsGrammarTerminals(word))
-            return false;
+            return new AcceptorDetailResult(false,"Das gegebene Wort ist nicht Teil der Sprache.");
 
         return isBottomUpAcceptorValid(bUAcceptor, word);
     }
 
-    private boolean isBottomUpAcceptorValid(BottomUpAcceptor bUAcceptor, String word) {
+    private AcceptorDetailResult isBottomUpAcceptorValid(BottomUpAcceptor bUAcceptor, String word) {
         List<BottomUpStep> steps = bUAcceptor.getSteps();
-        if (!isValidFirstStep(steps.get(0),word))
-            return false;
+        AcceptorDetailResult accDetailResult = isValidFirstStep(steps.get(0), word);
+        if (!accDetailResult.isCorrect())
+            return accDetailResult;
 
-        boolean correctStep = true;
+        AcceptorDetailResult stepResult = new AcceptorDetailResult(true);
         for (int i = 1; i< steps.size()-1 ; i++ ) {
-            if (correctStep)
-             correctStep = isValidStep(steps.get(i), steps.get(i-1));
+            if (stepResult.isCorrect())
+                stepResult = isValidStep(steps.get(i), steps.get(i-1));
         }
-        if (!isValidLastStep(steps.get(steps.size()-1), steps.get(steps.size()-2)))
-            return false;
 
-        return correctStep;
+        if (!stepResult.isCorrect())
+            return stepResult;
+
+        accDetailResult = isValidLastStep(steps.get(steps.size()-1), steps.get(steps.size()-2));
+        if (!accDetailResult.isCorrect())
+            return accDetailResult;
+
+        return new AcceptorDetailResult(true);
     }
 
 
-    private boolean isValidFirstStep(BottomUpStep step, String word) {
+    private AcceptorDetailResult isValidFirstStep(BottomUpStep step, String word) {
         if (step.getState() != ParserState.Z0)
-            return false;
+            return new AcceptorDetailResult(false,step, "Der Zustand ist nicht korrekt.");
         if (!StringUtils.equals(step.getStack(), "*"))
-            return false;
+            return new AcceptorDetailResult(false,step, "Der Kellerinhalt ist nicht korrekt.");
         if (!StringUtils.equals(step.getRemainingWord(), word))
-            return false;
+            return new AcceptorDetailResult(false,step, "Die verbleibende Eingabe ist nicht korrekt.");
         if (step.getProduction() != null)
-            return false;
-        return true;
+            return new AcceptorDetailResult(false,step, "Es wurde eine Produktion angegeben.");
+        return new AcceptorDetailResult(true);
     }
 
-    private boolean isValidStep(BottomUpStep step, BottomUpStep priorStep) {
+    private AcceptorDetailResult isValidStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getState() != ParserState.Z)
-            return false;
+            return new AcceptorDetailResult(false,step, "Der Zustand ist nicht korrekt.");
         if (step.getProduction() != null){
             return isValidReductionStep(step, priorStep);
         } else
             return isValidReadingStep(step, priorStep);
     }
 
-    private boolean isValidReductionStep(BottomUpStep step, BottomUpStep priorStep) {
+    private AcceptorDetailResult isValidReductionStep(BottomUpStep step, BottomUpStep priorStep) {
         if (!this.grammarService.getGrammarRules().contains(productionService.removeSpaces(step.getProduction())))
-            return false;
+            return new AcceptorDetailResult(false,step, "Die Grammatik enthält die angegebene Produktion nicht.");
 
-        return isLeftSideOfProductionExecuted(step)
-                && isRightSideOfProductionExecuted(step, priorStep);
+        if (!isLeftSideOfProductionExecuted(step) || !isRightSideOfProductionExecuted(step, priorStep))
+            return new AcceptorDetailResult(false, step, "Die Reduktion wurde nicht richtig durchgeführt.");
+
+        return new AcceptorDetailResult(true);
     }
 
     private boolean isLeftSideOfProductionExecuted(BottomUpStep step) {
@@ -91,40 +100,53 @@ public class BottomUpAcceptorValidation {
             rightSideValidation = priorStep.getStack().equals(step.getStack().substring(0, step.getStack().length()-1));
         } else {
             rightSideValidation = stepProductionRightSideWithoutSpaces.equals(priorStep.getStack().substring(priorStep.
-                    getStack().length()-stepProductionRightSideWithoutSpaces.length()));
+                    getStack().length()-stepProductionRightSideWithoutSpaces.length()))
+                    &&
+                    isNotEffectedPartOfStackUnchanged(step, priorStep, stepProductionRightSideWithoutSpaces.length());
         }
         return rightSideValidation;
     }
 
-    private boolean isValidReadingStep(BottomUpStep step, BottomUpStep priorStep) {
+    private static boolean isNotEffectedPartOfStackUnchanged(BottomUpStep step, BottomUpStep priorStep, int rightSideOfProductionLength) {
+        String priorStack = priorStep.getStack().substring(0, priorStep.getStack().length() - rightSideOfProductionLength);
+        String unchangedPartOfNewStack = step.getStack().substring(0, step.getStack().length() - 1);
+        return priorStack.equals(unchangedPartOfNewStack);
+    }
+
+    private AcceptorDetailResult isValidReadingStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getProduction() != null)
-            return false;
+            return new AcceptorDetailResult(false, step, "Es wurde eine Produktion für einen Leseschritt angegeben.");
         if (step.getState() != ParserState.Z)
-            return false;
+            return new AcceptorDetailResult(false, step, "Der Zustand ist nicht korrekt.");
+
+        boolean correctReading = true;
         if (!isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(step, priorStep))
-            return false;
+            correctReading = false;
         if (!isStepStackLastCharacterEqualPriorStepFirstRemainingWordCharacter(step, priorStep))
-            return false;
+            correctReading = false;
         if (!isStepStackEqualPriorStackPlusOneCharacter(step, priorStep))
-            return false;
-        return true;
+            correctReading = false;
+        if (!correctReading)
+            return new AcceptorDetailResult(false,step, "Der Leseschritt wurde nicht korrekt durchgeführt.");
+
+        return new AcceptorDetailResult(true);
     }
 
 
-    private boolean isValidLastStep(BottomUpStep step, BottomUpStep priorStep) {
+    private AcceptorDetailResult isValidLastStep(BottomUpStep step, BottomUpStep priorStep) {
         if (step.getState() != ParserState.ZF)
-            return false;
+            return new AcceptorDetailResult(false, step, "Der Zustand ist nicht korrekt.");
         if (!StringUtils.equals(step.getStack(), "*" + grammarService.getStartSymbol()))
-            return false;
+            return new AcceptorDetailResult(false, step, "Der Kellerinhalt ist nicht korrekt.");
         if (!step.getStack().equals(priorStep.getStack()) ||
                     ! priorStep.getState().equals(ParserState.Z) ||
                     ! priorStep.getRemainingWord().isBlank())
-            return false;
+            return new AcceptorDetailResult(false, priorStep, "Der vorletzte Schritt ist nicht korrekt.");
         if (!step.getRemainingWord().isBlank())
-            return false;
+            return new AcceptorDetailResult(false, step, "Die verbleibende Eingabe ist nicht leer.");
         if (step.getProduction() != null)
-            return false;
-        return true;
+            return  new AcceptorDetailResult(false, step, "Es wurde eine Produktion im letzten Schritt angegeben");;
+        return new AcceptorDetailResult(true);
     }
 
     private boolean isStepRemainingWordEqualPriorStepRemainingWordWithoutFirstCharacter(BottomUpStep step, BottomUpStep priorStep) {

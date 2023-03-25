@@ -3,6 +3,8 @@ package de.dhbw.karlsruhe.bottom.up.models;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.models.ParserState;
 
+import java.util.Objects;
+
 public class BottomUpStep {
 
     private String stack;
@@ -46,4 +48,16 @@ public class BottomUpStep {
         return production;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BottomUpStep that = (BottomUpStep) o;
+        return stack.equals(that.stack) && state == that.state && remainingWord.equals(that.remainingWord) && Objects.equals(production, that.production);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stack, state, remainingWord, production);
+    }
 }
