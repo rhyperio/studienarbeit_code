@@ -77,7 +77,7 @@ public class BottomUpAcceptorValidation {
             return new AcceptorDetailResult(false,step, "Der Reduktionsschritt enthält keine Produktion.");
 
         if (!isLeftSideOfProductionExecuted(step) || !isRightSideOfProductionExecuted(step, priorStep))
-            return new AcceptorDetailResult(false, step, "Die Reduktion wurde nicht richtig durchgeführt");
+            return new AcceptorDetailResult(false, step, "Die Reduktion wurde nicht richtig durchgeführt.");
 
         return new AcceptorDetailResult(true);
     }

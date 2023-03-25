@@ -36,6 +36,10 @@ public class AcceptorDetailResult {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AcceptorDetailResult that)) return false;
+
+        if (wrongStep == null && that.wrongStep == null)
+            return correct == that.correct && Objects.equals(message, that.message);
+
         return correct == that.correct && Objects.equals(wrongStep, that.wrongStep) && Objects.equals(message, that.message);
     }
 
