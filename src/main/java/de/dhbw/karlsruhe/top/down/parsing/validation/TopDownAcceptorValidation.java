@@ -27,7 +27,11 @@ public class TopDownAcceptorValidation {
 
     public TDAcceptorDetailResult validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
         if (pTDAcceptor == null || pWord == null) {
-            this.tdAcceptorDetailResult.setMessage("Es sind nicht alle Parameter angegeben!");
+            if (pTDAcceptor == null) {
+                this.tdAcceptorDetailResult.setMessage("Es ist keine Top-down-Syntaxanalyse angegeben!");
+            } else {
+                this.tdAcceptorDetailResult.setMessage("Es ist kein Wort angegeben!");
+            }
             return this.tdAcceptorDetailResult;
         }
 
@@ -153,7 +157,7 @@ public class TopDownAcceptorValidation {
         ParserState stateCurrStep = tdStep.getState();
 
         if (stackCurrStep == null) {
-            this.tdAcceptorDetailResult.setMessage("Fehler im Keller!");
+            this.tdAcceptorDetailResult.setMessage("Der Keller darf nicht leer sein!");
             return false;
         } else if (stateCurrStep != ParserState.Z) {
             this.tdAcceptorDetailResult.setMessage("Der angegebene Zustand ist falsch!");

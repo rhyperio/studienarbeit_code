@@ -44,7 +44,7 @@ public class TopDownAcceptorValidationTest {
                 "src/test/resources/top_down_parsing/TopDownCorrect.json")) {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
-            assertEquals(new TDAcceptorDetailResult(false, "Es sind nicht alle Parameter angegeben!"),
+            assertEquals(new TDAcceptorDetailResult(false, "Es ist kein Wort angegeben!"),
                     tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, null));
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class TopDownAcceptorValidationTest {
 
         TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
         String word = "(())";
-        assertEquals(new TDAcceptorDetailResult(false, "Es sind nicht alle Parameter angegeben!"),
+        assertEquals(new TDAcceptorDetailResult(false, "Es ist keine Top-down-Syntaxanalyse angegeben!"),
                 tDAcceptorValidation.validateTopDownAcceptor(null, word));
     }
 
