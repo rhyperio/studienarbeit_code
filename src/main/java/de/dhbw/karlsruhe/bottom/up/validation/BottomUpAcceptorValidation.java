@@ -3,6 +3,7 @@ package de.dhbw.karlsruhe.bottom.up.validation;
 import de.dhbw.karlsruhe.bottom.up.models.AcceptorDetailResult;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpAcceptor;
 import de.dhbw.karlsruhe.bottom.up.models.BottomUpStep;
+import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.services.GrammarService;
 import de.dhbw.karlsruhe.services.ProductionService;
@@ -15,6 +16,11 @@ public class BottomUpAcceptorValidation {
     private final ProductionService productionService;
     public BottomUpAcceptorValidation(String grammarAsJson) {
         this.grammarService = new GrammarService(grammarAsJson);
+        this.productionService = new ProductionService();
+    }
+
+    public BottomUpAcceptorValidation(Grammar grammar){
+        this.grammarService = new GrammarService(grammar);
         this.productionService = new ProductionService();
     }
 
@@ -74,7 +80,7 @@ public class BottomUpAcceptorValidation {
 
     private AcceptorDetailResult isValidReductionStep(BottomUpStep step, BottomUpStep priorStep) {
         if (!this.grammarService.getGrammarRules().contains(productionService.removeSpaces(step.getProduction())))
-            return new AcceptorDetailResult(false,step, "Der Reduktionsschritt enthält keine Produktion.");
+            return new AcceptorDetailResult(false,step, "Die Grammatik enthält die angegebene Produktion nicht.");
 
         if (!isLeftSideOfProductionExecuted(step) || !isRightSideOfProductionExecuted(step, priorStep))
             return new AcceptorDetailResult(false, step, "Die Reduktion wurde nicht richtig durchgeführt.");
@@ -94,9 +100,17 @@ public class BottomUpAcceptorValidation {
             rightSideValidation = priorStep.getStack().equals(step.getStack().substring(0, step.getStack().length()-1));
         } else {
             rightSideValidation = stepProductionRightSideWithoutSpaces.equals(priorStep.getStack().substring(priorStep.
-                    getStack().length()-stepProductionRightSideWithoutSpaces.length()));
+                    getStack().length()-stepProductionRightSideWithoutSpaces.length()))
+                    &&
+                    isNotEffectedPartOfStackUnchanged(step, priorStep, stepProductionRightSideWithoutSpaces.length());
         }
         return rightSideValidation;
+    }
+
+    private boolean isNotEffectedPartOfStackUnchanged(BottomUpStep step, BottomUpStep priorStep, int rightSideOfProductionLength) {
+        String priorStack = priorStep.getStack().substring(0, priorStep.getStack().length() - rightSideOfProductionLength);
+        String unchangedPartOfNewStack = step.getStack().substring(0, step.getStack().length() - 1);
+        return priorStack.equals(unchangedPartOfNewStack);
     }
 
     private AcceptorDetailResult isValidReadingStep(BottomUpStep step, BottomUpStep priorStep) {
