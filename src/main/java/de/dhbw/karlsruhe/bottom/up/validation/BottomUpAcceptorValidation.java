@@ -107,7 +107,7 @@ public class BottomUpAcceptorValidation {
         return rightSideValidation;
     }
 
-    private static boolean isNotEffectedPartOfStackUnchanged(BottomUpStep step, BottomUpStep priorStep, int rightSideOfProductionLength) {
+    private boolean isNotEffectedPartOfStackUnchanged(BottomUpStep step, BottomUpStep priorStep, int rightSideOfProductionLength) {
         String priorStack = priorStep.getStack().substring(0, priorStep.getStack().length() - rightSideOfProductionLength);
         String unchangedPartOfNewStack = step.getStack().substring(0, step.getStack().length() - 1);
         return priorStack.equals(unchangedPartOfNewStack);
