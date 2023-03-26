@@ -3,6 +3,7 @@ package de.dhbw.karlsruhe.top.down.parsing.validation;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.GrammarService;
+import de.dhbw.karlsruhe.top.down.parsing.models.TDAcceptorDetailResult;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
 import de.dhbw.karlsruhe.models.ParserState;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownStep;
@@ -15,6 +16,7 @@ public class TopDownAcceptorValidation {
     private GrammarService grammarService;
     private TopDownAcceptor tdAcceptor;
     private String wordToPars;
+    private TDAcceptorDetailResult tdAcceptorDetailResult = new TDAcceptorDetailResult(false);
 
     public TopDownAcceptorValidation(String grammarAsJson) {
         this.grammarService = new GrammarService(grammarAsJson);
@@ -23,18 +25,23 @@ public class TopDownAcceptorValidation {
         this.grammarService = new GrammarService(grammar);
     }
 
-    public boolean validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
+    public TDAcceptorDetailResult validateTopDownAcceptor(TopDownAcceptor pTDAcceptor, String pWord) {
         if (pTDAcceptor == null || pWord == null) {
-            return false;
+            if (pTDAcceptor == null) {
+                this.tdAcceptorDetailResult.setMessage("Es ist keine Top-down-Syntaxanalyse angegeben!");
+            } else {
+                this.tdAcceptorDetailResult.setMessage("Es ist kein Wort angegeben!");
+            }
+            return this.tdAcceptorDetailResult;
         }
 
         this.tdAcceptor = pTDAcceptor;
         this.wordToPars = pWord;
 
         if (!this.validateFirstStep() || !this.validateLastStep() || !this.validateSteps()) {
-            return false;
+            return tdAcceptorDetailResult;
         }
-        return true;
+        return new TDAcceptorDetailResult(true);
     }
 
     private boolean validateFirstStep() {
@@ -48,6 +55,17 @@ public class TopDownAcceptorValidation {
 
         if (currentState == ParserState.Z0 && stack.equals("*") && input.equals("") && usedProduction == null) {
             success = true;
+        } else {
+            this.tdAcceptorDetailResult.setWrongStep(stepToCheck);
+            if (currentState != ParserState.Z0) {
+                this.tdAcceptorDetailResult.setMessage("Der Zustand im ersten Schritt muss z0 sein!");
+            } else if (!stack.equals("*")) {
+                this.tdAcceptorDetailResult.setMessage("Der Kellerinhalt muss bei dem ersten Schritt leer sein!");
+            } else if (!input.equals("")) {
+                this.tdAcceptorDetailResult.setMessage("Die gelesene Eingabe muss bei dem ersten Schritt leer sein!");
+            } else if (usedProduction != null) {
+                this.tdAcceptorDetailResult.setMessage("Es darf keine Produktion bei dem ersten Schritt angewendet werden!");
+            }
         }
 
         return success;
@@ -71,6 +89,28 @@ public class TopDownAcceptorValidation {
         if (currentState == ParserState.ZF && stack.equals("*") && input.equals(this.wordToPars) && usedProduction == null) {
             if (prevState == ParserState.Z && prevStack.equals(stack) && prevInput.equals(input) && prevUsedProduction == null) {
                 success = true;
+            } else {
+                this.tdAcceptorDetailResult.setWrongStep(prevLastStep);
+                if (prevState != ParserState.Z) {
+                    this.tdAcceptorDetailResult.setMessage("Der Zustand ist falsch!");
+                } else if (!prevStack.equals(stack)) {
+                    this.tdAcceptorDetailResult.setMessage("Der Keller stimmt nicht mit dem letzten Schritt überein!");
+                } else if (!prevInput.equals(input)) {
+                    this.tdAcceptorDetailResult.setMessage("Die gelesene Eingabe stimmt nicht mit dem letzten Schritt überein!");
+                } else {
+                    this.tdAcceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
+                }
+            }
+        } else {
+            this.tdAcceptorDetailResult.setWrongStep(stepToCheck);
+            if (currentState != ParserState.ZF) {
+                this.tdAcceptorDetailResult.setMessage("Der Zustand ist falsch!");
+            } else if (!stack.equals("*")) {
+                this.tdAcceptorDetailResult.setMessage("Der Keller ist nicht leer!");
+            } else if (!input.equals(this.wordToPars)) {
+                this.tdAcceptorDetailResult.setMessage("Die gelesene Eingabe stimmt nicht mit dem abzuleitenden Wort überein!");
+            } else if (usedProduction != null) {
+                this.tdAcceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
             }
         }
 
@@ -99,6 +139,7 @@ public class TopDownAcceptorValidation {
                 success = this.validateProductionStep(currStep, nextStep);
             }
             if (!success) {
+                this.tdAcceptorDetailResult.setWrongStep(currStep);
                 return false;
             }
         }
@@ -115,7 +156,11 @@ public class TopDownAcceptorValidation {
         GrammarProduction productionCurrStep = tdStep.getUsedProduction();
         ParserState stateCurrStep = tdStep.getState();
 
-        if (stackCurrStep == null || stateCurrStep != ParserState.Z) {
+        if (stackCurrStep == null) {
+            this.tdAcceptorDetailResult.setMessage("Der Keller darf nicht leer sein!");
+            return false;
+        } else if (stateCurrStep != ParserState.Z) {
+            this.tdAcceptorDetailResult.setMessage("Der angegebene Zustand ist falsch!");
             return false;
         }
 
@@ -134,6 +179,7 @@ public class TopDownAcceptorValidation {
             return true;
         }
 
+        this.tdAcceptorDetailResult.setMessage("Der Leseschritt wurde nicht richtig durchgeführt!");
         return false;
     }
 
@@ -143,8 +189,16 @@ public class TopDownAcceptorValidation {
         char secondCharStackCurrStep = stackCurrStep.charAt(1);
         char firstCharStackNextStep = stackNextStep.charAt(0);
 
-        if (productionCurrStep == null && (secondCharStackCurrStep == firstCharStackNextStep)) {
+        if (productionCurrStep == null) {
             return true;
+        } else {
+            this.tdAcceptorDetailResult.setMessage("Es darf keine Produktion angewendet werden!");
+        }
+
+        if (secondCharStackCurrStep == firstCharStackNextStep) {
+            return true;
+        } else {
+            this.tdAcceptorDetailResult.setMessage("Das gelesene Terminal wurde nicht korrekt gelesen!");
         }
 
         return false;
@@ -160,7 +214,14 @@ public class TopDownAcceptorValidation {
         String inputNextStep = nextStep.getReadInput();
         ParserState stateCurrStep = tdStep.getState();
 
-        if (stackCurrStep == null || productionCurrStep == null || stateCurrStep != ParserState.Z) {
+        if (stackCurrStep == null) {
+            this.tdAcceptorDetailResult.setMessage("Der Keller darf nicht leer sein!");
+            return false;
+        } else if (productionCurrStep == null) {
+            this.tdAcceptorDetailResult.setMessage("Es ist keine Produktion angegeben!");
+            return false;
+        } else if (stateCurrStep != ParserState.Z) {
+            this.tdAcceptorDetailResult.setMessage("Der Zutand ist falsch!");
             return false;
         }
 
@@ -175,6 +236,7 @@ public class TopDownAcceptorValidation {
         boolean success = false;
 
         if (!this.grammarService.getGrammarRules().contains(productionCurrStep)) {
+            this.tdAcceptorDetailResult.setMessage("Die angegebene Produktion ist nicht in der Grammatik enthalten!");
             return false;
         }
 
@@ -196,6 +258,10 @@ public class TopDownAcceptorValidation {
             }
         }
 
+        if (!success) {
+            this.tdAcceptorDetailResult.setMessage("Fehler bei dem Produktionsschritt!");
+        }
+
         return success;
     }
 
@@ -204,6 +270,7 @@ public class TopDownAcceptorValidation {
             return true;
         }
 
+        this.tdAcceptorDetailResult.setMessage("Der Kellerinhalt darf sich beim Produktionsschritt nicht ändern!");
         return false;
     }
 }

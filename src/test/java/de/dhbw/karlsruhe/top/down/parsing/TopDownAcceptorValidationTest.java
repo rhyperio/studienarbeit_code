@@ -1,7 +1,11 @@
 package de.dhbw.karlsruhe.top.down.parsing;
 
 import com.google.gson.Gson;
+import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.models.ParserState;
+import de.dhbw.karlsruhe.top.down.parsing.models.TDAcceptorDetailResult;
 import de.dhbw.karlsruhe.top.down.parsing.models.TopDownAcceptor;
+import de.dhbw.karlsruhe.top.down.parsing.models.TopDownStep;
 import de.dhbw.karlsruhe.top.down.parsing.validation.TopDownAcceptorValidation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,8 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.*;
 import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TopDownAcceptorValidationTest {
 
@@ -24,7 +27,7 @@ public class TopDownAcceptorValidationTest {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
             String word = "()()";
-            assertTrue(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+            assertTrue(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word).isCorrect());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +44,8 @@ public class TopDownAcceptorValidationTest {
                 "src/test/resources/top_down_parsing/TopDownCorrect.json")) {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
-            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, null));
+            assertEquals(new TDAcceptorDetailResult(false, "Es ist kein Wort angegeben!"),
+                    tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, null));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,7 +58,8 @@ public class TopDownAcceptorValidationTest {
 
         TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
         String word = "(())";
-        assertFalse(tDAcceptorValidation.validateTopDownAcceptor(null, word));
+        assertEquals(new TDAcceptorDetailResult(false, "Es ist keine Top-down-Syntaxanalyse angegeben!"),
+                tDAcceptorValidation.validateTopDownAcceptor(null, word));
     }
 
     @ParameterizedTest
@@ -73,7 +78,7 @@ public class TopDownAcceptorValidationTest {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
             String word = "()()";
-            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word).isCorrect());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,7 +94,7 @@ public class TopDownAcceptorValidationTest {
                 "src/test/resources/top_down_parsing/TopDownCorrect.json")) {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
-            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word).isCorrect());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,7 +113,8 @@ public class TopDownAcceptorValidationTest {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
             String word = "()()";
-            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+            assertEquals(new TDAcceptorDetailResult(false, new TopDownStep("", ParserState.Z, "SS*", new GrammarProduction("S", ")S(")),
+                    "Die angegebene Produktion ist nicht in der Grammatik enthalten!"), tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,7 +129,7 @@ public class TopDownAcceptorValidationTest {
             TopDownAcceptor tDAcceptor = gson.fromJson(reader, TopDownAcceptor.class);
             TopDownAcceptorValidation tDAcceptorValidation = new TopDownAcceptorValidation(grammarAsJson);
             String word = "()()";
-            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word));
+            assertFalse(tDAcceptorValidation.validateTopDownAcceptor(tDAcceptor, word).isCorrect());
         } catch (IOException e) {
             e.printStackTrace();
         }

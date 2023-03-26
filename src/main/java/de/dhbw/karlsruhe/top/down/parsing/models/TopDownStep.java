@@ -3,6 +3,8 @@ package de.dhbw.karlsruhe.top.down.parsing.models;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.models.ParserState;
 
+import java.util.Objects;
+
 public class TopDownStep {
     private String readInput;
     private ParserState state;
@@ -59,5 +61,18 @@ public class TopDownStep {
 
     public void setUsedProduction(GrammarProduction usedProduction) {
         this.usedProduction = usedProduction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TopDownStep that = (TopDownStep) o;
+        return Objects.equals(readInput, that.readInput) && state == that.state && Objects.equals(stack, that.stack) && Objects.equals(usedProduction, that.usedProduction);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(readInput, state, stack, usedProduction);
     }
 }
