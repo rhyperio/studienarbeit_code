@@ -14,42 +14,59 @@ public class WordGeneration {
     private final Grammar grammar;
     private final ProductionService productionService = new ProductionService();
     private final Random rand = new Random();
-    private int recursionLevel;
+    private int currentProductionCount;
+
+    private int maxProductionCount;
 
     public WordGeneration(Grammar grammar){
         this.grammar = grammar;
     }
 
-    public String generateWord() throws WordLimitationsNotFulfillableException{
-        return generateWord(10,1);
+    public String generateWord(int maxProductionCount) throws WordLimitationsNotFulfillableException{
+        return generateWord(10000,1,maxProductionCount);
     }
 
-    public String generateWord(int maxWordLength, int minWordLength) throws WordLimitationsNotFulfillableException{
+    public String generateWord() throws WordLimitationsNotFulfillableException{
+        return generateWord(10,1, 100);
+    }
+
+    public String generateWord(int maxWordLength, int minWordLength, int maxProductionCount) throws WordLimitationsNotFulfillableException{
+        this.maxProductionCount = maxProductionCount;
+        List<GrammarProduction> startProductions = getPotentialStartProductions();
+
+        int countTries = 0;
+        String word = "";
+        do {
+            countTries++;
+            if (countTries>100){
+                throw new WordLimitationsNotFulfillableException();
+            }
+            currentProductionCount = 0;
+            GrammarProduction firstProduction = startProductions.get(rand.nextInt(startProductions.size()));
+            try {
+                word = traverseProductions(firstProduction);
+                word = word.replace("ε", "");
+            } catch (ToManyProductionsException e){
+                word="";
+            }
+        } while (maxWordLength< word.length() || word.length() < minWordLength);
+        return word;
+    }
+
+    private List<GrammarProduction> getPotentialStartProductions() {
         String startNonTerminal = grammar.getStartSymbol();
         List<GrammarProduction> startProductions = new ArrayList<>();
         for (GrammarProduction production : grammar.getProductions()){
             if (production.leftSide().contains(startNonTerminal))
                 startProductions.add(production);
         }
-
-        int countTries = 0;
-        String word;
-        do {
-            countTries++;
-            if (countTries>100){
-                throw new WordLimitationsNotFulfillableException();
-            }
-            recursionLevel = 0;
-            GrammarProduction firstProduction = startProductions.get(rand.nextInt(startProductions.size()));
-            word = traverseProductions(firstProduction);
-            word = word.replace("ε", "");
-        } while (maxWordLength< word.length() || word.length() < minWordLength);
-        return word;
+        return startProductions;
     }
 
-    private String traverseProductions(GrammarProduction production){
-        if (recursionLevel > 100)
-            return "";
+    private String traverseProductions(GrammarProduction production) throws ToManyProductionsException{
+        currentProductionCount++;
+        if (currentProductionCount > maxProductionCount)
+            throw new ToManyProductionsException(maxProductionCount);
         if (productionService.isEndProduction(production)) {
             return production.rightSide();
         }
@@ -62,7 +79,6 @@ public class WordGeneration {
                 }
                 else {
                     List<GrammarProduction> potentialProduction = getPotentialProductions(String.valueOf(currentSymbol));
-                    recursionLevel++;
                     wordFragment.append(traverseProductions(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
                 }
             }
