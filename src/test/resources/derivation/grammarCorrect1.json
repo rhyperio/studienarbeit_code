@@ -1,0 +1,16 @@
+{
+  "terminals": [
+    "(",
+    ")"
+  ],
+  "nonTerminals": [
+    "S"
+  ],
+  "productions": [
+      {
+        "leftSide":"S",
+        "rightSide":"epsilon|(S)|SS"
+      }
+  ],
+  "startSymbol": "S"
+}
