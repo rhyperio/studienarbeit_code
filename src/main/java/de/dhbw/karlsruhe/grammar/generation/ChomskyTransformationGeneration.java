@@ -3,28 +3,32 @@ package de.dhbw.karlsruhe.grammar.generation;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class ChomskyTransformationGeneration {
     private Grammar typeTwoGrammar;
-    private Set<GrammarProduction> chomskyRulesSet;
+    private List<GrammarProduction> chomskyProductions;
+    private Set<String> chomskyNonTerminals;
 
     public ChomskyTransformationGeneration() {
     }
 
     public Grammar GenerateChomskyGrammar() {
         this.typeTwoGrammar = new GrammarConcatenationGeneration().generateGrammar();
+        this.chomskyProductions = new ArrayList<>(List.of(this.typeTwoGrammar.getProductions()));
+        this.chomskyNonTerminals = new HashSet<>(List.of(this.typeTwoGrammar.getNonTerminals()));
 
-        String[] epsG = this.getEPSFromGrammar();
+        Set<String> epsG = this.getEPSFromGrammar();
+        boolean epsIsInLanguage = epsG.contains(this.typeTwoGrammar.getStartSymbol());
+
+        this.replaceTerminals();
+        this.resolveEpsilonProduction(epsIsInLanguage);
 
         return new Grammar();
     }
 
-    private String[] getEPSFromGrammar() {
+    private Set<String> getEPSFromGrammar() {
         Set<String> m_current = new HashSet<>();
         Set<String> m_new = new HashSet<>();
 
@@ -47,7 +51,31 @@ public class ChomskyTransformationGeneration {
 
         } while(!m_current.equals(m_new));
 
-        return m_new.toArray(new String[0]);
+        return m_new;
+    }
+
+    private void replaceTerminals() {
+        String[] terminals = this.typeTwoGrammar.getTerminals();
+
+        for (String terminal : terminals) {
+            String newNonTerminal = "Z_" + terminal;
+            this.chomskyNonTerminals.add(newNonTerminal);
+            this.replaceTerminalInProductions(terminal, newNonTerminal);
+            this.chomskyProductions.add(new GrammarProduction(newNonTerminal, terminal));
+        }
+    }
+
+    private void replaceTerminalInProductions(String terminal, String nonTerminal) {
+        for (GrammarProduction gp : this.chomskyProductions) {
+            if (gp.rightSide().contains(terminal)) {
+                String newRightSide = gp.rightSide().replace(terminal, nonTerminal);
+                this.chomskyProductions.set(this.chomskyProductions.indexOf(gp), new GrammarProduction(gp.leftSide(), newRightSide));
+            }
+        }
+    }
+
+    private void resolveEpsilonProduction(boolean epsIsInLanguage) {
+        
     }
 
 }
