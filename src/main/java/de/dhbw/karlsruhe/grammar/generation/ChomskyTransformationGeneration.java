@@ -25,8 +25,9 @@ public class ChomskyTransformationGeneration {
 
         this.replaceTerminals();
         this.resolveEpsilonProduction(epsIsInLanguage);
+        this.resolveSingleProductions();
 
-        return new Grammar();
+        return new Grammar(this.typeTwoGrammar.getTerminals(), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
     }
 
     private Set<String> getEPSFromGrammar() {
@@ -87,6 +88,9 @@ public class ChomskyTransformationGeneration {
             this.chomskyProductions.add(new GrammarProduction(newStartSymbol, "ε"));
             this.chomskyProductions.add(new GrammarProduction(newStartSymbol, this.typeTwoGrammar.getStartSymbol()));
         }
+    }
+
+    private void resolveSingleProductions() {
     }
 
 }
