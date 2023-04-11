@@ -4,12 +4,12 @@ import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class ChomskyTransformationGeneration {
     private Grammar typeTwoGrammar;
     private List<GrammarProduction> chomskyProductions;
     private Set<String> chomskyNonTerminals;
+    private String chomskyStartSymbol;
 
     public ChomskyTransformationGeneration() {
     }
@@ -18,6 +18,7 @@ public class ChomskyTransformationGeneration {
         this.typeTwoGrammar = new GrammarConcatenationGeneration().generateGrammar();
         this.chomskyProductions = new ArrayList<>(List.of(this.typeTwoGrammar.getProductions()));
         this.chomskyNonTerminals = new HashSet<>(List.of(this.typeTwoGrammar.getNonTerminals()));
+        this.chomskyStartSymbol = this.typeTwoGrammar.getStartSymbol();
 
         Set<String> epsG = this.getEPSFromGrammar();
         boolean epsIsInLanguage = epsG.contains(this.typeTwoGrammar.getStartSymbol());
@@ -37,8 +38,6 @@ public class ChomskyTransformationGeneration {
                 m_current.add(gp.leftSide());
             }
         }
-
-
 
         do {
             m_new = new HashSet<>(m_current);
@@ -75,7 +74,19 @@ public class ChomskyTransformationGeneration {
     }
 
     private void resolveEpsilonProduction(boolean epsIsInLanguage) {
-        
+        for (GrammarProduction gp : this.chomskyProductions) {
+            if (gp.rightSide().equals("ε")) {
+                this.chomskyProductions.remove(gp);
+            }
+        }
+
+        if (epsIsInLanguage) {
+            String newStartSymbol = "S'";
+            this.chomskyStartSymbol = newStartSymbol;
+
+            this.chomskyProductions.add(new GrammarProduction(newStartSymbol, "ε"));
+            this.chomskyProductions.add(new GrammarProduction(newStartSymbol, this.typeTwoGrammar.getStartSymbol()));
+        }
     }
 
 }
