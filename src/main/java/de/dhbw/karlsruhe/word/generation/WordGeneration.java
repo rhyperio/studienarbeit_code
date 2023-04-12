@@ -17,6 +17,8 @@ public class WordGeneration {
     private int currentProductionCount;
     private int maxProductionCount;
 
+    private final float preferEndProductionProbabilityLimit = 0.9f;
+
     public WordGeneration(Grammar grammar){
         this.grammar = grammar;
     }
@@ -78,7 +80,15 @@ public class WordGeneration {
                 }
                 else {
                     List<GrammarProduction> potentialProduction = getPotentialProductions(String.valueOf(currentSymbol));
-                    wordFragment.append(traverseProductions(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
+                    if (currentProductionCount > preferEndProductionProbabilityLimit * maxProductionCount){
+                        List<GrammarProduction> potentialEndProductions = getEndProductions(potentialProduction);
+                        if (!potentialEndProductions.isEmpty())
+                            wordFragment.append(potentialEndProductions.get(rand.nextInt(potentialEndProductions.size())));
+                        else
+                            wordFragment.append(traverseProductions(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
+                    } else {
+                        wordFragment.append(traverseProductions(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
+                    }
                 }
             }
             return wordFragment.toString();
@@ -92,5 +102,15 @@ public class WordGeneration {
                 potentialProduction.add(p);
         }
         return potentialProduction;
+    }
+
+    private List<GrammarProduction> getEndProductions(List<GrammarProduction> potentialProductions){
+        List<GrammarProduction> endProductions = new ArrayList<>();
+        for (GrammarProduction production : potentialProductions){
+            if (productionService.isEndProduction(production)){
+                endProductions.add(production);
+            }
+        }
+        return endProductions;
     }
 }
