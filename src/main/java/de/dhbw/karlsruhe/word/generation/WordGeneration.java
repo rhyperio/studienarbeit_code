@@ -15,7 +15,6 @@ public class WordGeneration {
     private final ProductionService productionService = new ProductionService();
     private final Random rand = new Random();
     private int currentProductionCount;
-
     private int maxProductionCount;
 
     public WordGeneration(Grammar grammar){
@@ -30,12 +29,12 @@ public class WordGeneration {
         return generateWord(10,1, 100);
     }
 
-    public String generateWord(int maxWordLength, int minWordLength, int maxProductionCount) throws WordLimitationsNotFulfillableException{
+    public String generateWord( int minWordLength, int maxWordLength, int maxProductionCount) throws WordLimitationsNotFulfillableException{
         this.maxProductionCount = maxProductionCount;
         List<GrammarProduction> startProductions = getPotentialStartProductions();
 
         int countTries = 0;
-        String word = "";
+        String word;
         do {
             countTries++;
             if (countTries>100){
@@ -89,7 +88,7 @@ public class WordGeneration {
     private List<GrammarProduction> getPotentialProductions(String nonTerminal) {
         List<GrammarProduction> potentialProduction = new ArrayList<>();
         for (GrammarProduction p : grammar.getProductions()){
-            if (p.leftSide().contains(nonTerminal))
+            if (p.leftSide().equals(nonTerminal))
                 potentialProduction.add(p);
         }
         return potentialProduction;
