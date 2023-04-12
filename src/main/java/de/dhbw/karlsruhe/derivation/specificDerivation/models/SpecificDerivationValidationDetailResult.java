@@ -1,6 +1,4 @@
-package de.dhbw.karlsruhe.derivation.leftRight.models;
-
-import de.dhbw.karlsruhe.models.GrammarProduction;
+package de.dhbw.karlsruhe.derivation.specificDerivation.models;
 
 import java.util.Objects;
 

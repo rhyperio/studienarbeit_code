@@ -1,7 +1,7 @@
-package de.dhbw.karlsruhe.derivation.leftRight.validation;
+package de.dhbw.karlsruhe.derivation.specificDerivation.validation;
 
-import de.dhbw.karlsruhe.derivation.leftRight.models.Derivation;
-import de.dhbw.karlsruhe.derivation.leftRight.models.SpecificDerivationValidationDetailResult;
+import de.dhbw.karlsruhe.derivation.specificDerivation.models.DerivationDirection;
+import de.dhbw.karlsruhe.derivation.specificDerivation.models.SpecificDerivationValidationDetailResult;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SpecificDerivationValidation {
 
-    public SpecificDerivationValidationDetailResult checkDerivation(Derivation derivation, Grammar grammar, List<String> derivationList, String word) {
+    public SpecificDerivationValidationDetailResult checkDerivation(DerivationDirection derivationDirection, Grammar grammar, List<String> derivationList, String word) {
         if (derivationList.size() < 2) {
             return new SpecificDerivationValidationDetailResult(false, "Keine oder zu wenig Ableitungsschritte angegeben");
         }
@@ -22,7 +22,7 @@ public class SpecificDerivationValidation {
                     "Startsymbol nicht korrekt");
         }
 
-        return checkDerivationSteps(derivation, grammar, derivationList, word);
+        return checkDerivationSteps(derivationDirection, grammar, derivationList, word);
     }
 
     private boolean checkStartSymbol(List<String> derivationList, Grammar grammar) {
@@ -33,7 +33,7 @@ public class SpecificDerivationValidation {
         return new GrammarProduction(left, right);
     }
 
-    private SpecificDerivationValidationDetailResult checkDerivationSteps(Derivation derivation, Grammar grammar, List<String> derivationList, String word) {
+    private SpecificDerivationValidationDetailResult checkDerivationSteps(DerivationDirection derivationDirection, Grammar grammar, List<String> derivationList, String word) {
         for (int i = 0; i < derivationList.size() - 1; i++) {
             String left = derivationList.get(i);
             String right = derivationList.get(i + 1);
@@ -47,13 +47,17 @@ public class SpecificDerivationValidation {
                             "Ableitungsschritt nicht korrekt");
                 }
             } else {
-                SpecificDerivationValidationDetailResult result = checkForCorrectSubstitution(derivation, grammar, left, right);
+                SpecificDerivationValidationDetailResult result = checkForCorrectSubstitution(derivationDirection, grammar, left, right);
                 if (result != null) {
                     return result;
                 }
             }
         }
-        return new SpecificDerivationValidationDetailResult(true);
+        if (derivationList.get(derivationList.size()-1).equals(word)) {
+            return new SpecificDerivationValidationDetailResult(true);
+        }
+        return new SpecificDerivationValidationDetailResult(false,
+            "Die Ableitungsschritte wurden korrekt durchgeführt, jedoch ist das abgeleitete Wort falsch.");
     }
 
     private String findFirstNonTerminal(String word) {
@@ -74,14 +78,15 @@ public class SpecificDerivationValidation {
         return null;
     }
 
-    private SpecificDerivationValidationDetailResult checkForCorrectSubstitution(Derivation derivation, Grammar grammar, String left, String right) {
+    private SpecificDerivationValidationDetailResult checkForCorrectSubstitution(
+        DerivationDirection derivationDirection, Grammar grammar, String left, String right) {
 
-        String nonTerminal = derivation == Derivation.LEFT ? findFirstNonTerminal(left) : findLastNonTerminal(left);
+        String nonTerminal = derivationDirection == DerivationDirection.LEFT ? findFirstNonTerminal(left) : findLastNonTerminal(left);
         List<GrammarProduction> possibleProductions = Arrays.stream(grammar.getProductions())
             .filter(production -> production.leftSide().equals(nonTerminal)).toList();
 
         for (GrammarProduction currProduction : possibleProductions) {
-            String substitution = substituteNonTerminal(derivation, nonTerminal, left, currProduction.rightSide());
+            String substitution = substituteNonTerminal(derivationDirection, nonTerminal, left, currProduction.rightSide());
             if (substitution.equals(right)) {
                 return null;
             }
@@ -89,9 +94,9 @@ public class SpecificDerivationValidation {
         return new SpecificDerivationValidationDetailResult(false, buildStep(left, right), "Ableitungsschritt ist nicht korrekt");
     }
 
-    private String substituteNonTerminal(Derivation derivation, String nonTerminal, String left, String rightSideFromGrammarProduction) {
+    private String substituteNonTerminal(DerivationDirection derivationDirection, String nonTerminal, String left, String rightSideFromGrammarProduction) {
         rightSideFromGrammarProduction = rightSideFromGrammarProduction.replaceAll("ε", "");
-        if (derivation == Derivation.LEFT) {
+        if (derivationDirection == DerivationDirection.LEFT) {
             return left.replaceFirst(nonTerminal, rightSideFromGrammarProduction);
         } else {
             return replaceLast(left, nonTerminal, rightSideFromGrammarProduction);
