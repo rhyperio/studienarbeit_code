@@ -9,7 +9,23 @@
   "productions": [
       {
         "leftSide":"S",
-        "rightSide":"epsilon|(S)|SS"
+        "rightSide":"ε"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"(S)"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"SS"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"S()"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"()S"
       }
   ],
   "startSymbol": "S"

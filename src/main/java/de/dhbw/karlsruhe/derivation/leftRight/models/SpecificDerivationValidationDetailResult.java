@@ -7,7 +7,7 @@ import java.util.Objects;
 public class SpecificDerivationValidationDetailResult {
 
     private boolean correct;
-    private GrammarProduction wrongProduction;
+    private String wrongProduction;
     private String message = "";
 
     public SpecificDerivationValidationDetailResult(boolean correct) {
@@ -19,7 +19,7 @@ public class SpecificDerivationValidationDetailResult {
         this.message = message;
     }
 
-    public SpecificDerivationValidationDetailResult(boolean correct, GrammarProduction wrongProduction, String message) {
+    public SpecificDerivationValidationDetailResult(boolean correct, String wrongProduction, String message) {
         this.correct = correct;
         this.wrongProduction = wrongProduction;
         this.message = message;
@@ -29,7 +29,7 @@ public class SpecificDerivationValidationDetailResult {
         return correct;
     }
 
-    public GrammarProduction getWrongProduction() {
+    public String getWrongProduction() {
         return wrongProduction;
     }
 

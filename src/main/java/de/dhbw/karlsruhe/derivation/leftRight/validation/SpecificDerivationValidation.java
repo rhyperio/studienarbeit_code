@@ -18,7 +18,7 @@ public class SpecificDerivationValidation {
         if (!checkStartSymbol(derivationList, grammar)) {
             return new SpecificDerivationValidationDetailResult(
                     false,
-                    buildGrammarProduction(derivationList.get(0), derivationList.get(1)),
+                    buildStep(derivationList.get(0), derivationList.get(1)),
                     "Startsymbol nicht korrekt");
         }
 
@@ -43,30 +43,17 @@ public class SpecificDerivationValidation {
                 if (!Arrays.stream(grammar.getProductions()).toList().contains(firstProduction)) {
                     return new SpecificDerivationValidationDetailResult(
                             false,
-                            firstProduction,
+                            buildStep(left, right),
                             "Ableitungsschritt nicht korrekt");
                 }
             } else {
-                String nonTerminal = findNonTerminal(derivation, left);
-                String newPartOnRightSide = findNewPartOnRightSide(left, right);
-                GrammarProduction derivationProduction = buildGrammarProduction(nonTerminal, newPartOnRightSide);
-                if (!Arrays.stream(grammar.getProductions()).toList().contains(derivationProduction)) {
-                    return new SpecificDerivationValidationDetailResult(
-                            false,
-                            derivationProduction,
-                            "Ableitungsschritt nicht korrekt");
+                SpecificDerivationValidationDetailResult result = checkForCorrectSubstitution(derivation, grammar, left, right);
+                if (result != null) {
+                    return result;
                 }
             }
         }
         return new SpecificDerivationValidationDetailResult(true);
-    }
-
-    private String findNonTerminal(Derivation derivation, String word) {
-        if (derivation == Derivation.LEFT) {
-            return findFirstNonTerminal(word);
-        } else {
-            return findLastNonTerminal(word);
-        }
     }
 
     private String findFirstNonTerminal(String word) {
@@ -87,22 +74,40 @@ public class SpecificDerivationValidation {
         return null;
     }
 
-    private String findNewPartOnRightSide(String left, String right) {
-        int i = 0;
-        while (i < left.length() && i < right.length() && left.charAt(i) == right.charAt(i)) {
-            i++;
+    private SpecificDerivationValidationDetailResult checkForCorrectSubstitution(Derivation derivation, Grammar grammar, String left, String right) {
+
+        String nonTerminal = derivation == Derivation.LEFT ? findFirstNonTerminal(left) : findLastNonTerminal(left);
+        List<GrammarProduction> possibleProductions = Arrays.stream(grammar.getProductions())
+            .filter(production -> production.leftSide().equals(nonTerminal)).toList();
+
+        for (GrammarProduction currProduction : possibleProductions) {
+            String substitution = substituteNonTerminal(derivation, nonTerminal, left, currProduction.rightSide());
+            if (substitution.equals(right)) {
+                return null;
+            }
         }
+        return new SpecificDerivationValidationDetailResult(false, buildStep(left, right), "Ableitungsschritt ist nicht korrekt");
+    }
 
-        int k = left.length() - 1;
-        int j = right.length() - 1;
-
-        while (j >= 0 && k >= 0 && left.charAt(k) == right.charAt(j)) {
-            k--;
-            j--;
+    private String substituteNonTerminal(Derivation derivation, String nonTerminal, String left, String rightSideFromGrammarProduction) {
+        rightSideFromGrammarProduction = rightSideFromGrammarProduction.replaceAll("ε", "");
+        if (derivation == Derivation.LEFT) {
+            return left.replaceFirst(nonTerminal, rightSideFromGrammarProduction);
+        } else {
+            return replaceLast(left, nonTerminal, rightSideFromGrammarProduction);
         }
+    }
 
-        String newPart = right.substring(i, j + 1);
-        return newPart.isBlank() ? "ε" : newPart;
+    private String replaceLast(String string, String from, String to) {
+        int lastIndex = string.lastIndexOf(from);
+        if (lastIndex < 0)
+            return string;
+        String tail = string.substring(lastIndex).replaceFirst(from, to);
+        return string.substring(0, lastIndex) + tail;
+    }
+
+    private String buildStep(String first, String second) {
+        return first + "->" + second;
     }
 
 }
