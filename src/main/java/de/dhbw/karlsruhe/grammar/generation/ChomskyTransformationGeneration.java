@@ -15,7 +15,9 @@ public class ChomskyTransformationGeneration {
     }
 
     public Grammar GenerateChomskyGrammar() {
-        this.typeTwoGrammar = new GrammarConcatenationGeneration().generateGrammar();
+        do {
+            this.typeTwoGrammar = new GrammarConcatenationGeneration().generateGrammar();
+        } while (Arrays.stream(this.typeTwoGrammar.getNonTerminals()).toList().contains("Z") || Arrays.stream(this.typeTwoGrammar.getNonTerminals()).toList().contains("V"));
         this.chomskyProductions = new ArrayList<>(List.of(this.typeTwoGrammar.getProductions()));
         this.chomskyNonTerminals = new HashSet<>(List.of(this.typeTwoGrammar.getNonTerminals()));
         this.chomskyStartSymbol = this.typeTwoGrammar.getStartSymbol();
@@ -80,7 +82,6 @@ public class ChomskyTransformationGeneration {
         if (epsIsInLanguage) {
             String newStartSymbol = "S'";
             this.chomskyStartSymbol = newStartSymbol;
-
             this.chomskyProductions.add(new GrammarProduction(newStartSymbol, "ε"));
             this.chomskyProductions.add(new GrammarProduction(newStartSymbol, this.typeTwoGrammar.getStartSymbol()));
         }
@@ -88,6 +89,30 @@ public class ChomskyTransformationGeneration {
 
 
     private void resolveNonTerminalsOnRightSide() {
+        String leftToProof;
+        String rightToProof;
+
+        for (GrammarProduction gp : this.chomskyProductions) {
+            for (int i = 0; i < gp.rightSide().length(); i++) {
+                leftToProof = String.valueOf(gp.rightSide().charAt(i));
+
+                if (leftToProof.equals("Z") || leftToProof.equals("V")) {
+                    leftToProof += gp.rightSide().charAt(i+1);
+                    leftToProof += gp.rightSide().charAt(i+2);
+                    i += 2;
+                }
+
+                rightToProof = String.valueOf(gp.rightSide().charAt(i+1));
+
+                if (rightToProof.equals("Z") || rightToProof.equals("V")) {
+                    rightToProof += gp.rightSide().charAt(i+1);
+                    rightToProof += gp.rightSide().charAt(i+2);
+                    i += 2;
+                }
+
+                
+            }
+        }
     }
 
     private void removeEpsilonProductions() {
