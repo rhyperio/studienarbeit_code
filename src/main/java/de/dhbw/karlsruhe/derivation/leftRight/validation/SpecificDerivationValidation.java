@@ -49,6 +49,13 @@ public class SpecificDerivationValidation {
             } else {
                 String nonTerminal = findNonTerminal(derivation, left);
                 String newPartOnRightSide = findNewPartOnRightSide(left, right);
+                GrammarProduction derivationProduction = buildGrammarProduction(nonTerminal, newPartOnRightSide);
+                if (!Arrays.stream(grammar.getProductions()).toList().contains(derivationProduction)) {
+                    return new SpecificDerivationValidationDetailResult(
+                            false,
+                            derivationProduction,
+                            "Ableitungsschritt nicht korrekt");
+                }
             }
         }
         return new SpecificDerivationValidationDetailResult(true);
@@ -81,8 +88,21 @@ public class SpecificDerivationValidation {
     }
 
     private String findNewPartOnRightSide(String left, String right) {
-        // TODO
-        return null;
+        int i = 0;
+        while (i < left.length() && i < right.length() && left.charAt(i) == right.charAt(i)) {
+            i++;
+        }
+
+        int k = left.length() - 1;
+        int j = right.length() - 1;
+
+        while (j >= 0 && k >= 0 && left.charAt(k) == right.charAt(j)) {
+            k--;
+            j--;
+        }
+
+        String newPart = right.substring(i, j + 1);
+        return newPart.isBlank() ? "ε" : newPart;
     }
 
 }
