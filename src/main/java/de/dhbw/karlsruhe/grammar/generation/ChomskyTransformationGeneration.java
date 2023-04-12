@@ -25,6 +25,8 @@ public class ChomskyTransformationGeneration {
 
         this.replaceTerminals();
         this.resolveEpsilonProduction(epsIsInLanguage);
+        this.resolveNonTerminalsOnRightSide();
+        this.removeEpsilonProductions();
         this.resolveSingleProductions();
 
         return new Grammar(this.typeTwoGrammar.getTerminals(), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
@@ -75,12 +77,6 @@ public class ChomskyTransformationGeneration {
     }
 
     private void resolveEpsilonProduction(boolean epsIsInLanguage) {
-        for (GrammarProduction gp : this.chomskyProductions) {
-            if (gp.rightSide().equals("ε")) {
-                this.chomskyProductions.remove(gp);
-            }
-        }
-
         if (epsIsInLanguage) {
             String newStartSymbol = "S'";
             this.chomskyStartSymbol = newStartSymbol;
@@ -90,7 +86,49 @@ public class ChomskyTransformationGeneration {
         }
     }
 
+
+    private void resolveNonTerminalsOnRightSide() {
+    }
+
+    private void removeEpsilonProductions() {
+    }
+
     private void resolveSingleProductions() {
+        Set[] derivateableNonTerminals = new Set[this.chomskyNonTerminals.size()];
+        Set<String> m_current = new HashSet<>();
+        Set<String> m_new;
+        int i = 0;
+
+        // get non Terminals which are leading to only one non Terminal
+        for (String nonTerminal : this.chomskyNonTerminals) {
+            m_current.add(nonTerminal);
+            m_new = new HashSet<>(m_current);
+
+            do {
+                m_current = m_new;
+
+                for (GrammarProduction gp : this.chomskyProductions) {
+                    if (gp.leftSide().equals(nonTerminal) && (gp.rightSide().length() == 1) && this.chomskyNonTerminals.contains(gp.rightSide())) {
+                        m_new.add(gp.rightSide());
+                    }
+                }
+
+            } while (!m_current.equals(m_new));
+
+            derivateableNonTerminals[i] = m_new;
+            i++;
+        }
+
+        // remove productions to only one non terminal like X -> X'
+        for (GrammarProduction gp : this.chomskyProductions) {
+            if (gp.rightSide().length() == 1 && this.chomskyNonTerminals.contains(gp.rightSide())) {
+                this.chomskyProductions.remove(gp);
+            }
+        }
+
+        // add prodcution replacement production
+
+
     }
 
 }
