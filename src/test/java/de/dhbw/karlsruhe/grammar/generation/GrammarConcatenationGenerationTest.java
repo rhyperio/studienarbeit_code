@@ -5,7 +5,6 @@ import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.ProductionService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
