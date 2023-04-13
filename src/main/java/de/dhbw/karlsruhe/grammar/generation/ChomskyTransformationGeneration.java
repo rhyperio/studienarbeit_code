@@ -136,27 +136,48 @@ public class ChomskyTransformationGeneration {
     private void resolveNonTerminalsOnRightSide() {
         String leftToProof;
         String rightToProof;
-        int v_i = 0;
+        int v_i = 1;
 
         for (GrammarProduction gp : this.chomskyProductions) {
             for (int i = 0; i < gp.rightSide().length(); i++) {
                 leftToProof = String.valueOf(gp.rightSide().charAt(i));
 
                 if (leftToProof.equals("Z") || leftToProof.equals("V")) {
-                    leftToProof += gp.rightSide().charAt(i+1);
-                    leftToProof += gp.rightSide().charAt(i+2);
-                    i += 2;
+                    if (leftToProof.equals("V") && v_i > 9) {
+                        leftToProof += gp.rightSide().charAt(i+1);
+                        leftToProof += gp.rightSide().charAt(i+2);
+                        leftToProof += gp.rightSide().charAt(i+3);
+                        i += 3;
+                    } else {
+                        leftToProof += gp.rightSide().charAt(i+1);
+                        leftToProof += gp.rightSide().charAt(i+2);
+                        i += 2;
+                    }
                 }
 
                 rightToProof = String.valueOf(gp.rightSide().charAt(i+1));
 
                 if (rightToProof.equals("Z") || rightToProof.equals("V")) {
-                    rightToProof += gp.rightSide().charAt(i+1);
-                    rightToProof += gp.rightSide().charAt(i+2);
-                    i += 2;
+                    if (rightToProof.equals("V") && v_i > 9) {
+                        rightToProof += gp.rightSide().charAt(i+1);
+                        rightToProof += gp.rightSide().charAt(i+2);
+                        rightToProof += gp.rightSide().charAt(i+3);
+                        i += 3;
+                    } else {
+                        rightToProof += gp.rightSide().charAt(i+1);
+                        rightToProof += gp.rightSide().charAt(i+2);
+                        i += 2;
+                    }
                 }
 
-                
+                if (this.chomskyNonTerminals.contains(leftToProof) && this.chomskyNonTerminals.contains(rightToProof)) {
+                    this.chomskyProductions.add(new GrammarProduction("V_" + v_i, leftToProof + rightToProof));
+                    String newRightSide = gp.rightSide().replace(leftToProof + rightToProof, "V_" + v_i);
+                    this.chomskyProductions.set(this.chomskyProductions.indexOf(gp), new GrammarProduction(gp.leftSide(), newRightSide));
+
+                    v_i += 1;
+                    i = -1;
+                }
             }
         }
     }
