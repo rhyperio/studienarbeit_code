@@ -182,6 +182,7 @@ public class ChomskyTransformationGeneration {
         }
     }
 
+    /**
     private void resolveSingleProductions() {
         Set[] derivateableNonTerminals = new Set[this.chomskyNonTerminals.size()];
         Set<String> m_current = new HashSet<>();
@@ -212,12 +213,31 @@ public class ChomskyTransformationGeneration {
         for (GrammarProduction gp : this.chomskyProductions) {
             if (gp.rightSide().length() == 1 && this.chomskyNonTerminals.contains(gp.rightSide())) {
                 this.chomskyProductions.remove(gp);
+
             }
         }
 
         // add prodcution replacement production
 
 
+    }
+    */
+
+    private void resolveSingleProductions() {
+        for (GrammarProduction gp : this.chomskyProductions) {
+            if (gp.rightSide().length() == 1 && this.chomskyNonTerminals.contains(gp.rightSide())) {
+                this.chomskyProductions.remove(gp);
+                this.replaceSingleProductions(gp.leftSide(), gp.rightSide());
+            }
+        }
+    }
+
+    private void replaceSingleProductions(String leftSide, String rightSide) {
+        for (GrammarProduction gp : this.chomskyProductions) {
+            if (gp.leftSide().equals(rightSide) && !this.chomskyNonTerminals.contains(gp.rightSide())) {
+                this.chomskyProductions.add(new GrammarProduction(leftSide, gp.rightSide()));
+            }
+        }
     }
 
 }
