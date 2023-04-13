@@ -182,47 +182,6 @@ public class ChomskyTransformationGeneration {
         }
     }
 
-    /**
-    private void resolveSingleProductions() {
-        Set[] derivateableNonTerminals = new Set[this.chomskyNonTerminals.size()];
-        Set<String> m_current = new HashSet<>();
-        Set<String> m_new;
-        int i = 0;
-
-        // get non Terminals which are leading to only one non Terminal
-        for (String nonTerminal : this.chomskyNonTerminals) {
-            m_current.add(nonTerminal);
-            m_new = new HashSet<>(m_current);
-
-            do {
-                m_current = m_new;
-
-                for (GrammarProduction gp : this.chomskyProductions) {
-                    if (gp.leftSide().equals(nonTerminal) && (gp.rightSide().length() == 1) && this.chomskyNonTerminals.contains(gp.rightSide())) {
-                        m_new.add(gp.rightSide());
-                    }
-                }
-
-            } while (!m_current.equals(m_new));
-
-            derivateableNonTerminals[i] = m_new;
-            i++;
-        }
-
-        // remove productions to only one non terminal like X -> X'
-        for (GrammarProduction gp : this.chomskyProductions) {
-            if (gp.rightSide().length() == 1 && this.chomskyNonTerminals.contains(gp.rightSide())) {
-                this.chomskyProductions.remove(gp);
-
-            }
-        }
-
-        // add prodcution replacement production
-
-
-    }
-    */
-
     private void resolveSingleProductions() {
         for (GrammarProduction gp : this.chomskyProductions) {
             if (gp.rightSide().length() == 1 && this.chomskyNonTerminals.contains(gp.rightSide())) {
