@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
- class DerivationTreeValidationTest {
+ class DerivationDirectionTreeValidationTest {
 
   @Test
    void checkCorrectValidationTreeTest() throws FileNotFoundException {

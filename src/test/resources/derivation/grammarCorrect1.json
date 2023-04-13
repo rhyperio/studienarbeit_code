@@ -1,0 +1,32 @@
+{
+  "terminals": [
+    "(",
+    ")"
+  ],
+  "nonTerminals": [
+    "S"
+  ],
+  "productions": [
+      {
+        "leftSide":"S",
+        "rightSide":"ε"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"(S)"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"SS"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"S()"
+      },
+      {
+        "leftSide":"S",
+        "rightSide":"()S"
+      }
+  ],
+  "startSymbol": "S"
+}
