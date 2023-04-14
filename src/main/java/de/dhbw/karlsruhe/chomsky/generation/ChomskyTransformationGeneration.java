@@ -1,5 +1,6 @@
-package de.dhbw.karlsruhe.grammar.generation;
+package de.dhbw.karlsruhe.chomsky.generation;
 
+import de.dhbw.karlsruhe.grammar.generation.GrammarConcatenationGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 

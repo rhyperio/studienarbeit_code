@@ -1,4 +1,4 @@
-package de.dhbw.karlsruhe.grammar.validation;
+package de.dhbw.karlsruhe.chomsky.validation;
 
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
