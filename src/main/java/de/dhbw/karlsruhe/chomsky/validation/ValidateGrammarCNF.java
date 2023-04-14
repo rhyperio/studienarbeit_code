@@ -14,39 +14,50 @@ public class ValidateGrammarCNF {
     public boolean validateGrammarIsInCNF(Grammar grammarToCheck) {
         List<GrammarProduction> grammarProductions = Arrays.asList(grammarToCheck.getProductions());
         String[] nonTerminals = grammarToCheck.getNonTerminals();
-        return this.rightSideExactlyTwoNonTerminals(grammarProductions, nonTerminals) && this.rightSideExactlyOneTerminal(grammarProductions) && this.maxOneEpsilonProductionNoRightSide(grammarProductions);
+        String[] terminals = grammarToCheck.getTerminals();
+        return this.rightSideExactlyTwoNonTerminals(grammarProductions, nonTerminals) && this.rightSideExactlyOneTerminal(grammarProductions, terminals) && this.maxOneEpsilonProductionNoRightSide(grammarProductions);
     }
 
     private boolean rightSideExactlyTwoNonTerminals(List<GrammarProduction> grammarProductions, String[] nonTerminals) {
         boolean valid = false;
 
         for (GrammarProduction gp : grammarProductions) {
-            for (int i = 0; i < gp.rightSide().length(); i++) {
-                StringBuilder nonTerminalToCheck = new StringBuilder(String.valueOf(gp.rightSide().charAt(i)));
+            if (gp.rightSide().length() == 1) {
+                valid = true;
+            } else {
+                int loops = 0;
+                for (int i = 0; i < gp.rightSide().length(); i++) {
+                    StringBuilder nonTerminalToCheck = new StringBuilder(String.valueOf(gp.rightSide().charAt(i)));
 
-                if (nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) {
-                    do {
-                        nonTerminalToCheck.append(String.valueOf(gp.rightSide().charAt(i + 1)));
-                        i += 1;
-                    } while (Character.isDigit(gp.rightSide().charAt(i+1)));
-                }
+                    if (nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) {
+                        do {
+                            nonTerminalToCheck.append(String.valueOf(gp.rightSide().charAt(i + 1)));
+                            i += 1;
+                        } while (Character.isDigit(gp.rightSide().charAt(i+1)));
+                    }
 
-                valid = Arrays.stream(nonTerminals).anyMatch(nonTerminalToCheck.toString()::contains);
+                    valid = Arrays.stream(nonTerminals).anyMatch(nonTerminalToCheck.toString()::contains);
 
-                if (!valid) {
-                    return false;
+                    if (!valid) {
+                        return false;
+                    }
+
+                    loops++;
+
+                    if (loops > 2) {
+                        return false;
+                    }
                 }
             }
-
         }
 
         return valid;
     }
 
-    private boolean rightSideExactlyOneTerminal(List<GrammarProduction> grammarProductions) {
+    private boolean rightSideExactlyOneTerminal(List<GrammarProduction> grammarProductions, String[] terminals) {
         for (GrammarProduction gp : grammarProductions) {
             if (gp.rightSide().length() == 1) {
-                if (!Character.isLowerCase(gp.rightSide().charAt(0))) {
+                if (Arrays.stream(terminals).noneMatch(gp.rightSide()::contains)) {
                     return false;
                 }
             }
@@ -70,7 +81,11 @@ public class ValidateGrammarCNF {
             return false;
         }
 
-        return this.checkEpsilonProductionIsOnNoRightSide(grammarProductions, leftSideOfEpsilonProduction);
+        if (anzEpsilonProductions == 0) {
+            return true;
+        } else {
+            return this.checkEpsilonProductionIsOnNoRightSide(grammarProductions, leftSideOfEpsilonProduction);
+        }
     }
 
     private boolean checkEpsilonProductionIsOnNoRightSide(List<GrammarProduction> grammarProductions, String leftSideOfEpsilonProduction) {
