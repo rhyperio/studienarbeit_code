@@ -15,7 +15,7 @@ public class ChomskyTransformationGeneration {
     public ChomskyTransformationGeneration() {
     }
 
-    public Grammar GenerateChomskyGrammar() {
+    public Grammar generateChomskyGrammar() {
         do {
             this.typeTwoGrammar = new GrammarConcatenationGeneration().generateGrammar();
         } while (Arrays.stream(this.typeTwoGrammar.getNonTerminals()).toList().contains("Z") || Arrays.stream(this.typeTwoGrammar.getNonTerminals()).toList().contains("V"));

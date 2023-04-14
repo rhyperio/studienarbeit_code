@@ -9,6 +9,8 @@ import java.util.List;
 
 public class ValidateGrammarCNF {
 
+    public ValidateGrammarCNF() { }
+
     public boolean validateGrammarIsInCNF(Grammar grammarToCheck) {
         List<GrammarProduction> grammarProductions = Arrays.asList(grammarToCheck.getProductions());
         String[] nonTerminals = grammarToCheck.getNonTerminals();
