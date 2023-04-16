@@ -85,6 +85,22 @@ class WordGenerationTest {
         }
     }
 
+    @Test
+    void ReadCountTest() {
+        for (int i = 0; i < 100; i++) {
+            GrammarGeneration grammarGeneration = getGrammarGeneration();
+            Grammar grammar = grammarGeneration.generateGrammar();
+            WordGeneration wordGeneration = new WordGeneration(grammar);
+            String word;
+            try {
+                word = wordGeneration.generateWordWithParserLimitations(3,10);
+                assertTrue(word.length() <= 3);
+            } catch (WordLimitationsNotFulfillableException e) {
+                // Skip not fitting grammars
+            }
+        }
+    }
+
     private List<GrammarProduction> getPotentialProductions(String nonTerminal, Grammar grammar) {
         List<GrammarProduction> potentialProduction = new ArrayList<>();
         for (GrammarProduction p : grammar.getProductions()){

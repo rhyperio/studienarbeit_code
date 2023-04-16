@@ -17,9 +17,74 @@ public class WordGeneration {
     private final float preferEndProductionProbabilityLimit = 0.9f;
     private int currentProductionCount;
     private int maxProductionCount;
+    private int maxReadCount;
+    private int currentReadCount;
+    private int maxActionCount;
+    private int currentActionCount;
 
     public WordGeneration(Grammar grammar){
         this.grammar = grammar;
+    }
+
+    public String generateWordWithParserLimitations(int maxReadCount, int maxActionCount) throws WordLimitationsNotFulfillableException {
+        return generateWordWithParserLimitations(maxReadCount,maxActionCount,1,100);
+    }
+
+    public String generateWordWithParserLimitations(int maxReadCount, int maxActionCount, int minWordLength, int maxWordLength) throws WordLimitationsNotFulfillableException{
+
+        this.maxReadCount = maxReadCount;
+        this.maxActionCount = maxActionCount;
+        List<GrammarProduction> startProductions = getPotentialStartProductions();
+
+        int countTries = 0;
+        String word;
+        do {
+            countTries++;
+            if (countTries>100){
+                throw new WordLimitationsNotFulfillableException();
+            }
+
+            currentReadCount = 0;
+            currentActionCount = 0;
+
+            GrammarProduction firstProduction = startProductions.get(rand.nextInt(startProductions.size()));
+            try {
+                word = traverseProductionsWithParserLimitations(firstProduction);
+                word = word.replace("ε", "");
+            } catch (ToManyProductionsException e){
+                word="";
+            }
+        } while (maxWordLength< word.length() || word.length() < minWordLength);
+        return word;
+    }
+
+    private String traverseProductionsWithParserLimitations(GrammarProduction production) throws ToManyProductionsException{
+
+        if (productionService.isEndProduction(production)) {
+            currentReadCount += production.rightSide().length();
+            if (currentReadCount > maxReadCount || currentActionCount > maxActionCount)
+                throw new ToManyProductionsException(maxReadCount,maxActionCount);
+            return production.rightSide();
+        }
+
+        StringBuilder wordFragment = new StringBuilder();
+        for (int i =0; i<production.rightSide().length();i++) {
+            char currentSymbol = production.rightSide().charAt(i);
+            if (Arrays.stream(grammar.getTerminals()).toList().contains(String.valueOf(currentSymbol))){
+                currentReadCount++;
+                if (currentReadCount > maxReadCount || currentActionCount > maxActionCount)
+                    throw new ToManyProductionsException(maxReadCount,maxActionCount);
+                wordFragment.append(currentSymbol);
+            }
+            else {
+                List<GrammarProduction> potentialProduction = getPotentialProductions(String.valueOf(currentSymbol));
+                currentActionCount++;
+                if (currentReadCount > maxReadCount || currentActionCount > maxActionCount)
+                    throw new ToManyProductionsException(maxReadCount,maxActionCount);
+                wordFragment.append(traverseProductionsWithParserLimitations(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
+            }
+        }
+        return wordFragment.toString();
     }
 
     public String generateWord(int maxProductionCount) throws WordLimitationsNotFulfillableException{
