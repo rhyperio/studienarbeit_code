@@ -14,21 +14,20 @@ public class WordGeneration {
     private final Grammar grammar;
     private final ProductionService productionService = new ProductionService();
     private final Random rand = new Random();
+    private final float preferEndProductionProbabilityLimit = 0.9f;
     private int currentProductionCount;
     private int maxProductionCount;
-
-    private final float preferEndProductionProbabilityLimit = 0.9f;
 
     public WordGeneration(Grammar grammar){
         this.grammar = grammar;
     }
 
     public String generateWord(int maxProductionCount) throws WordLimitationsNotFulfillableException{
-        return generateWord(10000,1,maxProductionCount);
+        return generateWord(1,1000, maxProductionCount);
     }
 
     public String generateWord() throws WordLimitationsNotFulfillableException{
-        return generateWord(10,1, 100);
+        return generateWord(1,10, 100);
     }
 
     public String generateWord( int minWordLength, int maxWordLength, int maxProductionCount) throws WordLimitationsNotFulfillableException{
@@ -73,7 +72,7 @@ public class WordGeneration {
         }
         else {
             StringBuilder wordFragment = new StringBuilder();
-            for (int i =0; i<production.rightSide().length();i++){
+            for (int i =0; i<production.rightSide().length();i++) {
                 char currentSymbol = production.rightSide().charAt(i);
                 if (Arrays.stream(grammar.getTerminals()).toList().contains(String.valueOf(currentSymbol))){
                     wordFragment.append(currentSymbol);
@@ -82,8 +81,11 @@ public class WordGeneration {
                     List<GrammarProduction> potentialProduction = getPotentialProductions(String.valueOf(currentSymbol));
                     if (currentProductionCount > preferEndProductionProbabilityLimit * maxProductionCount){
                         List<GrammarProduction> potentialEndProductions = getEndProductions(potentialProduction);
-                        if (!potentialEndProductions.isEmpty())
-                            wordFragment.append(potentialEndProductions.get(rand.nextInt(potentialEndProductions.size())));
+                        if (!potentialEndProductions.isEmpty()) {
+                            if (++currentProductionCount > maxProductionCount)
+                                throw new ToManyProductionsException(maxProductionCount);
+                            wordFragment.append(potentialEndProductions.get(rand.nextInt(potentialEndProductions.size())).rightSide());
+                        }
                         else
                             wordFragment.append(traverseProductions(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
                     } else {
