@@ -93,7 +93,7 @@ class WordGenerationTest {
             WordGeneration wordGeneration = new WordGeneration(grammar);
             String word;
             try {
-                word = wordGeneration.generateWordWithParserLimitations(3,10);
+                word = wordGeneration.generateWord(new ParserLimitation(3,10));
                 assertTrue(word.length() <= 3);
             } catch (WordLimitationsNotFulfillableException e) {
                 // Skip not fitting grammars

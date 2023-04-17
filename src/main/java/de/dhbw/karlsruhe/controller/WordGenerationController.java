@@ -6,6 +6,7 @@ import de.dhbw.karlsruhe.controller.dto.WordReadActionLimitationDto;
 import de.dhbw.karlsruhe.grammar.generation.GrammarGeneration;
 import de.dhbw.karlsruhe.grammar.generation.GrammarPatternProductionsGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
+import de.dhbw.karlsruhe.word.generation.ParserLimitation;
 import de.dhbw.karlsruhe.word.generation.WordGeneration;
 import de.dhbw.karlsruhe.word.generation.WordLimitationsNotFulfillableException;
 import org.springframework.http.HttpStatus;
@@ -68,8 +69,8 @@ public class WordGenerationController {
     WordGeneration wordGeneration = new WordGeneration(wordReadActionLimitationDto.getGrammar());
 
     try {
-      return new ResponseEntity<>(wordGeneration.generateWordWithParserLimitations(
-              wordReadActionLimitationDto.getMaxReadCount(), wordReadActionLimitationDto.getMaxActionCount()
+      return new ResponseEntity<>(wordGeneration.generateWord(
+              new ParserLimitation(wordReadActionLimitationDto.getMaxReadCount(), wordReadActionLimitationDto.getMaxActionCount())
       ), HttpStatus.OK);
     } catch (WordLimitationsNotFulfillableException e) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

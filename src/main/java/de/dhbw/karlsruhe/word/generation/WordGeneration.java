@@ -4,6 +4,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.ProductionService;
 
+import javax.swing.text.html.parser.Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,14 +27,14 @@ public class WordGeneration {
         this.grammar = grammar;
     }
 
-    public String generateWordWithParserLimitations(int maxReadCount, int maxActionCount) throws WordLimitationsNotFulfillableException {
-        return generateWordWithParserLimitations(maxReadCount,maxActionCount,1,100);
+    public String generateWord(ParserLimitation parserLimitation) throws WordLimitationsNotFulfillableException {
+        return generateWord(parserLimitation,1);
     }
 
-    public String generateWordWithParserLimitations(int maxReadCount, int maxActionCount, int minWordLength, int maxWordLength) throws WordLimitationsNotFulfillableException{
+    public String generateWord(ParserLimitation parserLimitation, int minWordLength) throws WordLimitationsNotFulfillableException{
 
-        this.maxReadCount = maxReadCount;
-        this.maxActionCount = maxActionCount;
+        this.maxReadCount = parserLimitation.maxReadCount;
+        this.maxActionCount = parserLimitation.maxActionCount;
         List<GrammarProduction> startProductions = getPotentialStartProductions();
 
         int countTries = 0;
@@ -54,7 +55,7 @@ public class WordGeneration {
             } catch (ToManyProductionsException e){
                 word="";
             }
-        } while (maxWordLength< word.length() || word.length() < minWordLength);
+        } while (word.length() < minWordLength);
         return word;
     }
 
