@@ -24,6 +24,7 @@ public class ChomskyTransformationGenerationTest {
         }
     }
 
+    @Test
     public void checkSynthesisOfChomskyGenerationAndValidation() {
         ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
         ValidateGrammarCNF validateGrammarCNF = new ValidateGrammarCNF();
