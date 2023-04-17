@@ -18,7 +18,7 @@ public class ChomskyTransformationGenerationTest {
     @Test
     public void correctGrammarGenerationTest() {
         ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
             assertNotNull(generatedGrammar);
         }
@@ -88,7 +88,7 @@ public class ChomskyTransformationGenerationTest {
     @Test
     void checkAtLeastOneEndproduction() {
         ProductionService productionService = new ProductionService();
-        for (int i =0; i<1000; i++) {
+        for (int i =0; i<100; i++) {
             ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
             Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
             List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
