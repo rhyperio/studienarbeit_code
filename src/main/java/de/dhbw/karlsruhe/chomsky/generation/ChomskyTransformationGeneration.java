@@ -68,6 +68,10 @@ public class ChomskyTransformationGeneration {
         String[] terminals = this.typeTwoGrammar.getTerminals();
 
         for (String terminal : terminals) {
+            if (terminal.equals("ε")) {
+                continue;
+            }
+
             String newNonTerminal = "Z_" + terminal;
             this.chomskyNonTerminals.add(newNonTerminal);
             this.replaceTerminalInProductions(terminal, newNonTerminal);
@@ -128,8 +132,10 @@ public class ChomskyTransformationGeneration {
     }
 
     private void removeOccurenciesOfNonTerminal(String leftSide) {
-        for (int i = 0; i < this.chomskyProductions.size(); i++) {
-            GrammarProduction gp = this.chomskyProductions.get(i);
+        List<GrammarProduction> tempProductions = new ArrayList<>(this.modifiedChomskyProductions);
+
+        for (int i = 0; i < tempProductions.size(); i++) {
+            GrammarProduction gp = tempProductions.get(i);
             if (gp.rightSide().contains(leftSide)) {
                 String newRightSide = gp.rightSide().replace(leftSide, "");
                 this.modifiedChomskyProductions.set(this.modifiedChomskyProductions.indexOf(gp), new GrammarProduction(gp.leftSide(), newRightSide));
@@ -138,66 +144,17 @@ public class ChomskyTransformationGeneration {
     }
 
     private void detectOccurrencesAndResolveProductions(String leftSide) {
-        for (int i = 0; i < this.chomskyProductions.size(); i++) {
-            GrammarProduction gp = this.chomskyProductions.get(i);
-            if (gp.rightSide().contains(leftSide)) {
+        List<GrammarProduction> tempProductions = new ArrayList<>(this.modifiedChomskyProductions);
+
+        for (int i = 0; i < tempProductions.size(); i++) {
+            GrammarProduction gp = tempProductions.get(i);
+
+            if (gp.rightSide().contains(leftSide) && !gp.leftSide().equals(this.chomskyStartSymbol)) {
                 String newRightSide = gp.rightSide().replace(leftSide, "");
                 this.modifiedChomskyProductions.add(new GrammarProduction(gp.leftSide(), newRightSide));
             }
         }
     }
-
-    /**
-    private void resolveNonTerminalsOnRightSide() {
-        String leftToProof;
-        String rightToProof;
-        int v_i = 1;
-
-        for (GrammarProduction gp : this.chomskyProductions) {
-            for (int i = 0; i < gp.rightSide().length(); i++) {
-                leftToProof = String.valueOf(gp.rightSide().charAt(i));
-
-                if (leftToProof.equals("Z") || leftToProof.equals("V")) {
-                    if (leftToProof.equals("V") && v_i > 9) {
-                        leftToProof += gp.rightSide().charAt(i+1);
-                        leftToProof += gp.rightSide().charAt(i+2);
-                        leftToProof += gp.rightSide().charAt(i+3);
-                        i += 3;
-                    } else {
-                        leftToProof += gp.rightSide().charAt(i+1);
-                        leftToProof += gp.rightSide().charAt(i+2);
-                        i += 2;
-                    }
-                }
-
-                if ((i+1) < gp.rightSide().length()) {
-                    rightToProof = String.valueOf(gp.rightSide().charAt(i+1));
-
-                    if (rightToProof.equals("Z") || rightToProof.equals("V")) {
-                        if (rightToProof.equals("V") && v_i > 9) {
-                            rightToProof += gp.rightSide().charAt(i+1);
-                            rightToProof += gp.rightSide().charAt(i+2);
-                            rightToProof += gp.rightSide().charAt(i+3);
-                            i += 3;
-                        } else {
-                            rightToProof += gp.rightSide().charAt(i+1);
-                            rightToProof += gp.rightSide().charAt(i+2);
-                            i += 2;
-                        }
-                    }
-
-                    if (this.chomskyNonTerminals.contains(leftToProof) && this.chomskyNonTerminals.contains(rightToProof) && !(gp.rightSide().equals(leftToProof + rightToProof))) {
-                        this.chomskyProductions.add(new GrammarProduction("V_" + v_i, leftToProof + rightToProof));
-                        String newRightSide = gp.rightSide().replace(leftToProof + rightToProof, "V_" + v_i);
-                        this.chomskyProductions.set(this.chomskyProductions.indexOf(gp), new GrammarProduction(gp.leftSide(), newRightSide));
-
-                        v_i += 1;
-                        i = 0;
-                    }
-                }
-            }
-        }
-    } */
 
     private void resolveNonTerminalsOnRightSide() {
         int v_i = 1;
@@ -205,13 +162,15 @@ public class ChomskyTransformationGeneration {
 
         for (GrammarProduction gp : this.chomskyProductions) {
             String currentRightSide = gp.rightSide();
+            int indexOfCurrentProduction = this.modifiedChomskyProductions.indexOf(gp);
 
             while (this.getAnzNonTerminalsOnRightSide(currentRightSide) > 2) {
                 String[] nonTerminals = this.getNonTerminalsFromRightSide(currentRightSide);
 
                 this.modifiedChomskyProductions.add(new GrammarProduction("V_" + v_i, nonTerminals[0] + nonTerminals[1]));
-                currentRightSide = gp.rightSide().replace(nonTerminals[0] + nonTerminals[1], "V_" + v_i);
-                this.modifiedChomskyProductions.set(this.modifiedChomskyProductions.indexOf(gp), new GrammarProduction(gp.leftSide(), currentRightSide));
+                currentRightSide = currentRightSide.replace(nonTerminals[0] + nonTerminals[1], "V_" + v_i);
+                this.chomskyNonTerminals.add("V_" + v_i);
+                this.modifiedChomskyProductions.set(indexOfCurrentProduction, new GrammarProduction(gp.leftSide(), currentRightSide));
 
                 v_i += 1;
             }
@@ -229,7 +188,11 @@ public class ChomskyTransformationGeneration {
                 do {
                     nonTerminalToCheck.append(rightSide.charAt(i + 1));
                     i += 1;
-                } while (Character.isDigit(rightSide.charAt(i)) || this.chomskyTerminals.contains(String.valueOf(rightSide.charAt(i))));
+
+                    if ((i+1) >= rightSide.length()) {
+                        break;
+                    }
+                } while (Character.isDigit(rightSide.charAt(i+1)) || this.chomskyTerminals.contains(String.valueOf(rightSide.charAt(i+1))));
             }
 
             if (this.chomskyNonTerminals.stream().anyMatch(nonTerminalToCheck.toString()::contains)) {
@@ -250,7 +213,11 @@ public class ChomskyTransformationGeneration {
                 do {
                     nonTerminalToCheck.append(rightSide.charAt(i + 1));
                     i += 1;
-                } while (Character.isDigit(rightSide.charAt(i)) || this.chomskyTerminals.contains(String.valueOf(rightSide.charAt(i))));
+
+                    if ((i+1) >= rightSide.length()) {
+                        break;
+                    }
+                } while (Character.isDigit(rightSide.charAt(i+1)) || this.chomskyTerminals.contains(String.valueOf(rightSide.charAt(i+1))));
             }
 
             if (this.chomskyNonTerminals.stream().anyMatch(nonTerminalToCheck.toString()::contains)) {
@@ -265,7 +232,7 @@ public class ChomskyTransformationGeneration {
         this.modifiedChomskyProductions = new ArrayList<>(this.chomskyProductions);
 
         for (GrammarProduction gp : this.chomskyProductions) {
-            if (gp.rightSide().length() == 1 && this.chomskyNonTerminals.contains(gp.rightSide())) {
+            if (this.getAnzNonTerminalsOnRightSide(gp.rightSide()) == 1) {
                 this.modifiedChomskyProductions.remove(gp);
                 this.replaceSingleProductions(gp.leftSide(), gp.rightSide());
             }

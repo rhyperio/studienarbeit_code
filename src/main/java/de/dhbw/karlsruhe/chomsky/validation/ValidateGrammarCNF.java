@@ -15,9 +15,10 @@ public class ValidateGrammarCNF {
         List<GrammarProduction> grammarProductions = Arrays.asList(grammarToCheck.getProductions());
         String[] nonTerminals = grammarToCheck.getNonTerminals();
         String[] terminals = grammarToCheck.getTerminals();
-        return this.rightSideExactlyTwoNonTerminals(grammarProductions, nonTerminals) && this.rightSideExactlyOneTerminal(grammarProductions, terminals) && this.maxOneEpsilonProductionNoRightSide(grammarProductions);
+        return this.rightSideExactlyTwoNonTerminals(grammarProductions, terminals) && this.rightSideExactlyOneTerminal(grammarProductions, terminals) && this.maxOneEpsilonProductionNoRightSide(grammarProductions);
     }
 
+    /**
     private boolean rightSideExactlyTwoNonTerminals(List<GrammarProduction> grammarProductions, String[] nonTerminals) {
         boolean valid = false;
 
@@ -52,6 +53,55 @@ public class ValidateGrammarCNF {
         }
 
         return valid;
+    }
+     */
+
+    private boolean rightSideExactlyTwoNonTerminals(List<GrammarProduction> grammarProductions, String[] terminals) {
+        boolean valid = false;
+        int anzNonTerminals = 0;
+
+        for (GrammarProduction gp : grammarProductions) {
+            if (gp.rightSide().length() == 1) {
+                valid = true;
+            } else {
+                anzNonTerminals = this.getAnzNonTerminalsOnRightSide(gp.rightSide(), terminals);
+            }
+        }
+
+        if (anzNonTerminals > 2) {
+            valid = false;
+        }
+
+        if (!valid) {
+            return false;
+        }
+
+        return valid;
+    }
+
+    private int getAnzNonTerminalsOnRightSide(String rightSide, String[] terminals) {
+        int anzNonTerminals = 0;
+
+        for (int i = 0; i < rightSide.length(); i++) {
+            StringBuilder nonTerminalToCheck = new StringBuilder(String.valueOf(rightSide.charAt(i)));
+
+            if (nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) {
+                do {
+                    nonTerminalToCheck.append(rightSide.charAt(i + 1));
+                    i += 1;
+
+                    if ((i+1) >= rightSide.length()) {
+                        break;
+                    }
+                } while (Character.isDigit(rightSide.charAt(i+1)) || List.of(terminals).contains(String.valueOf(rightSide.charAt(i+1))));
+            }
+
+            if (List.of(terminals).stream().anyMatch(nonTerminalToCheck.toString()::contains)) {
+                anzNonTerminals++;
+            }
+        }
+
+        return anzNonTerminals;
     }
 
     private boolean rightSideExactlyOneTerminal(List<GrammarProduction> grammarProductions, String[] terminals) {
