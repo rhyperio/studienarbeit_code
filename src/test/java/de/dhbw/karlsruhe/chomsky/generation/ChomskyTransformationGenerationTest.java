@@ -18,7 +18,7 @@ public class ChomskyTransformationGenerationTest {
     @Test
     public void correctGrammarGenerationTest() {
         ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
             assertNotNull(generatedGrammar);
         }
@@ -29,7 +29,7 @@ public class ChomskyTransformationGenerationTest {
         ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
         ValidateGrammarCNF validateGrammarCNF = new ValidateGrammarCNF();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
             assertTrue(validateGrammarCNF.validateGrammarIsInCNF(generatedGrammar));
         }
