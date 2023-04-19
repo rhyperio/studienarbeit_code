@@ -5,6 +5,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ChomskyTransformationGeneration {
     private Grammar typeTwoGrammar;
@@ -33,6 +34,8 @@ public class ChomskyTransformationGeneration {
         this.replaceTerminals();
         this.resolveNonTerminalsOnRightSide();
         this.resolveSingleProductions();
+
+        this.grammarProductionCleanUp();
 
         return new Grammar(this.chomskyTerminals.toArray(new String[0]), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
     }
@@ -248,6 +251,19 @@ public class ChomskyTransformationGeneration {
                 this.modifiedChomskyProductions.add(new GrammarProduction(leftSide, gp.rightSide()));
             }
         }
+    }
+
+    private void grammarProductionCleanUp() {
+        this.chomskyProductions = this.chomskyProductions.stream().distinct().collect(Collectors.toList());
+        this.modifiedChomskyProductions = new ArrayList<>(this.chomskyProductions);
+
+        for (GrammarProduction gp : this.chomskyProductions) {
+            if (gp.rightSide().equals("")) {
+                this.modifiedChomskyProductions.remove(gp);
+            }
+        }
+
+        this.chomskyProductions = new ArrayList<>(this.modifiedChomskyProductions);
     }
 
 }
