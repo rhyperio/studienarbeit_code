@@ -64,20 +64,39 @@ public class ChomskyDirectGeneration {
             int anzProductions = this.random.nextInt(3) + 1;
 
             for (int i = 0; i < anzProductions; i++) {
-                this.chomskyProductionsSet.add(new GrammarProduction(nonTerminal, this.generateRightSide()));
+                this.chomskyProductionsSet.add(new GrammarProduction(nonTerminal, this.generateRightSide(nonTerminal)));
             }
         }
 
         if (this.random.nextFloat() <= 0.5) {
-            this.addEpsilonToGrammar();
+            this.chomskyProductionsSet.add(new GrammarProduction(this.startNonTerminal, "ε"));
         }
+
+        // ToDo: Add check for reachability of every nonTerminal
+        // ToDo: Add check for every nonTerminal to be executed
 
         return this.chomskyProductionsSet.stream().toList();
     }
 
-    private String generateRightSide() {
+    private String generateRightSide(String leftSide) {
+        if (this.random.nextFloat() <= 0.5) {
+            // return terminals
+            return this.terminals[this.random.nextInt(this.terminals.length)];
+        } else {
+            // return two nonTerminal
+            return this.getTwoNonTermialsForRightSide(leftSide);
+        }
     }
 
-    private void addEpsilonToGrammar() {
+    private String getTwoNonTermialsForRightSide(String leftSide) {
+        String firstNonTerminal;
+        String secondNonTerminal;
+
+        do {
+            firstNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
+            secondNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
+        } while(firstNonTerminal.equals(leftSide) && secondNonTerminal.equals(leftSide));
+
+        return firstNonTerminal + secondNonTerminal;
     }
 }
