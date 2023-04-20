@@ -63,7 +63,7 @@ public class WordGenerationController {
     }
   }
 
-  @PostMapping("/api/get/word/ReadAction-Limitation")
+  @PostMapping("/api/get/word/Read-Action-Limitation")
   ResponseEntity<String> getWordWithLimitation(@RequestBody WordReadActionLimitationDto wordReadActionLimitationDto) {
     wordReadActionLimitationDto.getGrammar().splitOrGrammarsIntoSingleRules();
     WordGeneration wordGeneration = new WordGeneration(wordReadActionLimitationDto.getGrammar());

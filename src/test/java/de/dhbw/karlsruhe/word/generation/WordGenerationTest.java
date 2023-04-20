@@ -86,7 +86,7 @@ class WordGenerationTest {
     }
 
     @Test
-    void ReadCountTest() {
+    void readCountTest() {
         for (int i = 0; i < 100; i++) {
             GrammarGeneration grammarGeneration = getGrammarGeneration();
             Grammar grammar = grammarGeneration.generateGrammar();

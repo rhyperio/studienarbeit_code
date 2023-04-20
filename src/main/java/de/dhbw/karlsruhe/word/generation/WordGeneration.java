@@ -33,8 +33,8 @@ public class WordGeneration {
 
     public String generateWord(ParserLimitation parserLimitation, int minWordLength) throws WordLimitationsNotFulfillableException{
 
-        this.maxReadCount = parserLimitation.maxReadCount;
-        this.maxActionCount = parserLimitation.maxActionCount;
+        this.maxReadCount = parserLimitation.getMaxReadCount();
+        this.maxActionCount = parserLimitation.getMaxActionCount();
         List<GrammarProduction> startProductions = getPotentialStartProductions();
 
         int countTries = 0;
@@ -63,7 +63,7 @@ public class WordGeneration {
 
         if (productionService.isEndProduction(production)) {
             currentReadCount += production.rightSide().length();
-            if (currentReadCount > maxReadCount || currentActionCount > maxActionCount)
+            if (currentReadCount > maxReadCount)
                 throw new ToManyProductionsException(maxReadCount,maxActionCount);
             return production.rightSide();
         }
@@ -73,14 +73,14 @@ public class WordGeneration {
             char currentSymbol = production.rightSide().charAt(i);
             if (Arrays.stream(grammar.getTerminals()).toList().contains(String.valueOf(currentSymbol))){
                 currentReadCount++;
-                if (currentReadCount > maxReadCount || currentActionCount > maxActionCount)
+                if (currentReadCount > maxReadCount)
                     throw new ToManyProductionsException(maxReadCount,maxActionCount);
                 wordFragment.append(currentSymbol);
             }
             else {
                 List<GrammarProduction> potentialProduction = getPotentialProductions(String.valueOf(currentSymbol));
                 currentActionCount++;
-                if (currentReadCount > maxReadCount || currentActionCount > maxActionCount)
+                if (currentActionCount > maxActionCount)
                     throw new ToManyProductionsException(maxReadCount,maxActionCount);
                 wordFragment.append(traverseProductionsWithParserLimitations(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
             }
