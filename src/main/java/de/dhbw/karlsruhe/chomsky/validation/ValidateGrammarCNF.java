@@ -45,7 +45,11 @@ public class ValidateGrammarCNF {
         for (int i = 0; i < rightSide.length(); i++) {
             StringBuilder nonTerminalToCheck = new StringBuilder(String.valueOf(rightSide.charAt(i)));
 
-            if (nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) {
+            if ((nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) && (i+1) < rightSide.length()) {
+                if (rightSide.charAt(i+1) != '_') {
+                    break;
+                }
+
                 do {
                     nonTerminalToCheck.append(rightSide.charAt(i + 1));
                     i += 1;

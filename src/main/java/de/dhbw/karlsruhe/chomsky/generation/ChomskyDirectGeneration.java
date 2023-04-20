@@ -58,18 +58,22 @@ public class ChomskyDirectGeneration {
     }
 
     private List<GrammarProduction> generateChomskyProductions() {
+        boolean epsilonIncluded = false;
         this.chomskyProductionsSet = new HashSet<>();
+
+        if (this.random.nextFloat() <= 0.5) {
+            this.chomskyProductionsSet.add(new GrammarProduction(this.startNonTerminal, "ε"));
+            this.terminals = Arrays.copyOf(this.terminals, this.terminals.length + 1);
+            this.terminals[this.terminals.length - 1] = "ε";
+            epsilonIncluded = true;
+        }
 
         for (String nonTerminal : this.nonTerminals) {
             int anzProductions = this.random.nextInt(3) + 1;
 
             for (int i = 0; i < anzProductions; i++) {
-                this.chomskyProductionsSet.add(new GrammarProduction(nonTerminal, this.generateRightSide(nonTerminal)));
+                this.chomskyProductionsSet.add(new GrammarProduction(nonTerminal, this.generateRightSide(nonTerminal, epsilonIncluded)));
             }
-        }
-
-        if (this.random.nextFloat() <= 0.5) {
-            this.chomskyProductionsSet.add(new GrammarProduction(this.startNonTerminal, "ε"));
         }
 
         // ToDo: Add check for reachability of every nonTerminal
@@ -78,24 +82,46 @@ public class ChomskyDirectGeneration {
         return this.chomskyProductionsSet.stream().toList();
     }
 
-    private String generateRightSide(String leftSide) {
+    private String generateRightSide(String leftSide, boolean epsilonIncluded) {
         if (this.random.nextFloat() <= 0.5) {
-            // return terminals
-            return this.terminals[this.random.nextInt(this.terminals.length)];
+            // return terminal
+            return this.getTerminalForRightSide(epsilonIncluded);
         } else {
             // return two nonTerminal
-            return this.getTwoNonTermialsForRightSide(leftSide);
+            return this.getTwoNonTermialsForRightSide(leftSide, epsilonIncluded);
         }
     }
 
-    private String getTwoNonTermialsForRightSide(String leftSide) {
+    private String getTerminalForRightSide(boolean epsilonIncluded) {
+        String terminalForRightSide;
+
+        if (epsilonIncluded) {
+            do {
+                terminalForRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+            } while (terminalForRightSide.equals("ε"));
+
+            return terminalForRightSide;
+        } else {
+            return this.terminals[this.random.nextInt(this.terminals.length)];
+        }
+    }
+
+    private String getTwoNonTermialsForRightSide(String leftSide, boolean epsilonIncluded) {
         String firstNonTerminal;
         String secondNonTerminal;
 
-        do {
-            firstNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
-            secondNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
-        } while(firstNonTerminal.equals(leftSide) && secondNonTerminal.equals(leftSide));
+        firstNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
+        secondNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
+
+        if (epsilonIncluded) {
+            while (firstNonTerminal.equals(this.startNonTerminal)) {
+                firstNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
+            }
+
+            while (secondNonTerminal.equals(this.startNonTerminal)) {
+                secondNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
+            }
+        }
 
         return firstNonTerminal + secondNonTerminal;
     }
