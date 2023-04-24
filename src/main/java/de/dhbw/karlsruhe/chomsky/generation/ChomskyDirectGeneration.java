@@ -116,11 +116,11 @@ public class ChomskyDirectGeneration {
         secondNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
 
         if (epsilonIncluded) {
-            while (firstNonTerminal.equals(this.startNonTerminal)) {
+            while (firstNonTerminal.equals(this.startNonTerminal) && this.nonTerminals.length > 1) {
                 firstNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
             }
 
-            while (secondNonTerminal.equals(this.startNonTerminal)) {
+            while (secondNonTerminal.equals(this.startNonTerminal) && this.nonTerminals.length > 1) {
                 secondNonTerminal = this.nonTerminals[this.random.nextInt(this.nonTerminals.length)];
             }
         }
