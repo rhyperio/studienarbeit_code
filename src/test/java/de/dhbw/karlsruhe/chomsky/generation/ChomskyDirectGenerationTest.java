@@ -59,31 +59,39 @@ public class ChomskyDirectGenerationTest {
     @Test
     public void checkThatStartSymbolIsNonTerminal() {
         ChomskyDirectGeneration chomskyDirectGeneration = new ChomskyDirectGeneration();
-        Grammar generatedGrammar = chomskyDirectGeneration.generateDirectChomskyGrammar();
 
-        assertTrue(
-                Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
+        for (int i =0; i<100; i++) {
+            Grammar generatedGrammar = chomskyDirectGeneration.generateDirectChomskyGrammar();
+
+            assertTrue(Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
+        }
     }
 
     @Test
     void checkAllNonTerminalsOnLeftSide(){
         ChomskyDirectGeneration chomskyDirectGeneration = new ChomskyDirectGeneration();
-        Grammar generatedGrammar = chomskyDirectGeneration.generateDirectChomskyGrammar();
 
-        List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
-        for (String nonTerminal : generatedGrammar.getNonTerminals()) {
-            assertTrue(grList.stream().anyMatch(production -> StringUtils.startsWith(production.leftSide(), nonTerminal)));
+        for (int i =0; i<100; i++) {
+            Grammar generatedGrammar = chomskyDirectGeneration.generateDirectChomskyGrammar();
+
+            List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
+            for (String nonTerminal : generatedGrammar.getNonTerminals()) {
+                assertTrue(grList.stream().anyMatch(production -> StringUtils.startsWith(production.leftSide(), nonTerminal)));
+            }
         }
     }
 
     @Test
     void checkAllTerminalsUsed(){
         ChomskyDirectGeneration chomskyDirectGeneration = new ChomskyDirectGeneration();
-        Grammar generatedGrammar = chomskyDirectGeneration.generateDirectChomskyGrammar();
 
-        List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
-        for (String terminal : generatedGrammar.getTerminals()) {
-            assertTrue(grList.stream().anyMatch(production -> StringUtils.contains(production.rightSide(), terminal) || production.rightSide().equals("epsilon")));
+        for (int i =0; i<100; i++) {
+            Grammar generatedGrammar = chomskyDirectGeneration.generateDirectChomskyGrammar();
+
+            List<GrammarProduction> grList = new ArrayList<>(Arrays.stream(generatedGrammar.getProductions()).toList());
+            for (String terminal : generatedGrammar.getTerminals()) {
+                assertTrue(grList.stream().anyMatch(production -> StringUtils.contains(production.rightSide(), terminal) || production.rightSide().equals("epsilon")));
+            }
         }
     }
 
