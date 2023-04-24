@@ -40,6 +40,33 @@ public class ChomskyTransformationGeneration {
         return new Grammar(this.chomskyTerminals.toArray(new String[0]), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
     }
 
+    public Grammar[] getStepByStepTransformedCNFGrammar(Grammar grammarToTransform) {
+        this.chomskyProductions = new ArrayList<>(List.of(grammarToTransform.getProductions()));
+        this.chomskyNonTerminals = new HashSet<>(List.of(grammarToTransform.getNonTerminals()));
+        this.chomskyTerminals = new HashSet<>(List.of(grammarToTransform.getTerminals()));
+        this.chomskyStartSymbol = grammarToTransform.getStartSymbol();
+
+        Set<String> epsG = this.getEPSFromGrammar();
+        boolean epsIsInLanguage = epsG.contains(grammarToTransform.getStartSymbol());
+
+        this.resolveEpsilonProduction(epsIsInLanguage);
+        this.replaceTerminals();
+        Grammar grammarAfterFirstStep = new Grammar(this.chomskyTerminals.toArray(new String[0]), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
+
+        this.resolveNonTerminalsOnRightSide();
+        Grammar grammarAfterSecondStep = new Grammar(this.chomskyTerminals.toArray(new String[0]), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
+
+        this.resolveSingleProductions();
+        Grammar grammarAfterThirdStep = new Grammar(this.chomskyTerminals.toArray(new String[0]), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
+
+        this.grammarProductionCleanUp();
+        Grammar grammarAfterFinalStep = new Grammar(this.chomskyTerminals.toArray(new String[0]), this.chomskyNonTerminals.toArray(new String[0]), this.chomskyProductions.toArray(new GrammarProduction[0]), this.chomskyStartSymbol);
+
+        Grammar[] grammarArray = new Grammar[]{grammarAfterFirstStep, grammarAfterSecondStep, grammarAfterThirdStep, grammarAfterFinalStep};
+
+        return grammarArray;
+    }
+
     private Set<String> getEPSFromGrammar() {
         Set<String> m_current = new HashSet<>();
         Set<String> m_new;
