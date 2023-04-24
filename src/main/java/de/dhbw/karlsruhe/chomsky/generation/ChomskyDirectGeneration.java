@@ -60,13 +60,18 @@ public class ChomskyDirectGeneration {
 
     private List<GrammarProduction> generateChomskyProductions() {
         boolean epsilonIncluded = false;
+        boolean needToAddNewStartNonTerminal = false;
         this.chomskyProductionsSet = new HashSet<>();
 
         if (this.random.nextFloat() <= 0.5) {
-            this.chomskyProductionsSet.add(new GrammarProduction(this.startNonTerminal, "ε"));
+            String newStartNonTerminal = this.startNonTerminal+ "'";
+            this.chomskyProductionsSet.add(new GrammarProduction(newStartNonTerminal, this.startNonTerminal));
+            this.chomskyProductionsSet.add(new GrammarProduction(newStartNonTerminal, "ε"));
+            this.startNonTerminal = newStartNonTerminal;
             this.terminals = Arrays.copyOf(this.terminals, this.terminals.length + 1);
             this.terminals[this.terminals.length - 1] = "ε";
             epsilonIncluded = true;
+            needToAddNewStartNonTerminal = true;
         }
 
         for (String nonTerminal : this.nonTerminals) {
@@ -80,6 +85,11 @@ public class ChomskyDirectGeneration {
         Set<String> nonTerminatingNonTerminals = this.getNonTerminatingNonTerminals();
         this.checkAtLeastOneEndProductionAndResolve(this.chomskyProductionsSet, this.terminals);
         this.resolveNonTerminatingNonTerminals(nonTerminatingNonTerminals);
+
+        if (needToAddNewStartNonTerminal) {
+            this.nonTerminals = Arrays.copyOf(this.nonTerminals, this.nonTerminals.length + 1);
+            this.nonTerminals[this.nonTerminals.length - 1] = this.startNonTerminal;
+        }
 
         return this.chomskyProductionsSet.stream().toList();
     }
