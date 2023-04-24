@@ -2,6 +2,7 @@ package de.dhbw.karlsruhe.chomsky.generation;
 
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
+import de.dhbw.karlsruhe.services.ProductionService;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
@@ -76,8 +77,9 @@ public class ChomskyDirectGeneration {
             }
         }
 
-        // ToDo: Add check for reachability of every nonTerminal
-        // ToDo: Add check for every nonTerminal to be executed
+        Set<String> nonTerminatingNonTerminals = this.getNonTerminatingNonTerminals();
+        this.checkAtLeastOneEndProductionAndResolve(this.chomskyProductionsSet, this.terminals);
+        this.resolveNonTerminatingNonTerminals(nonTerminatingNonTerminals);
 
         return this.chomskyProductionsSet.stream().toList();
     }
@@ -124,5 +126,79 @@ public class ChomskyDirectGeneration {
         }
 
         return firstNonTerminal + secondNonTerminal;
+    }
+
+    private Set<String> getNonTerminatingNonTerminals() {
+        Set<String> nonTerminatingNonTerminals = new HashSet<>();
+
+        for (String currentNonTerminal : this.nonTerminals) {
+            if (this.checkIfNonTerminalLoopsItself(currentNonTerminal)) {
+                nonTerminatingNonTerminals.add(currentNonTerminal);
+            }
+        }
+
+        return nonTerminatingNonTerminals;
+    }
+
+    private boolean checkIfNonTerminalLoopsItself(String nonTerminal) {
+        List<String> leftSidesOfUsage = new ArrayList<>();
+        StringBuilder rightSidesOfNonTerminalToCheck = new StringBuilder();
+
+        for (GrammarProduction gr : this.chomskyProductionsSet) {
+            if (gr.leftSide().equals(nonTerminal)) {
+                rightSidesOfNonTerminalToCheck.append(gr.rightSide());
+            }
+
+            if (gr.rightSide().contains(nonTerminal) || this.checkIfRightSideContainsUsedNonTerminals(gr.rightSide(), leftSidesOfUsage)) {
+                leftSidesOfUsage.add(gr.leftSide());
+            }
+        }
+
+        if (leftSidesOfUsage.contains(nonTerminal) || this.checkIfRightSideContainsUsedNonTerminals(rightSidesOfNonTerminalToCheck.toString(), leftSidesOfUsage)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkIfRightSideContainsUsedNonTerminals(String rightSidesOfNonTerminalToCheck, List<String> leftSidesOfUsage) {
+        for (int i = 0; i < leftSidesOfUsage.size(); i++) {
+            if (rightSidesOfNonTerminalToCheck.contains(leftSidesOfUsage.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void checkAtLeastOneEndProductionAndResolve(Set<GrammarProduction> chomskyProductionsSet, String[] terminals) {
+        ProductionService productionService = new ProductionService();
+        if (chomskyProductionsSet.stream().noneMatch(productionService::isEndProduction)) {
+            this.addEndProduction();
+        }
+    }
+
+    private void addEndProduction() {
+        GrammarProduction gp = this.chomskyProductionsSet.stream().toList().get(this.chomskyProductionsSet.size()-1);
+        String nonTerminal = gp.leftSide();
+        String terminalRightSide;
+
+        do {
+            terminalRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+        } while (terminalRightSide.equals("ε"));
+
+        this.chomskyProductionsSet.add(new GrammarProduction(nonTerminal, terminalRightSide));
+    }
+
+    private void resolveNonTerminatingNonTerminals(Set<String> nonTerminatingNonTerminals) {
+        String terminalRightSide;
+
+        for (String nonTerminal : nonTerminatingNonTerminals) {
+            do {
+                terminalRightSide = this.terminals[this.random.nextInt(this.terminals.length)];
+            } while (terminalRightSide.equals("ε"));
+
+            this.chomskyProductionsSet.add(new GrammarProduction(nonTerminal, terminalRightSide));
+        }
     }
 }
