@@ -3,7 +3,9 @@ package de.dhbw.karlsruhe.chomsky.generation;
 import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.ProductionService;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -83,8 +85,9 @@ public class ChomskyDirectGeneration {
         }
 
         Set<String> nonTerminatingNonTerminals = this.getNonTerminatingNonTerminals();
-        this.checkAtLeastOneEndProductionAndResolve(this.chomskyProductionsSet, this.terminals);
+        this.checkAndResolveAtLeastOneEndProduction();
         this.resolveNonTerminatingNonTerminals(nonTerminatingNonTerminals);
+        this.checkAndResolveEveryTerminalIsUsed();
 
         if (needToAddNewStartNonTerminal) {
             this.nonTerminals = Arrays.copyOf(this.nonTerminals, this.nonTerminals.length + 1);
@@ -92,6 +95,20 @@ public class ChomskyDirectGeneration {
         }
 
         return this.chomskyProductionsSet.stream().toList();
+    }
+
+    private void checkAndResolveEveryTerminalIsUsed() {
+        Set<String> terminalsToRemove = new HashSet();
+
+        for (String terminal : this.terminals) {
+            if (this.chomskyProductionsSet.stream().noneMatch(production -> StringUtils.contains(production.rightSide(), terminal))) {
+                terminalsToRemove.add(terminal);
+            }
+        }
+
+        for (String terminal : terminalsToRemove) {
+            this.terminals = ArrayUtils.remove(this.terminals, Arrays.stream(this.terminals).toList().indexOf(terminal));
+        }
     }
 
     private String generateRightSide(String leftSide, boolean epsilonIncluded) {
@@ -181,9 +198,9 @@ public class ChomskyDirectGeneration {
         return false;
     }
 
-    private void checkAtLeastOneEndProductionAndResolve(Set<GrammarProduction> chomskyProductionsSet, String[] terminals) {
+    private void checkAndResolveAtLeastOneEndProduction() {
         ProductionService productionService = new ProductionService();
-        if (chomskyProductionsSet.stream().noneMatch(productionService::isEndProduction)) {
+        if (this.chomskyProductionsSet.stream().noneMatch(productionService::isEndProduction)) {
             this.addEndProduction();
         }
     }
