@@ -125,6 +125,7 @@ public class ChomskyTransformationGeneration {
             this.chomskyStartSymbol = newStartSymbol;
             this.chomskyProductions.add(new GrammarProduction(newStartSymbol, "ε"));
             this.chomskyProductions.add(new GrammarProduction(newStartSymbol, this.typeTwoGrammar.getStartSymbol()));
+            this.chomskyNonTerminals.add(newStartSymbol);
 
             this.removeEpsilonProductions();
         }
@@ -215,7 +216,7 @@ public class ChomskyTransformationGeneration {
         for (int i = 0; i < rightSide.length(); i++) {
             StringBuilder nonTerminalToCheck = new StringBuilder(String.valueOf(rightSide.charAt(i)));
 
-            if (nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) {
+            if ((nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) && i+1 < rightSide.length() && String.valueOf(rightSide.charAt(i+1)).equals("_")) {
                 do {
                     nonTerminalToCheck.append(rightSide.charAt(i + 1));
                     i += 1;
@@ -240,7 +241,7 @@ public class ChomskyTransformationGeneration {
         for (int i = 0; i < rightSide.length(); i++) {
             StringBuilder nonTerminalToCheck = new StringBuilder(String.valueOf(rightSide.charAt(i)));
 
-            if (nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) {
+            if ((nonTerminalToCheck.toString().equals("Z") || nonTerminalToCheck.toString().equals("V")) && i+1 < rightSide.length() && String.valueOf(rightSide.charAt(i+1)).equals("_")) {
                 do {
                     nonTerminalToCheck.append(rightSide.charAt(i + 1));
                     i += 1;
