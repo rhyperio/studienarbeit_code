@@ -59,10 +59,13 @@ public class ChomskyTransformationGenerationTest {
     @Test
     public void checkThatStartSymbolIsNonTerminal() {
         ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
-        Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
 
-        assertTrue(
-                Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
+        for(int i = 0; i < 100; i++) {
+            Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
+
+            assertTrue(
+                    Arrays.asList(generatedGrammar.getNonTerminals()).contains(generatedGrammar.getStartSymbol()));
+        }
     }
 
     @Test
