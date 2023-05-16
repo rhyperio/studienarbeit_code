@@ -41,6 +41,7 @@ public class ChomskyTransformationGeneration {
     }
 
     public Grammar[] getStepByStepTransformedCNFGrammar(Grammar grammarToTransform) {
+        this.typeTwoGrammar = grammarToTransform;
         this.chomskyProductions = new ArrayList<>(List.of(grammarToTransform.getProductions()));
         this.chomskyNonTerminals = new HashSet<>(List.of(grammarToTransform.getNonTerminals()));
         this.chomskyTerminals = new HashSet<>(List.of(grammarToTransform.getTerminals()));

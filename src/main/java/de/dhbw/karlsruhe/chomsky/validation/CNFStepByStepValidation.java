@@ -32,7 +32,7 @@ public class CNFStepByStepValidation {
     private boolean grammarEqualsAfterEpsilonResolution(Grammar firstStepGrammar) {
         Grammar grammarAfterFirstStep = this.grammarTransformationSteps[0];
 
-        if (Arrays.equals(grammarAfterFirstStep.getTerminals(), firstStepGrammar.getTerminals()) && Arrays.equals(grammarAfterFirstStep.getNonTerminals(), firstStepGrammar.getNonTerminals()) && grammarAfterFirstStep.getProductions().equals(firstStepGrammar.getProductions()) && grammarAfterFirstStep.getStartSymbol().equals(firstStepGrammar.getStartSymbol())) {
+        if (Arrays.equals(grammarAfterFirstStep.getTerminals(), firstStepGrammar.getTerminals()) && Arrays.equals(grammarAfterFirstStep.getNonTerminals(), firstStepGrammar.getNonTerminals()) && Arrays.equals(grammarAfterFirstStep.getProductions(), firstStepGrammar.getProductions()) && grammarAfterFirstStep.getStartSymbol().equals(firstStepGrammar.getStartSymbol())) {
             return true;
         }
 
@@ -42,7 +42,7 @@ public class CNFStepByStepValidation {
     private boolean grammarEqualsAfterTerminalReplacement(Grammar secondStepGrammar) {
         Grammar grammarAfterSecondStep = this.grammarTransformationSteps[1];
 
-        if (Arrays.equals(grammarAfterSecondStep.getTerminals(), secondStepGrammar.getTerminals()) && Arrays.equals(grammarAfterSecondStep.getNonTerminals(), secondStepGrammar.getNonTerminals()) && grammarAfterSecondStep.getProductions().equals(secondStepGrammar.getProductions()) && grammarAfterSecondStep.getStartSymbol().equals(secondStepGrammar.getStartSymbol())) {
+        if (Arrays.equals(grammarAfterSecondStep.getTerminals(), secondStepGrammar.getTerminals()) && Arrays.equals(grammarAfterSecondStep.getNonTerminals(), secondStepGrammar.getNonTerminals()) && Arrays.equals(grammarAfterSecondStep.getProductions(), secondStepGrammar.getProductions()) && grammarAfterSecondStep.getStartSymbol().equals(secondStepGrammar.getStartSymbol())) {
             return true;
         }
 
@@ -52,7 +52,7 @@ public class CNFStepByStepValidation {
     private boolean grammarEqualsAfterRightSideResolution(Grammar thirdStepGrammar) {
         Grammar grammarAfterThirdStep = this.grammarTransformationSteps[2];
 
-        if (Arrays.equals(grammarAfterThirdStep.getTerminals(), thirdStepGrammar.getTerminals()) && Arrays.equals(grammarAfterThirdStep.getNonTerminals(), thirdStepGrammar.getNonTerminals()) && grammarAfterThirdStep.getProductions().equals(thirdStepGrammar.getProductions()) && grammarAfterThirdStep.getStartSymbol().equals(thirdStepGrammar.getStartSymbol())) {
+        if (Arrays.equals(grammarAfterThirdStep.getTerminals(), thirdStepGrammar.getTerminals()) && Arrays.equals(grammarAfterThirdStep.getNonTerminals(), thirdStepGrammar.getNonTerminals()) && Arrays.equals(grammarAfterThirdStep.getProductions(), thirdStepGrammar.getProductions()) && grammarAfterThirdStep.getStartSymbol().equals(thirdStepGrammar.getStartSymbol())) {
             return true;
         }
 
@@ -62,7 +62,7 @@ public class CNFStepByStepValidation {
     private boolean grammarEqualsAfterSingleNonTerminalResolution(Grammar finalGrammarToValidate) {
         Grammar grammarAfterFinalStep = this.grammarTransformationSteps[3];
 
-        if (Arrays.equals(grammarAfterFinalStep.getTerminals(), finalGrammarToValidate.getTerminals()) && Arrays.equals(grammarAfterFinalStep.getNonTerminals(), finalGrammarToValidate.getNonTerminals()) && grammarAfterFinalStep.getProductions().equals(finalGrammarToValidate.getProductions()) && grammarAfterFinalStep.getStartSymbol().equals(finalGrammarToValidate.getStartSymbol())) {
+        if (Arrays.equals(grammarAfterFinalStep.getTerminals(), finalGrammarToValidate.getTerminals()) && Arrays.equals(grammarAfterFinalStep.getNonTerminals(), finalGrammarToValidate.getNonTerminals()) && Arrays.equals(grammarAfterFinalStep.getProductions(), finalGrammarToValidate.getProductions()) && grammarAfterFinalStep.getStartSymbol().equals(finalGrammarToValidate.getStartSymbol())) {
             return true;
         }
 
