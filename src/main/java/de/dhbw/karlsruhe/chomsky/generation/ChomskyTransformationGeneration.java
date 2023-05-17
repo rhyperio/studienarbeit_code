@@ -22,7 +22,6 @@ public class ChomskyTransformationGeneration {
         do {
             this.typeTwoGrammar = new GrammarConcatenationGeneration().generateGrammar();
         } while (Arrays.stream(this.typeTwoGrammar.getNonTerminals()).toList().contains("Z") || Arrays.stream(this.typeTwoGrammar.getNonTerminals()).toList().contains("V"));
-        System.out.println("T2G: " + Arrays.toString(typeTwoGrammar.getProductions()));
         this.chomskyProductions = new ArrayList<>(List.of(this.typeTwoGrammar.getProductions()));
         this.chomskyNonTerminals = new HashSet<>(List.of(this.typeTwoGrammar.getNonTerminals()));
         this.chomskyTerminals = new HashSet<>(List.of(this.typeTwoGrammar.getTerminals()));
@@ -30,7 +29,6 @@ public class ChomskyTransformationGeneration {
 
         Set<String> epsG = this.getEPSFromGrammar();
         boolean epsIsInLanguage = epsG.contains(this.typeTwoGrammar.getStartSymbol());
-        System.out.println(epsIsInLanguage + "-" + typeTwoGrammar.getStartSymbol());
 
         this.resolveEpsilonProduction(epsIsInLanguage);
         this.replaceTerminals();
