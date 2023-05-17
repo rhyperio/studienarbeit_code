@@ -29,8 +29,10 @@ public class ChomskyTransformationGenerationTest {
         ChomskyTransformationGeneration chomskyTransformationGeneration = new ChomskyTransformationGeneration();
         ValidateGrammarCNF validateGrammarCNF = new ValidateGrammarCNF();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             Grammar generatedGrammar = chomskyTransformationGeneration.generateChomskyGrammar();
+            System.out.println(Arrays.toString(generatedGrammar.getProductions()));
+            System.out.println("--------------------------");
             assertTrue(validateGrammarCNF.validateGrammarIsInCNF(generatedGrammar));
         }
     }

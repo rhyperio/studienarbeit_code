@@ -11,6 +11,7 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
     private List<GrammarProduction> grammarRules;
     private String[] terminals;
     private String[] nonTerminals;
+    private String startSymbol;
     private Random random = new Random();
     private GrammarConcatenationVerification grammarConcatenationVerification;
 
@@ -21,7 +22,7 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
             this.startGeneration();
         } while (!grammarConcatenationVerification.verifyProductions(this.grammarRules, this.nonTerminals, this.terminals));
 
-        return new Grammar(this.terminals, this.nonTerminals, this.grammarRules.toArray(GrammarProduction[]::new), this.nonTerminals[0]);
+        return new Grammar(this.terminals, this.nonTerminals, this.grammarRules.toArray(GrammarProduction[]::new), this.startSymbol);
     }
 
     private void startGeneration () {
@@ -44,6 +45,7 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
         } while(nonTerminalsSet.size() < anzNonTerminals);
 
         this.nonTerminals = nonTerminalsSet.toArray(String[]::new);
+        this.startSymbol = this.nonTerminals[0];
     }
 
     private void addTerminals(int anzTerminals) {
@@ -74,13 +76,13 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
             } while ((this.grammarRulesSet.size() - setSizeBeforeCurrentGeneration) < anzProductions);
         }
 
-        Set<String> notTerminatingNonTerminals = this.grammarConcatenationVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
+        Set<String> nonTerminatingNonTerminals = this.grammarConcatenationVerification.getNonTerminatingNonTerminals(this.grammarRulesSet, this.nonTerminals);
 
         String[] terminalsAndEpsilon = Arrays.copyOf(this.terminals, this.terminals.length + 1);
         terminalsAndEpsilon[terminalsAndEpsilon.length - 1] = "ε";
 
 
-        for (String notTerminatingNonTerminal : notTerminatingNonTerminals) {
+        for (String notTerminatingNonTerminal : nonTerminatingNonTerminals) {
             String terminatingRightSide = terminalsAndEpsilon[this.random.nextInt(terminalsAndEpsilon.length)];
             GrammarProduction terminatingGp = new GrammarProduction(notTerminatingNonTerminal, terminatingRightSide);
             this.grammarRulesSet.add(terminatingGp);
@@ -90,6 +92,11 @@ public class GrammarConcatenationGeneration extends GrammarGeneration{
                 GrammarProduction safeTerminatingGr = new GrammarProduction(notTerminatingNonTerminal, safeTerminatingRightSide);
                 this.grammarRulesSet.add(safeTerminatingGr);
             }
+        }
+
+        Set<String> nonReachableNonTerminalsFromStartSymbol = this.grammarConcatenationVerification.getNonReachableNonTerminalsFromStartSymbol(this.grammarRulesSet, this.nonTerminals, this.startSymbol);
+        for (String nonTerminal : nonReachableNonTerminalsFromStartSymbol) {
+            this.grammarRulesSet.add(new GrammarProduction(startSymbol, nonTerminal));
         }
 
         return this.grammarRulesSet.stream().toList();
