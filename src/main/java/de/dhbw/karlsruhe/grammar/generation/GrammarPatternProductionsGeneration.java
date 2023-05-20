@@ -129,7 +129,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 			}
 		}
 		for (String terminal: tmpTerminals){
-			int index = rand.nextInt(terminals.size());
+			int index = rand.nextInt(nonTerminals.size());
 			resultProductions.add(new GrammarProduction(nonTerminals.get(index), terminal));
 		}
 
