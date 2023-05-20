@@ -111,6 +111,7 @@ public class GrammarPatternProductionsGeneration extends GrammarGeneration{
 					GrammarProduction tmpProduction = generateSingleProduction(pSet.getRandomRightSideNonTerminal(), grammarProductions.get(i).leftSide());
 					grammarProductions.add(tmpProduction);
 					pSet.addProduction(tmpProduction);
+					pSet.addProduction(grammarProductions.get(i));
 				}
 			}
 			grammarProductions = new ArrayList<>(new HashSet<>(grammarProductions));

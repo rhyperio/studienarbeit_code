@@ -4,6 +4,7 @@ import de.dhbw.karlsruhe.models.Grammar;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 import de.dhbw.karlsruhe.services.ProductionService;
 
+import javax.swing.text.html.parser.Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,9 +18,74 @@ public class WordGeneration {
     private final float preferEndProductionProbabilityLimit = 0.9f;
     private int currentProductionCount;
     private int maxProductionCount;
+    private int maxReadCount;
+    private int currentReadCount;
+    private int maxActionCount;
+    private int currentActionCount;
 
     public WordGeneration(Grammar grammar){
         this.grammar = grammar;
+    }
+
+    public String generateWord(ParserLimitation parserLimitation) throws WordLimitationsNotFulfillableException {
+        return generateWord(parserLimitation,1);
+    }
+
+    public String generateWord(ParserLimitation parserLimitation, int minWordLength) throws WordLimitationsNotFulfillableException{
+
+        this.maxReadCount = parserLimitation.getMaxReadCount();
+        this.maxActionCount = parserLimitation.getMaxActionCount();
+        List<GrammarProduction> startProductions = getPotentialStartProductions();
+
+        int countTries = 0;
+        String word;
+        do {
+            countTries++;
+            if (countTries>100){
+                throw new WordLimitationsNotFulfillableException();
+            }
+
+            currentReadCount = 0;
+            currentActionCount = 0;
+
+            GrammarProduction firstProduction = startProductions.get(rand.nextInt(startProductions.size()));
+            try {
+                word = traverseProductionsWithParserLimitations(firstProduction);
+                word = word.replace("ε", "");
+            } catch (ToManyProductionsException e){
+                word="";
+            }
+        } while (word.length() < minWordLength);
+        return word;
+    }
+
+    private String traverseProductionsWithParserLimitations(GrammarProduction production) throws ToManyProductionsException{
+
+        if (productionService.isEndProduction(production)) {
+            currentReadCount += production.rightSide().length();
+            if (currentReadCount > maxReadCount)
+                throw new ToManyProductionsException(maxReadCount,maxActionCount);
+            return production.rightSide();
+        }
+
+        StringBuilder wordFragment = new StringBuilder();
+        for (int i =0; i<production.rightSide().length();i++) {
+            char currentSymbol = production.rightSide().charAt(i);
+            if (Arrays.stream(grammar.getTerminals()).toList().contains(String.valueOf(currentSymbol))){
+                currentReadCount++;
+                if (currentReadCount > maxReadCount)
+                    throw new ToManyProductionsException(maxReadCount,maxActionCount);
+                wordFragment.append(currentSymbol);
+            }
+            else {
+                List<GrammarProduction> potentialProduction = getPotentialProductions(String.valueOf(currentSymbol));
+                currentActionCount++;
+                if (currentActionCount > maxActionCount)
+                    throw new ToManyProductionsException(maxReadCount,maxActionCount);
+                wordFragment.append(traverseProductionsWithParserLimitations(potentialProduction.get(rand.nextInt(potentialProduction.size()))));
+            }
+        }
+        return wordFragment.toString();
     }
 
     public String generateWord(int maxProductionCount) throws WordLimitationsNotFulfillableException{
