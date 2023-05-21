@@ -39,7 +39,7 @@ public class GrammarGenerationController {
     ResponseEntity<Grammar> getPatternGeneratedGrammarWithLimits(@RequestBody PatternDTO patternDTO) {
         GrammarPatternProductionsGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
         Grammar generatedGrammar = grammarGeneration.generateGrammar(patternDTO.getCountTerminals(),patternDTO.getCountNonTerminals());
-        generatedGrammar.mergeOrGrammarsIntoSingleRules();
+        //generatedGrammar.mergeOrGrammarsIntoSingleRules();
         return new ResponseEntity<>(generatedGrammar, HttpStatus.OK);
     }
 
