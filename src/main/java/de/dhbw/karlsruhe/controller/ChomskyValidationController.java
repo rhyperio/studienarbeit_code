@@ -6,9 +6,12 @@ import de.dhbw.karlsruhe.controller.dto.ValidationCNFParamModel;
 import de.dhbw.karlsruhe.controller.dto.ValidationCNFSBSParamModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@CrossOrigin
+@org.springframework.web.bind.annotation.RestController
 public class ChomskyValidationController {
     @PostMapping("/api/validate/chomsky/form")
     ResponseEntity<Boolean> cnf(@RequestBody ValidationCNFParamModel validationCNFParamModel) {

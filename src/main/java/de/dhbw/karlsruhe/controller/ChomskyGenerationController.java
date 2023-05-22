@@ -5,8 +5,11 @@ import de.dhbw.karlsruhe.chomsky.generation.ChomskyTransformationGeneration;
 import de.dhbw.karlsruhe.models.Grammar;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@CrossOrigin
+@org.springframework.web.bind.annotation.RestController
 public class ChomskyGenerationController {
     @GetMapping("/api/get/chomsky/direkt")
     ResponseEntity<Grammar> getDirektGeneratedChomskyGrammar() {
