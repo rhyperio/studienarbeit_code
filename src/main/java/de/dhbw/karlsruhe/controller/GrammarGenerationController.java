@@ -1,5 +1,6 @@
 package de.dhbw.karlsruhe.controller;
 
+import de.dhbw.karlsruhe.controller.dto.PatternDTO;
 import de.dhbw.karlsruhe.grammar.generation.GrammarConcatenationGeneration;
 import de.dhbw.karlsruhe.controller.dto.ProbabilityDto;
 import de.dhbw.karlsruhe.grammar.generation.GrammarGeneration;
@@ -31,6 +32,14 @@ public class GrammarGenerationController {
         GrammarGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
         Grammar generatedGrammar = grammarGeneration.generateGrammar();
         generatedGrammar.mergeOrGrammarsIntoSingleRules();
+        return new ResponseEntity<>(generatedGrammar, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/get/grammar/pattern/withLimits")
+    ResponseEntity<Grammar> getPatternGeneratedGrammarWithLimits(@RequestBody PatternDTO patternDTO) {
+        GrammarPatternProductionsGeneration grammarGeneration = new GrammarPatternProductionsGeneration();
+        Grammar generatedGrammar = grammarGeneration.generateGrammar(patternDTO.getCountTerminals(),patternDTO.getCountNonTerminals());
+        //generatedGrammar.mergeOrGrammarsIntoSingleRules();
         return new ResponseEntity<>(generatedGrammar, HttpStatus.OK);
     }
 
