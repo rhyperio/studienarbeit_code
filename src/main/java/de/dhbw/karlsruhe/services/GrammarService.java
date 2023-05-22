@@ -46,6 +46,10 @@ public class GrammarService {
       return wordSplit.toList().isEmpty();
     }
 
+    public Grammar getParsedGrammar() {
+      return this.grammar;
+    }
+
     private String[] getSortedGrammarTerminals () {
       String[] tmp = grammar.getTerminals();
       Arrays.sort(tmp);

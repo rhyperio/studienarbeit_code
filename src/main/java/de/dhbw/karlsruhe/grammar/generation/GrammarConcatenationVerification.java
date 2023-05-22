@@ -3,6 +3,7 @@ package de.dhbw.karlsruhe.grammar.generation;
 import de.dhbw.karlsruhe.models.GrammarProduction;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GrammarConcatenationVerification {
 
@@ -41,6 +42,26 @@ public class GrammarConcatenationVerification {
 
         return nonTerminatingNonTerminals;
     }
+
+    public Set<String> getNonReachableNonTerminalsFromStartSymbol(Set<GrammarProduction> grammarRulesToCheck, String[] nonTerminals, String startSymbol) {
+        Set<String> reachableNonTerminals = new HashSet<>();
+        reachableNonTerminals.add(startSymbol);
+
+        for(int i = 0; i < nonTerminals.length; i++) {
+            for(GrammarProduction gp : grammarRulesToCheck) {
+                if (reachableNonTerminals.contains(gp.leftSide())) {
+                    for(int j = 0; j < gp.rightSide().length(); j++) {
+                        if (Arrays.stream(nonTerminals).anyMatch(String.valueOf(gp.rightSide().charAt(j))::contains)) {
+                            reachableNonTerminals.add(String.valueOf(gp.rightSide().charAt(j)));
+                        }
+                    }
+                }
+            }
+        }
+
+        return Arrays.stream(nonTerminals).filter(element -> !reachableNonTerminals.contains(element)).collect(Collectors.toSet());
+    }
+
     private boolean checkIfNonTerminalLoopsItself(String nonTerminal, Set<GrammarProduction> grammarRulesToCheck) {
         List<String> leftSidesOfUsage = new ArrayList<>();
         StringBuilder rightSidesOfNonTerminalToCheck = new StringBuilder();
